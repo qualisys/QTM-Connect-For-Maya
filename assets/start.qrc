@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+	<qresource>
+		<file alias="start.png">start_100.png</file>
+		<file>start_150.png</file>
+		<file>start_200.png</file>
+	</qresource>
+</RCC>
