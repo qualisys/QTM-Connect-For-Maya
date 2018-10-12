@@ -27,13 +27,13 @@ def install():
     pmc.shelfButton(
         label="Connect to QTM",
         parent=shelf_layout,
-        command="import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.connect_gui()",
+        command="import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.qtm_connect_gui()",
         image1=connect_icon
     )
     pmc.shelfButton(
         label="Start streaming",
         parent=shelf_layout,
-		image1=start_icon,
+        image1=start_icon,
         command="import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.start()",
     )
     pmc.shelfButton(
