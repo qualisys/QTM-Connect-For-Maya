@@ -13,12 +13,12 @@ from Qt import __binding__
 import maya.api.OpenMaya as om
 import maya.api.OpenMayaAnim as omanim
 import maya.cmds as cmds
+from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 
 from pyxml2dict import XML2Dict
 from qqtmrt import QQtmRt
 
 MAYA = False
-GUI = None
 
 try:
     import maya.OpenMayaUI as OpenMayaUI
@@ -35,12 +35,14 @@ try:
 except:
     pass
 
-
 def qtm_connect_gui():
-    global GUI
+    use_workspace_control = False
 
-    GUI = QtmConnectDialog()
-    GUI.show()
+    if use_workspace_control:
+        show_gui()
+    else:
+        d = QtmConnectWidget()
+        d.show(dockable=True, height=600, width=480)
 
 def start():
     parent = _get_maya_main_window()
@@ -82,9 +84,36 @@ class StreamingService(QtCore.QObject):
             )
         )
 
-class QtmConnectDialog(QtWidgets.QDialog):
+def show_gui(restore=False):
+    parent = _get_maya_main_window()
+
+    ''' When the control is restoring, the workspace control has already been created and
+    all that needs to be done is restoring its UI.
+    '''
+    if restore == True:
+        # Grab the created workspace control with the following.
+        restoredControl = omui.MQtUtil.getCurrentParent()
+
+    if not hasattr(parent, 'customMixinWindow'):
+        # Create a custom mixin widget for the first time.
+        parent.customMixinWindow = DockableWidget()
+        parent.customMixinWindow.setObjectName('qtmConnectForMayaMixinWindow')
+
+    if restore == True:
+        # Add custom mixin widget to the workspace control.
+        mixinPtr = omui.MQtUtil.findControl(parent.customMixinWindow.objectName())
+        omui.MQtUtil.addWidgetToMayaLayout(long(mixinPtr), long(restoredControl))
+    else:
+        # Create a workspace control for the mixin widget by passing all the
+        # needed parameters. See workspaceControl command documentation for all
+        # available flags.
+        parent.customMixinWindow.show(dockable=True, height=600, width=480, uiScript='show_gui(restore=True)')
+
+    return parent.customMixinWindow
+
+class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
     def __init__(self, parent=_get_maya_main_window() if MAYA else None):
-        super(QtmConnectDialog, self).__init__(parent)
+        super(QtmConnectWidget, self).__init__(parent=parent)
 
         self.setWindowTitle('QTM Connect for Maya')
         self.setMinimumWidth(200)
@@ -106,6 +135,8 @@ class QtmConnectDialog(QtWidgets.QDialog):
         self._qtm = QQtmRt()
 
         # Expose QQtmRt instance to following script runs.
+        # The advantage of setting it on the parent is that we can reload the
+        # module and still access it as opposed to a variable local to the module.
         parent._qtm = self._qtm
 
         self._qtm.connectedChanged.connect(self._connected_changed)
