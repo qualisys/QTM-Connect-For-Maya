@@ -202,7 +202,13 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         if self._qtm.connected:
             self._qtm.disconnect()
         else:
-            self._qtm.connect_to_qtm(ip=self._host)
+            self.widget.connectButton.setEnabled(False)
+            self._qtm.connect_to_qtm(self._host, 3000)
+            self.widget.connectButton.setEnabled(True)
+
+            if not self._qtm.connected:
+                cmds.warning('Could not connect to host.')
+
 
 def main():
     if not MAYA:

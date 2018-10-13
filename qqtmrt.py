@@ -73,13 +73,13 @@ class QQtmRt(QtCore.QObject):
     def _handshake(self):
         response = self._wait_for_reply()
 
-        if response is not None and response != "QTM RT Interface connected":
+        if response is not None and response != 'QTM RT Interface connected':
             return False
 
-        requested_version = "1.18"
+        requested_version = '1.18'
         version = self.set_version(version=requested_version)
 
-        return version == "Version set to {}".format(requested_version)
+        return version == 'Version set to {}'.format(requested_version)
 
     def _wait_for_reply(self, event=False):
         response = None
@@ -122,19 +122,19 @@ class QQtmRt(QtCore.QObject):
 
     def get_settings(self, *args):
         if args is ():
-            args = ["all"]
+            args = ['all']
 
-        self._send_command("getparameters {}".format(" ".join(args)))
+        self._send_command('getparameters {}'.format(' '.join(args)))
 
         return self._wait_for_reply()
 
     def get_latest_event(self):
-        self._send_command("getstate")
+        self._send_command('getstate')
 
         return self._wait_for_reply(event=True)
 
-    def set_version(self, version="1.18"):
-        self._send_command("version {}".format(version))
+    def set_version(self, version='1.18'):
+        self._send_command('version {}'.format(version))
 
         return self._wait_for_reply()
 
@@ -143,24 +143,24 @@ class QQtmRt(QtCore.QObject):
 
     def stream(self, *args):
         if args is ():
-            args = ["all"]
+            args = ['all']
 
-        self._send_command("streamframes allframes {}".format(" ".join(args)))
+        self._send_command('streamframes allframes {}'.format(' '.join(args)))
 
         self.streaming = True
 
     def stop_stream(self):
-        self._send_command("streamframes stop")
+        self._send_command('streamframes stop')
         # Hackish so that any packets already on the way will be delivered and parsed correctly.
         QtCore.QTimer.singleShot(100, self._delayed_stream_stop)
 
-    def connect_to_qtm(self, ip="127.0.0.1"):
+    def connect_to_qtm(self, host='127.0.0.1', timeout=3000):
         if self._connected:
             return False
 
-        self._socket.connectToHost(ip, 22223)
+        self._socket.connectToHost(host, 22223)
 
-        if self._socket.waitForConnected():
+        if self._socket.waitForConnected(timeout):
             self.connected = self._handshake()
 
         return self.connected
