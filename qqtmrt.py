@@ -16,6 +16,7 @@ class QQtmRt(QtCore.QObject):
 
     def __init__(self, parent=None):
         super(QQtmRt, self).__init__(parent=parent)
+
         self._connected = False
         self._streaming = False
         self._socket = QtNetwork.QTcpSocket(parent=self)
