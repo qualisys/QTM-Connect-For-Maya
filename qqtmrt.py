@@ -1,7 +1,9 @@
+import json
 from Qt import QtNetwork
 from Qt import QtCore
 from Qt.QtCore import Signal, Property
 
+import xml2json
 from qtmparser import QtmParser
 
 from qtm.packet import QRTPacketType, QRTPacket, QRTEvent
@@ -76,10 +78,10 @@ class QQtmRt(QtCore.QObject):
         if response is not None and response != 'QTM RT Interface connected':
             return False
 
-        requested_version = '1.18'
-        version = self.set_version(version=requested_version)
+        self.requested_version = '1.18'
+        version = self.set_version(version=self.requested_version)
 
-        return version == 'Version set to {}'.format(requested_version)
+        return version == 'Version set to {}'.format(self.requested_version)
 
     def _wait_for_reply(self, event=False):
         response = None
@@ -126,7 +128,14 @@ class QQtmRt(QtCore.QObject):
 
         self._send_command('getparameters {}'.format(' '.join(args)))
 
-        return self._wait_for_reply()
+        xml_text = self._wait_for_reply()
+        options = lambda: None
+        options.pretty = False
+        json_text = xml2json.xml2json(xml_text, options)
+        settings = json.loads(json_text)
+        settings = settings.pop('QTM_Parameters_Ver_' + self.requested_version)
+
+        return settings
 
     def get_latest_event(self):
         self._send_command('getstate')
