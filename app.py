@@ -1,5 +1,4 @@
-import os, sys
-import struct
+import hashlib, os, sys, time
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/modules/')
 
@@ -7,7 +6,7 @@ from PySide2 import QtWidgets
 from PySide2 import QtNetwork
 from PySide2 import QtUiTools
 from PySide2 import QtCore
-from PySide2.QtCore import Signal, Property
+from PySide2 import QtGui
 from Qt import __binding__
 
 import maya.api.OpenMaya as om
@@ -15,7 +14,6 @@ import maya.api.OpenMayaAnim as omanim
 import maya.cmds as cmds
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 
-from pyxml2dict import XML2Dict
 from qqtmrt import QQtmRt
 
 MAYA = False
@@ -36,13 +34,13 @@ except:
     pass
 
 def qtm_connect_gui():
-    use_workspace_control = False
+    use_workspace_control = True
 
     if use_workspace_control:
         show_gui()
     else:
         d = QtmConnectWidget()
-        d.show(dockable=True, height=600, width=480)
+        d.show(dockable=True, height=800, width=480)
 
 def start():
     parent = _get_maya_main_window()
@@ -69,21 +67,6 @@ def _get_maya_main_window():
 
     return wrapInstance(long(ptr), QtWidgets.QWidget)
 
-class StreamingService(QtCore.QObject):
-    def __init__(self, parent=_get_maya_main_window()):
-        super(StreamingService, self).__init__(parent)
-        pass
-
-    def _packet_received(self, packet):
-        info, markers = packet.get_3d_markers()
-
-        print(
-        # self._output(
-            'Frame number: {} Markers: {} - First: {}'.format(
-                packet.framenumber, info.marker_count, markers[0]
-            )
-        )
-
 def show_gui(restore=False):
     parent = _get_maya_main_window()
 
@@ -96,7 +79,7 @@ def show_gui(restore=False):
 
     if not hasattr(parent, 'customMixinWindow'):
         # Create a custom mixin widget for the first time.
-        parent.customMixinWindow = DockableWidget()
+        parent.customMixinWindow = QtmConnectWidget()
         parent.customMixinWindow.setObjectName('qtmConnectForMayaMixinWindow')
 
     if restore == True:
@@ -126,7 +109,8 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
         layout.addWidget(self.widget)
 
-        self.streamingService = StreamingService()
+        # self.streamingService = StreamingService()
+        self.marker_groups = None
 
         if hasattr(parent, '_qtm'):
             parent._qtm.stop_stream()
@@ -141,13 +125,20 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
         self._qtm.connectedChanged.connect(self._connected_changed)
         self._qtm.streamingChanged.connect(self._streaming_changed)
-        self._qtm.packetReceived.connect(self.streamingService._packet_received)
+        self._qtm.packetReceived.connect(self._packet_received)
         self._qtm.eventReceived.connect(self._event_received)
 
         self.widget.connectButton.clicked.connect(self.connect_qtm)
         self.widget.startButton.clicked.connect(self.stream_3d)
         self.widget.stopButton.clicked.connect(self._qtm.stop_stream)
-        self.widget.settingsButton.clicked.connect(self.get_settings_3d)
+        self.widget.groupButton.clicked.connect(self.group_markers)
+        self.widget.list.clicked.connect(self.item_selected)
+        self.widget.list.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.widget.list.setIconSize(QtCore.QSize(32, 16))
+        self.widget.markerGroupLayout.setAlignment(QtCore.Qt.AlignTop)
+        self.widget.groupNameField.textChanged.connect(self.group_name_changed)
+
+        self.widget.textBox.setFixedHeight(50)
 
         if cmds.optionVar(exists='qtmHost') == 1:
             hostname = 'localhost' if cmds.optionVar(q='qtmHost') == '' else cmds.optionVar(q='qtmHost')
@@ -164,11 +155,11 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
     def _packet_received(self, packet):
         info, markers = packet.get_3d_markers()
-        self._output(
-            'Frame number: {} Markers: {} - First: {}'.format(
-                packet.framenumber, info.marker_count, markers[0]
-            )
-        )
+
+        for i, marker in enumerate(markers):
+            locator = self.markers[i]['locator']
+            transformFn = self.markers[i]['transformFn']
+            transformFn.setTranslation(om.MVector(marker.x/100, marker.z/100, marker.y/100), om.MSpace.kTransform)
 
     def _event_received(self, event):
         self._output('Event received: {}'.format(event))
@@ -180,15 +171,132 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.is_connected = connected
         self.widget.connectButton.setText('Disconnect' if connected else 'Connect')
         self.widget.hostField.setEnabled(not connected)
-        self.widget.settingsButton.setEnabled(connected)
         self.widget.startButton.setEnabled(connected)
 
         if connected:
             event = self._qtm.get_latest_event()
             self._output('Latest event: {}'.format(event))
+            self.qtm_3d_settings = self._qtm.get_settings('3d')
+
+            self.setup_marker_groups()
+            self.populate_marker_list()
+            self.upsert_locators()
+        else:
+            self.widget.list.clear()
+
+    def setup_marker_groups(self):
+        self.markers = []
+
+        if self.marker_groups is None:
+            self.marker_groups = { 'mocapMarkers': [] }
+
+            for i, label in enumerate(self.qtm_3d_settings['The_3D']['Label']):
+                label['Index'] = i
+
+                self.markers.append(label)
+                self.marker_groups['mocapMarkers'].append(label)
+
+    def populate_marker_list(self):
+        self.widget.list.clear()
+
+        for group_name, marker_group in self.marker_groups.items():
+            group_item = QtWidgets.QListWidgetItem(group_name) 
+
+            self.widget.list.addItem(group_item)
+
+            for label in marker_group:
+                red = long(label['RGBColor']) >> 16
+                green = (long(label['RGBColor']) >> 8) & 0x00ff
+                blue = long(label['RGBColor']) & 0x0000ff
+                marker_color = QtGui.QColor(red, green, blue)
+                icon = self.load_icon(os.path.dirname(os.path.abspath(__file__)) + '/assets/marker_64x32.png', marker_color)
+                item = QtWidgets.QListWidgetItem(icon, label['Name']) 
+
+                self.widget.list.addItem(item)
+
+    def group_markers(self):
+        new_group = []
+        new_group_name = self.widget.groupNameField.text()
+        selected = self.widget.list.selectedItems()
+
+        for item in selected:
+            for group_name, marker_group in self.marker_groups.items():
+                # Remove marker from existing groups.
+                for i, marker in enumerate(marker_group):
+                    if item.text() == marker['Name']:
+                        new_group.append(marker_group[i])
+
+                        self.markers[marker['Index']] = marker
+
+                        del marker_group[i]
+                
+        for group_name, marker_group in self.marker_groups.items():
+            if len(marker_group) == 0:
+                del self.marker_groups[group_name]
+
+        self.marker_groups[new_group_name + ' temp'] = new_group
+
+        if new_group_name in self.marker_groups:
+            random_name = hashlib.md5(str(time.time())).hexdigest()
+            self.marker_groups[random_name] = self.marker_groups[new_group_name]
+
+        self.marker_groups[new_group_name] = self.marker_groups[new_group_name + ' temp']
+        del self.marker_groups[new_group_name + ' temp']
+
+        self.populate_marker_list()
+        self.upsert_locators()
+
+    def group_name_changed(self):
+        if self.widget.groupNameField.text() != '' and len(self.widget.list.selectedItems()) > 0:
+            self.widget.groupButton.setEnabled(True)
+
+    def item_selected(self, item):
+        if self.widget.groupNameField.text() != '':
+            self.widget.groupButton.setEnabled(True)
+    
+    def upsert_locators(self):
+        modifier = om.MDagModifier()
+
+        for group_name, marker_group in self.marker_groups.items():
+            parent = self.get_node_by_name(group_name)
+
+            if parent is None:
+                parent = modifier.createNode('transform')
+
+                modifier.renameNode(parent, group_name)
+                modifier.doIt()
+
+            for i, marker in enumerate(marker_group):
+                locator = self.get_node_by_name(marker['Name'])
+
+                if locator is None:
+                    locator = modifier.createNode('locator')
+
+                    modifier.renameNode(locator, marker['Name'])
+
+                modifier.reparentNode(locator, parent)
+                modifier.doIt()
+
+                transformFn = om.MFnTransform(locator)
+                self.markers[marker['Index']]['locator'] = locator
+                self.markers[marker['Index']]['transformFn'] = transformFn
+
+    # Returns a QIcon with the image at path recolored with the specified
+    # color.
+    def load_icon(self, path, color):
+        pixmap = QtGui.QPixmap(path)
+        icon = QtGui.QIcon()
+        mask = pixmap.createMaskFromColor(QtGui.QColor(0x0, 0x0, 0x0), QtCore.Qt.MaskOutColor)
+        p = QtGui.QPainter(pixmap)
+
+        p.setPen(color)
+        p.drawPixmap(pixmap.rect(), mask, mask.rect())
+        p.end()
+        icon.addPixmap(pixmap, QtGui.QIcon.Normal)
+    
+        return icon
 
     def _streaming_changed(self, streaming):
-        self.widget.settingsButton.setEnabled(not streaming)
         self.widget.startButton.setEnabled(not streaming)
         self.widget.stopButton.setEnabled(streaming)
 
@@ -208,99 +316,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
             if not self._qtm.connected:
                 cmds.warning('Could not connect to host.')
-
-
-def main():
-    if not MAYA:
-        app = QtWidgets.QApplication(sys.argv)
-
-    window = MainPlugin()
-    window.show()
-
-    if not MAYA:
-        app.exec_()
-
-
-if __name__ == '__main__':
-    main()
-
-
-"""
-
-class ConnectGuiDialog_(QtWidgets.QDialog):
-    def __init__(self, parent=_get_maya_main_window() if MAYA else None):
-        super(ConnectGuiDialog_, self).__init__(parent)
-
-        self.setWindowTitle('QTM Connect for Maya')
-        self.setMinimumWidth(200)
-        #self.setWindowFlags(self.windowFlags() ^ QtCore.Qt.WindowContextHelpButtonHint())
-
-        self.widget = QtUiTools.QUiLoader().load(os.path.dirname(os.path.realpath(__file__)) + "/ui/plugin_w.ui")
-        layout = QtWidgets.QVBoxLayout(self)
-
-        layout.addWidget(self.widget)
-        self.widget.connectButton.clicked.connect(self.connect_qtm)
-
-        self._socket = QtNetwork.QTcpSocket(self)
-
-        self._socket.connected.connect(self._connected)
-        self._socket.disconnected.connect(self._disconnected)
-        self._socket.readyRead.connect(self._got_data)
-
-        self._handlers = {
-            # QRTPacketType.PacketError: self._on_error,
-            QRTPacketType.PacketData: self._on_data,
-            QRTPacketType.PacketCommand: self._on_command,
-            # QRTPacketType.PacketEvent: self._on_event,
-            QRTPacketType.PacketXML: self._on_xml,
-            QRTPacketType.PacketNoMoreData: lambda _: self._output(
-                QRTPacketType.PacketNoMoreData
-            ),
-        }
-
-        self.is_connected = False
-
-        self._receiver = qtm.Receiver(self._handlers)
-
-    def _on_xml(self, data):
-        xml2dict = XML2Dict()
-        params = xml2dict.fromstring(data)
-        labels = []
-        label_data = params['QTM_Parameters_Ver_1.17']['The_3D']['Label']
-        self.markers = {}
-
-        for l in label_data:
-            labels.append({ 'name': l['Name'], 'color': l['RGBColor'] })
-
-            locator = self.get_node_by_name(l['Name'])
-
-            if locator is None:
-                modifier = om.MDagModifier()
-                locator = modifier.createNode('locator')
-
-                modifier.renameNode(locator, l['Name'])
-                modifier.doIt()
-
-            transformFn = om.MFnTransform(locator)
-            self.markers[l['Name']] = {
-                'locator': locator,
-                'transformFn': transformFn,
-           }
-
-        self.labels = labels
-
-        self._send_command("streamframes allframes 3d")
-
-    def _on_command(self, response):
-        self._output("R: {}".format(response))
-        print(response)
-
-        if response == b"QTM RT Interface connected":
-            self._send_command("version 1.17")
-
-        elif response == b"Version set to 1.17":
-            self._send_command("getparameters 3d")
-
+                
     def get_node_by_name(self, name):
         dagIterator = om.MItDag()
         dagNodeFn = om.MFnDagNode()
@@ -317,29 +333,16 @@ class ConnectGuiDialog_(QtWidgets.QDialog):
         return None
 
 
-    def handle_markers(self, markers):
-        for i, marker in enumerate(markers):
-            marker_name = self.labels[i]['name']
+def main():
+    if not MAYA:
+        app = QtWidgets.QApplication(sys.argv)
 
-            locator = self.markers[marker_name]['locator']
-            transformFn = self.markers[marker_name]['transformFn']
-            transformFn.setTranslation(om.MVector(marker.x/100, marker.z/100, marker.y/100), om.MSpace.kTransform)
+    window = MainPlugin()
+    window.show()
 
-        pass
-        
-
-    def _on_data(self, packet):
-        info, markers = packet.get_3d_markers()
-
-        self.handle_markers(markers)
-
-        self._output(
-            "Frame number: {} Markers: {} - First: {}".format(
-                packet.framenumber, info.marker_count, markers[0]
-            )
-        )
-        # print(markers)
+    if not MAYA:
+        app.exec_()
 
 
-
-"""
+if __name__ == '__main__':
+    main()
