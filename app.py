@@ -135,7 +135,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.list.clicked.connect(self.item_selected)
         self.widget.list.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.widget.list.setIconSize(QtCore.QSize(32, 16))
-        self.widget.markerGroupLayout.setAlignment(QtCore.Qt.AlignTop)
+        self.widget.markerGroupButtonLayout.setAlignment(QtCore.Qt.AlignTop)
         self.widget.groupNameField.textChanged.connect(self.group_name_changed)
 
         self.widget.textBox.setFixedHeight(50)
