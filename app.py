@@ -185,9 +185,8 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             self.widget.list.clear()
 
     def setup_marker_groups(self):
-        self.markers = []
-
         if self.marker_groups is None:
+            self.markers = []
             self.marker_groups = { 'mocapMarkers': [] }
 
             for i, label in enumerate(self.qtm_3d_settings['The_3D']['Label']):
