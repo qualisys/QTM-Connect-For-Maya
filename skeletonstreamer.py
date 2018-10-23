@@ -42,6 +42,8 @@ class SkeletonStreamer:
                         joint_position.z * self._unit_conversion,
                         joint_position.y * self._unit_conversion,
                     )
+
+                    rotation = om.MQuaternion(-joint_rotation.x, joint_rotation.z, joint_rotation.y, joint_rotation.w)
                 else:
                     translation = om.MVector(
                         joint_position.x * self._unit_conversion,
@@ -49,9 +51,11 @@ class SkeletonStreamer:
                         joint_position.z * self._unit_conversion,
                     )
 
+                    rotation = om.MQuaternion(joint_rotation.x, joint_rotation.y, joint_rotation.z, joint_rotation.w)
+
                 transformFn = self._joints[joint_id]['transformFn']
                 transformFn.setTranslation(translation, om.MSpace.kTransform)
-                transformFn.setRotation(om.MQuaternion(-joint_rotation.x, joint_rotation.z, joint_rotation.y, joint_rotation.w).asEulerRotation(), om.MSpace.kTransform)
+                transformFn.setRotation(rotation.asEulerRotation(), om.MSpace.kTransform)
 
     def _update_ui(self):
         self._listWidget.clear()

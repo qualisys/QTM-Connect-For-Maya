@@ -35,7 +35,21 @@ class MarkerStreamer:
         for i, marker in enumerate(markers):
             locator = self._markers[i]['locator']
             transformFn = self._markers[i]['transformFn']
-            transformFn.setTranslation(om.MVector(marker.x * self._unit_conversion, marker.z * self._unit_conversion, marker.y * self._unit_conversion), om.MSpace.kTransform)
+
+            if self._up_axis == 'y':
+                translation = om.MVector(
+                    -marker.x * self._unit_conversion,
+                    marker.z * self._unit_conversion,
+                    marker.y * self._unit_conversion
+                )
+            else:
+                translation = om.MVector(
+                    marker.x * self._unit_conversion,
+                    marker.y * self._unit_conversion,
+                    marker.z * self._unit_conversion
+                )
+
+            transformFn.setTranslation(translation, om.MSpace.kTransform)
 
     def _init(self):
         self._qtm_settings = self._qtm.get_settings('3d')
