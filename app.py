@@ -18,6 +18,7 @@ from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 from qtm.packet import QRTComponentType
 from qqtmrt import QQtmRt
 from mayautil import MayaUtil
+from mayaui import QtmConnectShelf
 from markerstreamer import MarkerStreamer
 from skeletonstreamer import SkeletonStreamer
 
@@ -50,10 +51,15 @@ def qtm_connect_gui():
 def start():
     parent = _get_maya_main_window()
 
-    if not hasattr(parent, '_qtm') or not parent._qtm.connected:
+    if not hasattr(parent, '_qtm'):
         cmds.warning('Not connected to QTM.')
+    elif not parent._qtm.connected:
+        parent._qtmConnect.connect_qtm()
+        start()
     else:
-        parent._qtm.stream('3d')
+        parent._qtm.stream('skeleton' if parent._qtmConnect.widget.skeletonModeButton.isChecked() else '3d')
+        parent._qtmConnect._shelf.toggle_stream_button('stop')
+    
 
 def stop():
     parent = _get_maya_main_window()
@@ -62,6 +68,7 @@ def stop():
         cmds.warning('Not connected to QTM.')
     else:
         parent._qtm.stop_stream()
+        parent._qtmConnect._shelf.toggle_stream_button('start')
 
 
 def _get_maya_main_window():
@@ -119,14 +126,18 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             parent._qtm.stop_stream()
             parent._qtm.disconnect()
 
-        self._qtm = QQtmRt()
+        self._qtm               = QQtmRt()
         self._skeleton_streamer = SkeletonStreamer(self._qtm, self.widget.skeletonList)
-        self._marker_streamer = MarkerStreamer(self._qtm, self.widget.markerList, self.widget.groupNameField)
+        self._marker_streamer   = MarkerStreamer(self._qtm, self.widget.markerList, self.widget.groupNameField)
+        self._shelf             = QtmConnectShelf()
+
+        self._shelf.toggle_stream_button('start')
 
         # Expose QQtmRt instance to following script runs.
         # The advantage of setting it on the parent is that we can reload the
         # module and still access it as opposed to a variable local to the module.
         parent._qtm = self._qtm
+        parent._qtmConnect = self
 
         self._qtm.connectedChanged.connect(self._connected_changed)
         self._qtm.streamingChanged.connect(self._streaming_changed)
@@ -140,6 +151,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.markerList.clicked.connect(self.item_selected)
         self.widget.markerList.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.widget.markerList.setIconSize(QtCore.QSize(32, 16))
+        self.widget.skeletonList.setIconSize(QtCore.QSize(32, 16))
         self.widget.markerGroupButtonLayout.setAlignment(QtCore.Qt.AlignTop)
         self.widget.groupNameField.textChanged.connect(self.group_name_changed)
         self.widget.skeletonModeButton.toggled.connect(self.streaming_mode_changed)
@@ -217,9 +229,13 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._qtm.stream('skeleton' if self.widget.skeletonModeButton.isChecked() else '3d')
         self.is_streaming = True
 
+        self._shelf.toggle_stream_button('stop')
+
     def stop_stream(self):
         self._qtm.stop_stream()
         self.is_streaming = False
+
+        self._shelf.toggle_stream_button('start')
 
     def get_settings_3d(self):
         self._output(str(self._qtm.get_settings('3d')))
@@ -227,6 +243,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
     def connect_qtm(self):
         if self._qtm.connected:
             self._qtm.disconnect()
+            self._shelf.toggle_stream_button('start')
         else:
             self.widget.connectButton.setEnabled(False)
             self._qtm.connect_to_qtm(self._host, 3000)

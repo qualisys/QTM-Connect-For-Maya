@@ -14,7 +14,6 @@ class MarkerStreamer:
         self._qtm             = qtmrt
         self._listWidget      = listWidget
         self._textWidget      = textWidget
-        self._up_axis         = cmds.upAxis(q=True, axis=True)
         self._markers         = None
         self._marker_groups   = None
         self._unit_conversion = 0.1
@@ -22,6 +21,8 @@ class MarkerStreamer:
         self._qtm.connectedChanged.connect(self._connected_changed)
     
     def _connected_changed(self, connected):
+        self._up_axis = cmds.upAxis(q=True, axis=True)
+
         if connected:
             self._init()
             self._update_ui()
@@ -112,7 +113,7 @@ class MarkerStreamer:
 
     def group_markers(self):
         new_group = []
-        new_group_name = self.textWidget.text()
+        new_group_name = self._textWidget.text()
         selected = self._listWidget.selectedItems()
 
         for item in selected:

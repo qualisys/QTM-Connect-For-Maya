@@ -12,7 +12,6 @@ from mayautil import MayaUtil
 class SkeletonStreamer:
     def __init__(self, qtmrt, listWidget):
         self._qtm             = qtmrt
-        self._up_axis         = cmds.upAxis(q=True, axis=True)
         self._qtm_settings    = None
         self._listWidget      = listWidget
         self._unit_conversion = 0.1
@@ -20,6 +19,8 @@ class SkeletonStreamer:
         self._qtm.connectedChanged.connect(self._connected_changed)
 
     def _connected_changed(self, connected):
+        self._up_axis = cmds.upAxis(q=True, axis=True)
+
         if connected:
             self._update_ui()
             self.create()
@@ -65,7 +66,7 @@ class SkeletonStreamer:
 
         for i, skeleton in enumerate(self._qtm_settings['Skeletons']['Skeleton']):
             color = QtGui.QColor(255, 0, 0)
-            icon  = load_icon(os.path.dirname(os.path.abspath(__file__)) + '/assets/marker_64x32.png', color)
+            icon  = load_icon(os.path.dirname(os.path.abspath(__file__)) + '/assets/skeleton_64x64.png', color)
             item  = QtWidgets.QListWidgetItem(icon, skeleton['@Name'])
 
             self._listWidget.addItem(item)

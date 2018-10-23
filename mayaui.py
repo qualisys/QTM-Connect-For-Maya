@@ -3,11 +3,50 @@ import os, sys
 from PySide2 import QtCore
 from PySide2 import QtGui
 
+import maya.cmds as cmds
 import pymel.core as pmc
 import maya.OpenMayaUI as OpenMayaUI
 import maya.mel as mel
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/modules/')
+
+class QtmConnectShelf:
+    def __init__(self):
+        self.top_level_shelf_layout = mel.eval('global string $gShelfTopLevel; $temp = $gShelfTopLevel;')
+
+        self.asset_dir    = os.path.dirname(os.path.abspath(__file__)) + '/assets/'
+        self.connect_icon = self.asset_dir + 'connect.png'
+        self.start_icon   = self.asset_dir + 'start.png'
+        self.stop_icon    = self.asset_dir + 'stop.png'
+        self.start        = 'Start_streaming'
+        self.stop         = 'Stop_streaming'
+
+
+    def install(self):
+        shelf_layout = pmc.shelfLayout('QTM_Connect', parent=self.top_level_shelf_layout)
+
+        cmds.shelfButton(
+            label='Connect to QTM',
+            parent=shelf_layout,
+            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.qtm_connect_gui()',
+            image1=self.connect_icon
+        )
+
+        cmds.shelfButton(
+            'start_stop',
+            label='Start/stop streaming',
+            parent='QTM_Connect',
+            image1=self.start_icon,
+            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.start()',
+        )
+
+    def toggle_stream_button(self, mode):
+        cmds.shelfButton(
+            'start_stop',
+            edit=True,
+            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.' + ('stop()' if mode == 'stop' else 'start()'),
+            image1=self.stop_icon if mode == 'stop' else self.start_icon
+        )
 
 def install():
     """
@@ -15,36 +54,9 @@ def install():
         qtm_connect_maya.shelf.install()
     """
 
-    # First get maya "official" shelves layout.
-    top_level_shelf_layout = mel.eval(
-        "global string $gShelfTopLevel; $temp = $gShelfTopLevel;"
-    )
+    shelf = QtmConnectShelf()
+    shelf.install()
 
-    # Get all shelves:
-    shelf_layout = pmc.shelfLayout("QTM_Connect", parent=top_level_shelf_layout)
-    asset_dir = os.path.dirname(os.path.abspath(__file__)) + '/assets/'
-    connect_icon = asset_dir + "connect.png"
-    start_icon =  asset_dir + "start.png"
-    stop_icon = asset_dir + "stop.png"
-
-    pmc.shelfButton(
-        label="Connect to QTM",
-        parent=shelf_layout,
-        command="import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.qtm_connect_gui()",
-        image1=connect_icon
-    )
-    pmc.shelfButton(
-        label="Start streaming",
-        parent=shelf_layout,
-        image1=start_icon,
-        command="import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.start()",
-    )
-    pmc.shelfButton(
-        label="Stop streaming",
-        parent=shelf_layout,
-        command="import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.stop()",
-        image1=stop_icon
-    )
 
 # Returns a QIcon with the image at path recolored with the specified color.
 def load_icon(path, color):
