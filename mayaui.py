@@ -1,5 +1,8 @@
 import os, sys
 
+from PySide2 import QtCore
+from PySide2 import QtGui
+
 import pymel.core as pmc
 import maya.OpenMayaUI as OpenMayaUI
 import maya.mel as mel
@@ -42,3 +45,17 @@ def install():
         command="import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.stop()",
         image1=stop_icon
     )
+
+# Returns a QIcon with the image at path recolored with the specified color.
+def load_icon(path, color):
+    pixmap = QtGui.QPixmap(path)
+    icon = QtGui.QIcon()
+    mask = pixmap.createMaskFromColor(QtGui.QColor(0x0, 0x0, 0x0), QtCore.Qt.MaskOutColor)
+    p = QtGui.QPainter(pixmap)
+
+    p.setPen(color)
+    p.drawPixmap(pixmap.rect(), mask, mask.rect())
+    p.end()
+    icon.addPixmap(pixmap, QtGui.QIcon.Normal)
+
+    return icon

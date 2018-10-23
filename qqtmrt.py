@@ -28,6 +28,8 @@ class QQtmRt(QtCore.QObject):
         self._handlers = {
             QRTPacketType.PacketData: self._on_data,
             QRTPacketType.PacketEvent: self._on_event,
+            QRTPacketType.PacketError: self._on_error,
+            # QRTPacketType.PacketXML: self._on_xml,
         }
 
         self._receiver = qtm.Receiver(self._handlers)
@@ -35,6 +37,12 @@ class QQtmRt(QtCore.QObject):
         self.streamingChanged.connect(self._streaming_changed)
 
     def _on_data(self, packet):
+        self.packetReceived.emit(packet)
+
+    def _on_xml(self, packet):
+        self.packetReceived.emit(packet)
+
+    def _on_error(self, packet):
         self.packetReceived.emit(packet)
 
     def _on_event(self, event):
@@ -161,7 +169,7 @@ class QQtmRt(QtCore.QObject):
     def stop_stream(self):
         self._send_command('streamframes stop')
         # Hackish so that any packets already on the way will be delivered and parsed correctly.
-        QtCore.QTimer.singleShot(100, self._delayed_stream_stop)
+        QtCore.QTimer.singleShot(500, self._delayed_stream_stop)
 
     def connect_to_qtm(self, host='127.0.0.1', timeout=3000):
         if self._connected:
