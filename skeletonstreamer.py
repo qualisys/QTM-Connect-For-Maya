@@ -15,6 +15,8 @@ class SkeletonStreamer:
         self._qtm_settings    = None
         self._listWidget      = listWidget
         self._unit_conversion = 0.1
+        self._saved_poses     = {}
+        self._in_t_pose    = []
 
         self._qtm.connectedChanged.connect(self._connected_changed)
         self._connected_changed(self._qtm.connected)
@@ -69,6 +71,33 @@ class SkeletonStreamer:
 
             self._listWidget.addItem(item)
 
+    def _assume_t_pose(self, joint):
+        transformFn = self._joints[int(joint['@ID'])]['transformFn']
+
+        if self._up_axis == 'y':
+            translation = om.MVector(
+                -float(joint['Position']['@X']) * self._unit_conversion,
+                float(joint['Position']['@Z']) * self._unit_conversion,
+                float(joint['Position']['@Y']) * self._unit_conversion,
+            )
+        else:
+            translation = om.MVector(
+                float(joint['Position']['@X']) * self._unit_conversion,
+                float(joint['Position']['@Y']) * self._unit_conversion,
+                float(joint['Position']['@Z']) * self._unit_conversion,
+            )
+
+        transformFn.setTranslation(translation, om.MSpace.kTransform)
+        transformFn.setRotation(om.MEulerRotation(float(joint['Rotation']['@X']), float(joint['Rotation']['@Y']), float(joint['Rotation']['@Z']), om.MEulerRotation.kXYZ), om.MSpace.kTransform)
+
+    def _save_pose(self, joint):
+        transformFn = self._joints[int(joint['@ID'])]['transformFn']
+
+        self._saved_poses[int(joint['@ID'])] = {
+            'translation': transformFn.translation(om.MSpace.kTransform),
+            'rotation': transformFn.rotation(om.MSpace.kTransform)
+        }
+
     def create(self):
         modifier = om.MDagModifier()
         self._joints = {}
@@ -77,8 +106,8 @@ class SkeletonStreamer:
             self._qtm_settings = self._qtm.get_settings('skeleton')
 
         if self._qtm_settings is not None:
-            for m, skeleton in enumerate(self._qtm_settings['Skeletons']['Skeleton']):
-                for n, joint in enumerate(skeleton['Joint']):
+            for skeleton in self._qtm_settings['Skeletons']['Skeleton']:
+                for joint in skeleton['Joint']:
                     joint_name = skeleton['@Name'] + '_' + joint['@Name']
                     j = MayaUtil.get_node_by_name(joint_name)
 
@@ -88,6 +117,7 @@ class SkeletonStreamer:
                         modifier.renameNode(j, joint_name)
 
                     transformFn = om.MFnTransform(j)
+
                     self._joints[int(joint['@ID'])] = {
                         'MObject': j,
                         'transformFn': transformFn
@@ -96,20 +126,32 @@ class SkeletonStreamer:
                     if '@Parent_ID' in joint:
                         modifier.reparentNode(j, self._joints[int(joint['@Parent_ID'])]['MObject'])
 
-                    if self._up_axis == 'y':
-                        translation = om.MVector(
-                            -float(joint['Position']['@X']) * self._unit_conversion,
-                            float(joint['Position']['@Z']) * self._unit_conversion,
-                            float(joint['Position']['@Y']) * self._unit_conversion,
-                        )
-                    else:
-                        translation = om.MVector(
-                            float(joint['Position']['@X']) * self._unit_conversion,
-                            float(joint['Position']['@Y']) * self._unit_conversion,
-                            float(joint['Position']['@Z']) * self._unit_conversion,
-                        )
-
-                    transformFn.setTranslation(translation, om.MSpace.kTransform)
-                    transformFn.setRotation(om.MEulerRotation(float(joint['Rotation']['@X']), float(joint['Rotation']['@Y']), float(joint['Rotation']['@Z']), om.MEulerRotation.kXYZ), om.MSpace.kTransform)
+                    self._assume_t_pose(joint)
 
             modifier.doIt()
+
+    def t_pose(self, skeleton_name):
+        for skeleton_definition in self._qtm_settings['Skeletons']['Skeleton']:
+            if skeleton_definition['@Name'] == skeleton_name:
+                for joint in skeleton_definition['Joint']:
+                    self._save_pose(joint)
+                    self._assume_t_pose(joint)
+
+                self._in_t_pose.append(skeleton_name)
+
+    def resume_pose(self, skeleton_name):
+        for skeleton_definition in self._qtm_settings['Skeletons']['Skeleton']:
+            if skeleton_definition['@Name'] == skeleton_name:
+                for joint in skeleton_definition['Joint']:
+                    if int(joint['@ID']) in self._saved_poses:
+                        transformFn = self._joints[int(joint['@ID'])]['transformFn']
+
+                        transformFn.setTranslation(self._saved_poses[int(joint['@ID'])]['translation'], om.MSpace.kTransform)
+                        transformFn.setRotation(self._saved_poses[int(joint['@ID'])]['rotation'], om.MSpace.kTransform)
+
+        if skeleton_name in self._in_t_pose:
+            self._in_t_pose.remove(skeleton_name)
+
+    def is_in_t_pose(self, skeleton_name):
+        return skeleton_name in self._in_t_pose
+

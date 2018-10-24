@@ -98,12 +98,22 @@
 								</property>
 							</widget>
 						</item>
+						<item>
+							<widget class="QPushButton" name="tPoseButton">
+							<property name="enabled">
+								<bool>false</bool>
+							</property>
+							<property name="text">
+								<string>Go to T-pose</string>
+							</property>
+							</widget>
+						</item>
 					</layout>
 				</widget>
 			</item>
 			<item>
 				<widget class="QWidget" name="markerModeContainer">
-					<layout class="QHBoxLayout" name="markerModeLayout">
+					<layout class="QVBoxLayout" name="markerModeLayout">
 						<item>
 							<widget class="QListWidget" name="markerList">
 								<property name="readOnly">
@@ -112,21 +122,27 @@
 							</widget>
 						</item>
 						<item>
-							<layout class="QVBoxLayout" name="markerGroupButtonLayout">
+							<layout class="QVBoxLayout" name="markerGroupLayout">
 								<item>
-									<widget class="QLineEdit" name="groupNameField">
-										<property name="text"></property>
-									</widget>
+									<layout class="QHBoxLayout" name="markerGroupButtonLayout">
+										<item>
+											<widget class="QLineEdit" name="groupNameField">
+												<property name="text"></property>
+											</widget>
+										</item>
+										<item>
+											<widget class="QPushButton" name="groupButton">
+												<property name="enabled">
+													<bool>false</bool>
+												</property>
+												<property name="text">
+													<string>Group</string>
+												</property>
+											</widget>
+										</item>
+									</layout>
 								</item>
 								<item>
-									<widget class="QPushButton" name="groupButton">
-									<property name="enabled">
-										<bool>false</bool>
-									</property>
-									<property name="text">
-										<string>Group</string>
-									</property>
-									</widget>
 								</item>
 								<item>
 									<widget class="QLabel" name="groupLabel">

@@ -171,13 +171,15 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.startButton.clicked.connect(self.stream)
         self.widget.stopButton.clicked.connect(self.stop_stream)
         self.widget.groupButton.clicked.connect(self._marker_streamer.group_markers)
-        self.widget.markerList.clicked.connect(self.item_selected)
+        self.widget.groupNameField.textChanged.connect(self.group_name_changed)
+        self.widget.markerGroupButtonLayout.setAlignment(QtCore.Qt.AlignTop)
+        self.widget.markerList.clicked.connect(self.marker_selected)
         self.widget.markerList.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.widget.markerList.setIconSize(QtCore.QSize(32, 16))
+        self.widget.skeletonList.clicked.connect(self.skeleton_selected)
         self.widget.skeletonList.setIconSize(QtCore.QSize(32, 16))
-        self.widget.markerGroupButtonLayout.setAlignment(QtCore.Qt.AlignTop)
-        self.widget.groupNameField.textChanged.connect(self.group_name_changed)
         self.widget.skeletonModeButton.toggled.connect(self.streaming_mode_changed)
+        self.widget.tPoseButton.clicked.connect(self.toggle_t_pose)
 
         self.widget.streamingModeLayout.setContentsMargins(0, 11, 0, 0)
         self.widget.streamingModeLayout.setAlignment(QtCore.Qt.AlignLeft)
@@ -242,18 +244,57 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         if self.widget.groupNameField.text() != '' and len(self.widget.markerList.selectedItems()) > 0:
             self.widget.groupButton.setEnabled(True)
 
-    def item_selected(self, item):
+    def marker_selected(self, index):
         if self.widget.groupNameField.text() != '':
             self.widget.groupButton.setEnabled(True)
+
+    def skeleton_selected(self, index):
+        self.widget.tPoseButton.setEnabled(True)
+
+        item = self.widget.skeletonList.itemFromIndex(index)
+
+        if self._skeleton_streamer.is_in_t_pose(item.text().replace(' [T-pose]', '')):
+            self.widget.tPoseButton.setText('Resume pose')
+        else:
+            self.widget.tPoseButton.setText('Go to T-pose')
+
+    def toggle_t_pose(self):
+        selected = self.widget.skeletonList.selectedItems()
+
+        for item in selected:
+            skeleton_name = item.text().replace(' [T-pose]', '')
+
+            if self._skeleton_streamer.is_in_t_pose(skeleton_name):
+                self._skeleton_streamer.resume_pose(skeleton_name)
+                item.setText(skeleton_name)
+                self.widget.tPoseButton.setText('Go to T-pose')
+            else:
+                self._skeleton_streamer.t_pose(skeleton_name)
+                item.setText(skeleton_name + ' [T-pose]')
+                self.widget.tPoseButton.setText('Resume pose')
     
+    def _reset_skeleton_names(self):
+        items = []
+        for index in xrange(self.widget.skeletonList.count()):
+            items.append(self.widget.skeletonList.item(index))
+
+        for item in items:
+            skeleton_name = item.text().replace(' [T-pose]', '')
+
+            self._skeleton_streamer.resume_pose(skeleton_name)
+            item.setText(skeleton_name)
+
+        self.widget.tPoseButton.setText('Go to T-pose')
+
     def _streaming_changed(self, streaming):
         self.widget.startButton.setEnabled(not streaming)
         self.widget.stopButton.setEnabled(streaming)
-
+    
     def stream(self):
         self._qtm.stream('skeleton' if self.widget.skeletonModeButton.isChecked() else '3d')
         self.is_streaming = True
 
+        self._reset_skeleton_names()
         self._shelf.toggle_stream_button('stop')
 
     def stop_stream(self):
