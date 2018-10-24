@@ -61,7 +61,7 @@ def qtm_connect_gui():
         else:
             d = QtmConnectWidget()
 
-        d.show(dockable=True, height=800, width=480)
+        d.show(dockable=True, height=800, width=280)
 
 def start():
     parent = _get_maya_main_window()
@@ -125,7 +125,7 @@ def show_gui(restore=False):
         # Create a workspace control for the mixin widget by passing all the
         # needed parameters. See workspaceControl command documentation for all
         # available flags.
-        parent.customMixinWindow.show(dockable=True, height=600, width=480, uiScript='show_gui(restore=True)')
+        parent.customMixinWindow.show(dockable=True, height=800, width=280, uiScript='show_gui(restore=True)')
 
     return parent.customMixinWindow
 
@@ -312,7 +312,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             self._shelf.toggle_stream_button('start')
         else:
             self.widget.connectButton.setEnabled(False)
-            self._qtm.connect_to_qtm(self._host, 3000)
+            self._qtm.connect_to_qtm(self._host, 4000)
             self.widget.connectButton.setEnabled(True)
 
             if not self._qtm.connected:
