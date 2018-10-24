@@ -19,6 +19,7 @@ class MarkerStreamer:
         self._unit_conversion = 0.1
 
         self._qtm.connectedChanged.connect(self._connected_changed)
+        self._connected_changed(self._qtm.connected)
     
     def _connected_changed(self, connected):
         self._up_axis = cmds.upAxis(q=True, axis=True)

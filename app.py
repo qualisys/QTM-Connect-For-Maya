@@ -41,11 +41,26 @@ except:
 
 def qtm_connect_gui():
     use_workspace_control = False
+    parent = _get_maya_main_window()
 
     if use_workspace_control:
         show_gui()
     else:
-        d = QtmConnectWidget()
+        if hasattr(parent, '_qtm'):
+            parent._qtm.stop_stream()
+
+        # If there's already a dialog and it's visible, use that.
+        # Otherwise close any existing (hidden) dialog and show a new one.
+        if hasattr(parent, '_qtmConnect'):
+            if parent._qtmConnect.isVisible():
+                d = parent._qtmConnect
+            else:
+                parent._qtmConnect.close()
+
+                d = QtmConnectWidget()
+        else:
+            d = QtmConnectWidget()
+
         d.show(dockable=True, height=800, width=480)
 
 def start():
@@ -53,12 +68,15 @@ def start():
 
     if not hasattr(parent, '_qtm'):
         cmds.warning('Not connected to QTM.')
-    elif not parent._qtm.connected:
-        parent._qtmConnect.connect_qtm()
-        start()
     else:
-        parent._qtm.stream('skeleton' if parent._qtmConnect.widget.skeletonModeButton.isChecked() else '3d')
-        parent._qtmConnect._shelf.toggle_stream_button('stop')
+        if not parent._qtm.connected:
+            parent._qtmConnect.connect_qtm()
+
+        if parent._qtm.connected:
+            mode = 'skeleton' if parent._qtmConnect.widget.skeletonModeButton.isChecked() else '3d'
+
+            parent._qtm.stream(mode)
+            parent._qtmConnect._shelf.toggle_stream_button('stop')
     
 
 def stop():
@@ -68,8 +86,13 @@ def stop():
         cmds.warning('Not connected to QTM.')
     else:
         parent._qtm.stop_stream()
-        parent._qtmConnect._shelf.toggle_stream_button('start')
 
+        QtCore.QTimer.singleShot(750, set_start_button)
+
+def set_start_button():
+    parent = _get_maya_main_window()
+
+    parent._qtmConnect._shelf.toggle_stream_button('start')
 
 def _get_maya_main_window():
     ptr = OpenMayaUI.MQtUtil.mainWindow()
@@ -170,6 +193,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._host = self.widget.hostField.text()
         self.is_streaming = False
 
+        self._connected_changed(self._qtm.connected)
         self.streaming_mode_changed()
 
     def streaming_mode_changed(self):
@@ -178,6 +202,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
         if self.is_streaming:
             self._qtm.stop_stream()
+            self._shelf.toggle_stream_button('start')
 
         if self.widget.skeletonModeButton.isChecked():
             self._skeleton_streamer.create()
@@ -250,7 +275,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             self.widget.connectButton.setEnabled(True)
 
             if not self._qtm.connected:
-                cmds.warning('Could not connect to host.')
+                cmds.warning('Could not connect to host \'' + self._host + '\'.')
 
 def main():
     if not MAYA:

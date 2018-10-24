@@ -17,6 +17,7 @@ class SkeletonStreamer:
         self._unit_conversion = 0.1
 
         self._qtm.connectedChanged.connect(self._connected_changed)
+        self._connected_changed(self._qtm.connected)
 
     def _connected_changed(self, connected):
         self._up_axis = cmds.upAxis(q=True, axis=True)
@@ -28,13 +29,10 @@ class SkeletonStreamer:
             self._listWidget.clear()
 
     def _packet_received(self, packet):
-        info, skeletons = packet.get_skeleton()
+        info, skeletons = packet.get_skeletons()
         
         for skeleton in skeletons:
-            for joint in skeleton:
-                joint_id = joint[0].id
-                joint_position = joint[1]
-                joint_rotation = joint[2]
+            for joint_id, joint_position, joint_rotation in skeleton:
                 transformFn = self._joints[joint_id]['transformFn']
                 
                 if self._up_axis == 'y':

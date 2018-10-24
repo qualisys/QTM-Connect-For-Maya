@@ -29,7 +29,6 @@ class QQtmRt(QtCore.QObject):
             QRTPacketType.PacketData: self._on_data,
             QRTPacketType.PacketEvent: self._on_event,
             QRTPacketType.PacketError: self._on_error,
-            # QRTPacketType.PacketXML: self._on_xml,
         }
 
         self._receiver = qtm.Receiver(self._handlers)
