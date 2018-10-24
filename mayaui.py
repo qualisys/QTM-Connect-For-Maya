@@ -18,12 +18,12 @@ class QtmConnectShelf:
         self.connect_icon = self.asset_dir + 'connect.png'
         self.start_icon   = self.asset_dir + 'start.png'
         self.stop_icon    = self.asset_dir + 'stop.png'
-        self.start        = 'Start_streaming'
-        self.stop         = 'Stop_streaming'
+        self.shelf_name   = 'QTM_Connect'
+        self.stream_label = 'Start/stop streaming'
 
 
     def install(self):
-        shelf_layout = pmc.shelfLayout('QTM_Connect', parent=self.top_level_shelf_layout)
+        shelf_layout = pmc.shelfLayout(self.shelf_name, parent=self.top_level_shelf_layout)
 
         cmds.shelfButton(
             label='Connect to QTM',
@@ -34,15 +34,25 @@ class QtmConnectShelf:
 
         cmds.shelfButton(
             'start_stop',
-            label='Start/stop streaming',
-            parent='QTM_Connect',
+            label=self.stream_label,
+            parent=self.shelf_name,
             image1=self.start_icon,
             command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.start()',
         )
 
     def toggle_stream_button(self, mode):
+        # First find the right button. For some reason Maya resets the name
+        # we've given the shelf button so we cannot rely on that.
+        buttons = cmds.shelfLayout(self.shelf_name, query=True, childArray=True)
+
+        for button in buttons:
+            label = cmds.shelfButton(button, query=True, annotation=True)
+
+            if label == self.stream_label:
+                stream_button = button
+
         cmds.shelfButton(
-            'start_stop',
+            button,
             edit=True,
             command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.' + ('stop()' if mode == 'stop' else 'start()'),
             image1=self.stop_icon if mode == 'stop' else self.start_icon
