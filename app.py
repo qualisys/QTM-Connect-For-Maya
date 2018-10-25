@@ -227,12 +227,15 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
     def _connected_changed(self, connected):
         self.is_connected = connected
+
         self.widget.connectButton.setText('Disconnect' if connected else 'Connect')
         self.widget.hostField.setEnabled(not connected)
         self.widget.startButton.setEnabled(connected)
+        self._shelf.toggle_connect_button(connected)
 
         if connected:
             event = self._qtm.get_latest_event()
+
             self._output('Latest event: {}'.format(event))
 
     def group_name_changed(self):

@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+	<qresource>
+		<file alias="connected.png">connected_100.png</file>
+		<file>connected_150.png</file>
+		<file>connected_200.png</file>
+	</qresource>
+</RCC>
