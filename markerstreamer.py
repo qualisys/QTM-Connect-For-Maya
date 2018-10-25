@@ -27,7 +27,6 @@ class MarkerStreamer:
         if connected:
             self._init()
             self._update_ui()
-            self.create()
         else:
             self._listWidget.clear()
 

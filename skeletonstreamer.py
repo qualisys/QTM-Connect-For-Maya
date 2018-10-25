@@ -26,7 +26,6 @@ class SkeletonStreamer:
 
         if connected:
             self._update_ui()
-            self.create()
         else:
             self._listWidget.clear()
 
