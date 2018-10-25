@@ -107,6 +107,8 @@ class SkeletonStreamer:
 
         if self._qtm_settings is not None:
             for skeleton in self._qtm_settings['Skeletons']['Skeleton']:
+                create = True
+
                 for joint in skeleton['Joint']:
                     joint_name = skeleton['@Name'] + '_' + joint['@Name']
                     j = MayaUtil.get_node_by_name(joint_name)
@@ -115,6 +117,8 @@ class SkeletonStreamer:
                         j = modifier.createNode('joint')
 
                         modifier.renameNode(j, joint_name)
+                    else:
+                        create = False
 
                     transformFn = om.MFnTransform(j)
 
@@ -126,7 +130,8 @@ class SkeletonStreamer:
                     if '@Parent_ID' in joint:
                         modifier.reparentNode(j, self._joints[int(joint['@Parent_ID'])]['MObject'])
 
-                    self._assume_t_pose(joint)
+                    if create:
+                        self._assume_t_pose(joint)
 
             modifier.doIt()
 
