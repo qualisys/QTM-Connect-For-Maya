@@ -14,6 +14,7 @@ class QQtmRt(QtCore.QObject):
     connectedChanged = Signal(bool)
     streamingChanged = Signal(bool)
     packetReceived = Signal(QRTPacket)
+    noDataReceived = Signal(QRTPacket)
     eventReceived = Signal(int)
 
     def __init__(self, parent=None):
@@ -29,11 +30,15 @@ class QQtmRt(QtCore.QObject):
             QRTPacketType.PacketData: self._on_data,
             QRTPacketType.PacketEvent: self._on_event,
             QRTPacketType.PacketError: self._on_error,
+            QRTPacketType.PacketNoMoreData: self._on_no_data,
         }
 
         self._receiver = qtm.Receiver(self._handlers)
 
         self.streamingChanged.connect(self._streaming_changed)
+
+    def _on_no_data(self, packet):
+        self.noDataReceived.emit(packet)
 
     def _on_data(self, packet):
         self.packetReceived.emit(packet)

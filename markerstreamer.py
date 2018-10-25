@@ -55,6 +55,9 @@ class MarkerStreamer:
     def _init(self):
         self._qtm_settings = self._qtm.get_settings('3d')
 
+        if self._qtm_settings == None:
+            return
+
         if self._marker_groups is None:
             self._markers = []
             self._marker_groups = { 'mocapMarkers': [] }
@@ -67,6 +70,9 @@ class MarkerStreamer:
 
     def _update_ui(self):
         self._listWidget.clear()
+
+        if self._marker_groups == None:
+            return
 
         for group_name, marker_group in self._marker_groups.items():
             group_item = QtWidgets.QListWidgetItem(group_name) 

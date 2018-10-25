@@ -161,6 +161,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._qtm.streamingChanged.connect(self._streaming_changed)
         self._qtm.packetReceived.connect(self._packet_received)
         self._qtm.eventReceived.connect(self._event_received)
+        self._qtm.noDataReceived.connect(self._no_data_received)
 
         self.widget.connectButton.clicked.connect(self.connect_qtm)
         self.widget.startButton.clicked.connect(self.stream)
@@ -211,6 +212,11 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._host = text
         cmds.optionVar(sv=('qtmHost', text))
 
+    def _no_data_received(self, packet):
+        cmds.warning('No data received. Make sure QTM is broadcasting.')
+        self.stop_stream()
+        self._qtm.disconnect()
+
     def _packet_received(self, packet):
         if not isinstance(packet, basestring):
             if QRTComponentType.Component3d in packet.components:
@@ -235,6 +241,12 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
         if connected:
             event = self._qtm.get_latest_event()
+
+            if self.widget.skeletonModeButton.isChecked():
+                self._skeleton_streamer.create()
+
+            if self.widget.markerModeButton.isChecked():
+                self._marker_streamer.create()
 
             self._output('Latest event: {}'.format(event))
 

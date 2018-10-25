@@ -63,6 +63,9 @@ class SkeletonStreamer:
         if self._qtm.connected:
             self._qtm_settings = self._qtm.get_settings('skeleton')
 
+        if self._qtm_settings == None:
+            return
+
         for i, skeleton in enumerate(self._qtm_settings['Skeletons']['Skeleton']):
             color = QtGui.QColor(255, 0, 0)
             icon  = load_icon(os.path.dirname(os.path.abspath(__file__)) + '/assets/skeleton_64x64.png', color)
