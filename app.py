@@ -39,6 +39,14 @@ try:
 except:
     pass
 
+def reset():
+    parent = _get_maya_main_window()
+
+    if hasattr(parent, '_qtmConnect'):
+        parent._qtmConnect.close()
+
+        del parent._qtmConnect
+
 def qtm_connect_gui():
     use_workspace_control = False
     parent = _get_maya_main_window()
@@ -46,22 +54,12 @@ def qtm_connect_gui():
     if use_workspace_control:
         show_gui()
     else:
-        if hasattr(parent, '_qtm'):
-            parent._qtm.stop_stream()
-
-        # If there's already a dialog and it's visible, use that.
-        # Otherwise close any existing (hidden) dialog and show a new one.
         if hasattr(parent, '_qtmConnect'):
-            if parent._qtmConnect.isVisible():
-                d = parent._qtmConnect
-            else:
-                parent._qtmConnect.close()
-
-                d = QtmConnectWidget()
+            dialog = parent._qtmConnect
         else:
-            d = QtmConnectWidget()
+            dialog = QtmConnectWidget()
 
-        d.show(dockable=True, height=800, width=280)
+        dialog.show(dockable=True, height=800, width=280)
 
 def start():
     parent = _get_maya_main_window()
