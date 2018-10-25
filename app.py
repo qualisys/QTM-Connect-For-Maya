@@ -64,26 +64,24 @@ def qtm_connect_gui():
 def start():
     parent = _get_maya_main_window()
 
-    if not hasattr(parent, '_qtm'):
+    if not hasattr(parent, '_qtmConnect'):
         cmds.warning('Not connected to QTM.')
     else:
-        if not parent._qtm.connected:
+        if not parent._qtmConnect._qtm.connected:
             parent._qtmConnect.connect_qtm()
 
-        if parent._qtm.connected:
+        if parent._qtmConnect._qtm.connected:
             mode = 'skeleton' if parent._qtmConnect.widget.skeletonModeButton.isChecked() else '3d'
 
-            parent._qtm.stream(mode)
-            parent._qtmConnect._shelf.toggle_stream_button('stop')
+            parent._qtmConnect.stream()
     
-
 def stop():
     parent = _get_maya_main_window()
 
-    if not hasattr(parent, '_qtm') or not parent._qtm.connected:
+    if not hasattr(parent, '_qtmConnect') or not parent._qtmConnect._qtm.connected:
         cmds.warning('Not connected to QTM.')
     else:
-        parent._qtm.stop_stream()
+        parent._qtmConnect.stop_stream()
 
         QtCore.QTimer.singleShot(750, set_start_button)
 
@@ -143,9 +141,9 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
         self.marker_groups = None
 
-        if hasattr(parent, '_qtm'):
-            parent._qtm.stop_stream()
-            parent._qtm.disconnect()
+        if hasattr(parent, '_qtmConnect'):
+            parent._qtmConnect.stop_stream()
+            parent._qtmConnect._qtm.disconnect()
 
         self._qtm               = QQtmRt()
         self._skeleton_streamer = SkeletonStreamer(self._qtm, self.widget.skeletonList)
@@ -154,10 +152,9 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
         self._shelf.toggle_stream_button('start')
 
-        # Expose QQtmRt instance to following script runs.
+        # Expose this dialog instance to following script runs.
         # The advantage of setting it on the parent is that we can reload the
         # module and still access it as opposed to a variable local to the module.
-        parent._qtm = self._qtm
         parent._qtmConnect = self
 
         self._qtm.connectedChanged.connect(self._connected_changed)
@@ -247,7 +244,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             self.widget.groupButton.setEnabled(True)
 
     def skeleton_selected(self, index):
-        self.widget.tPoseButton.setEnabled(True)
+        self.widget.tPoseButton.setEnabled(not self.is_streaming)
 
         item = self.widget.skeletonList.itemFromIndex(index)
 
@@ -287,6 +284,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
     def _streaming_changed(self, streaming):
         self.widget.startButton.setEnabled(not streaming)
         self.widget.stopButton.setEnabled(streaming)
+        self.widget.tPoseButton.setEnabled(not streaming)
     
     def stream(self):
         self._qtm.stream('skeleton' if self.widget.skeletonModeButton.isChecked() else '3d')
