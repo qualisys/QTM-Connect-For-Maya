@@ -66,7 +66,12 @@ class SkeletonStreamer:
         if self._qtm_settings == None:
             return
 
-        for i, skeleton in enumerate(self._qtm_settings['Skeletons']['Skeleton']):
+        self._skeletons = self._qtm_settings['Skeletons']['Skeleton']
+
+        if type(self._skeletons) != type([]):
+            self._skeletons = [self._skeletons]
+
+        for skeleton in self._skeletons:
             color = QtGui.QColor(255, 0, 0)
             icon  = load_icon(os.path.dirname(os.path.abspath(__file__)) + '/assets/skeleton_64x64.png', color)
             item  = QtWidgets.QListWidgetItem(icon, skeleton['@Name'])
@@ -108,7 +113,12 @@ class SkeletonStreamer:
             self._qtm_settings = self._qtm.get_settings('skeleton')
 
         if self._qtm_settings is not None:
-            for skeleton in self._qtm_settings['Skeletons']['Skeleton']:
+            self._skeletons = self._qtm_settings['Skeletons']['Skeleton']
+
+            if type(self._skeletons) != type([]):
+                self._skeletons = [self._skeletons]
+
+            for skeleton in self._skeletons:
                 create = True
 
                 for joint in skeleton['Joint']:
@@ -138,7 +148,7 @@ class SkeletonStreamer:
             modifier.doIt()
 
     def t_pose(self, skeleton_name):
-        for skeleton_definition in self._qtm_settings['Skeletons']['Skeleton']:
+        for skeleton_definition in self._skeletons:
             if skeleton_definition['@Name'] == skeleton_name:
                 for joint in skeleton_definition['Joint']:
                     self._save_pose(joint)
@@ -147,7 +157,7 @@ class SkeletonStreamer:
                 self._in_t_pose.append(skeleton_name)
 
     def resume_pose(self, skeleton_name):
-        for skeleton_definition in self._qtm_settings['Skeletons']['Skeleton']:
+        for skeleton_definition in self._skeletons:
             if skeleton_definition['@Name'] == skeleton_name:
                 for joint in skeleton_definition['Joint']:
                     if int(joint['@ID']) in self._saved_poses:
