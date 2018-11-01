@@ -83,6 +83,32 @@ def install():
     shelf = QtmConnectShelf()
     shelf.install()
 
+def startup():
+    shelf = QtmConnectShelf()
+
+    shelf.toggle_connect_button(False)
+
+def install_startup_script():
+    script_dir = cmds.internalVar(userScriptDir=True)
+    script_file = script_dir + 'userSetup.py'
+    snippet = '''
+import maya.cmds as cmds
+import qtm_connect_maya.mayaui
+
+cmds.evalDeferred(qtm_connect_maya.mayaui.startup())
+'''
+
+    f = open(script_file, 'r+')
+    current_script = f.read()
+
+    # Remove snippet if it already exists, then append it again.
+    new_script = current_script.replace(snippet, '')
+    new_script += snippet
+
+    f.seek(0)
+    f.write(new_script)
+    f.truncate()
+    f.close()
 
 # Returns a QIcon with the image at path recolored with the specified color.
 def load_icon(path, color):
