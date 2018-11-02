@@ -32,34 +32,32 @@
 				</layout>
 			</item>
 			<item>
-				<layout class="QHBoxLayout" name="streamingModeLayout">
+				<layout class="QHBoxLayout" name="streamingComponentsLayout">
 					<item>
-						<widget class="QLabel" name="modeLabel">
+						<widget class="QLabel" name="streamComponentsLabel">
 							<property name="text">
-								<string>&lt;span style=""&gt;Streaming mode&lt;/span&gt;</string>
+								<string>&lt;span style=""&gt;Stream&lt;/span&gt;</string>
 							</property>
 						</widget>
 					</item>
 					<item>
-						<widget class="QRadioButton" name="skeletonModeButton">
+						<widget class="QCheckBox" name="skeletonComponentButton">
 							<property name="text">
-								<string>Skeleton</string>
+								<string>Skeletons</string>
 							</property>
 							<property name="checked">
 								<bool>true</bool>
 							</property>
-							<property name="exclusiveGroup">streamingMode</property>
 						</widget>
 					</item>
 					<item>
-						<widget class="QRadioButton" name="markerModeButton">
+						<widget class="QCheckBox" name="markerComponentButton">
 							<property name="text">
-								<string>Marker</string>
+								<string>Markers</string>
 							</property>
 							<property name="checked">
 								<bool>false</bool>
 							</property>
-							<property name="exclusiveGroup">streamingMode</property>
 						</widget>
 					</item>
 				</layout>
@@ -89,8 +87,15 @@
 				</layout>
 			</item>
 			<item>
-				<widget class="QWidget" name="skeletonModeContainer">
-					<layout class="QVBoxLayout" name="markerGroupButtonLayout">
+				<widget class="QWidget" name="skeletonComponentContainer">
+					<layout class="QVBoxLayout" name="skeletonComponentLayout">
+						<item>
+							<widget class="QLabel" name="skeletonListLabel">
+								<property name="text">
+									<string>Skeletons</string>
+								</property>
+							</widget>
+						</item>
 						<item>
 							<widget class="QListWidget" name="skeletonList">
 								<property name="readOnly">
@@ -112,8 +117,15 @@
 				</widget>
 			</item>
 			<item>
-				<widget class="QWidget" name="markerModeContainer">
-					<layout class="QVBoxLayout" name="markerModeLayout">
+				<widget class="QWidget" name="markerComponentContainer">
+					<layout class="QVBoxLayout" name="markerComponentLayout">
+						<item>
+							<widget class="QLabel" name="skeletonListLabel">
+								<property name="text">
+									<string>Markers</string>
+								</property>
+							</widget>
+						</item>
 						<item>
 							<widget class="QListWidget" name="markerList">
 								<property name="readOnly">

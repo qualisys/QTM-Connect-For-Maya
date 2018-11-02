@@ -71,8 +71,6 @@ def start():
             parent._qtmConnect.connect_qtm()
 
         if parent._qtmConnect._qtm.connected:
-            mode = 'skeleton' if parent._qtmConnect.widget.skeletonModeButton.isChecked() else '3d'
-
             parent._qtmConnect.stream()
     
 def stop():
@@ -174,12 +172,16 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.markerList.setIconSize(QtCore.QSize(32, 16))
         self.widget.skeletonList.clicked.connect(self.skeleton_selected)
         self.widget.skeletonList.setIconSize(QtCore.QSize(32, 16))
-        self.widget.skeletonModeButton.toggled.connect(self.streaming_mode_changed)
+        self.widget.skeletonComponentButton.toggled.connect(self.component_changed)
+        self.widget.markerComponentButton.toggled.connect(self.component_changed)
         self.widget.tPoseButton.clicked.connect(self.toggle_t_pose)
 
-        self.widget.streamingModeLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.streamingModeLayout.setAlignment(QtCore.Qt.AlignLeft)
-        self.widget.modeLabel.setFixedWidth(100)
+        self.widget.streamingComponentsLayout.setContentsMargins(0, 11, 0, 0)
+        self.widget.streamComponentsLabel.setFixedWidth(100)
+        self.widget.skeletonComponentContainer.setFixedHeight(140)
+        self.widget.skeletonComponentLayout.setContentsMargins(0, 11, 0, 0)
+        self.widget.markerComponentLayout.setContentsMargins(0, 11, 0, 0)
+        
 
         if cmds.optionVar(exists='qtmHost') == 1:
             hostname = 'localhost' if cmds.optionVar(q='qtmHost') == '' else cmds.optionVar(q='qtmHost')
@@ -192,20 +194,16 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.is_streaming = False
 
         self._connected_changed(self._qtm.connected)
-        self.streaming_mode_changed()
 
-    def streaming_mode_changed(self):
-        self.widget.skeletonModeContainer.setVisible(self.widget.skeletonModeButton.isChecked())
-        self.widget.markerModeContainer.setVisible(self.widget.markerModeButton.isChecked())
-
+    def component_changed(self):
         if self.is_streaming:
             self._qtm.stop_stream()
             self._shelf.toggle_stream_button('start')
 
-        if self.widget.skeletonModeButton.isChecked():
+        if self.widget.skeletonComponentButton.isChecked():
             self._skeleton_streamer.create()
 
-        if self.widget.markerModeButton.isChecked():
+        if self.widget.markerComponentButton.isChecked():
             self._marker_streamer.create()
         
     def _host_changed(self, text):
@@ -242,10 +240,10 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         if connected:
             event = self._qtm.get_latest_event()
 
-            if self.widget.skeletonModeButton.isChecked():
+            if self.widget.skeletonComponentButton.isChecked():
                 self._skeleton_streamer.create()
 
-            if self.widget.markerModeButton.isChecked():
+            if self.widget.markerComponentButton.isChecked():
                 self._marker_streamer.create()
 
             self._output('Latest event: {}'.format(event))
@@ -302,11 +300,19 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.tPoseButton.setEnabled(not streaming)
     
     def stream(self):
-        self._qtm.stream('skeleton' if self.widget.skeletonModeButton.isChecked() else '3d')
-        self.is_streaming = True
+        components = []
 
+        if self.widget.skeletonComponentButton.isChecked():
+            components.append('skeleton')
+
+        if self.widget.markerComponentButton.isChecked():
+            components.append('3d')
+
+        self._qtm.stream(' '.join(components))
         self._reset_skeleton_names()
         self._shelf.toggle_stream_button('stop')
+
+        self.is_streaming = True
 
     def stop_stream(self):
         self._qtm.stop_stream()
