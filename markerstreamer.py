@@ -75,7 +75,8 @@ class MarkerStreamer:
             return
 
         for group_name, marker_group in self._marker_groups.items():
-            group_item = QtWidgets.QListWidgetItem(group_name) 
+            group_icon = load_icon(os.path.dirname(os.path.abspath(__file__)) + '/assets/transform.svg', QtGui.QColor(255, 0, 0))
+            group_item = QtWidgets.QListWidgetItem(group_icon, group_name) 
 
             self._listWidget.addItem(group_item)
 
