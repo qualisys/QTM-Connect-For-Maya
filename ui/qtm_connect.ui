@@ -34,13 +34,6 @@
 			<item>
 				<layout class="QHBoxLayout" name="streamingComponentsLayout">
 					<item>
-						<widget class="QLabel" name="streamComponentsLabel">
-							<property name="text">
-								<string>&lt;span style=""&gt;Stream&lt;/span&gt;</string>
-							</property>
-						</widget>
-					</item>
-					<item>
 						<widget class="QCheckBox" name="skeletonComponentButton">
 							<property name="text">
 								<string>Skeletons</string>
@@ -54,6 +47,16 @@
 						<widget class="QCheckBox" name="markerComponentButton">
 							<property name="text">
 								<string>Markers</string>
+							</property>
+							<property name="checked">
+								<bool>false</bool>
+							</property>
+						</widget>
+					</item>
+					<item>
+						<widget class="QCheckBox" name="rigidBodyComponentButton">
+							<property name="text">
+								<string>Rigid bodies</string>
 							</property>
 							<property name="checked">
 								<bool>false</bool>
@@ -164,6 +167,26 @@
 									</widget>
 								</item>
 							</layout>
+						</item>
+					</layout>
+				</widget>
+			</item>
+			<item>
+				<widget class="QWidget" name="rigidBodyComponentContainer">
+					<layout class="QVBoxLayout" name="rigidBodyComponentLayout">
+						<item>
+							<widget class="QLabel" name="rigidBodyListLabel">
+								<property name="text">
+									<string>Rigid bodies</string>
+								</property>
+							</widget>
+						</item>
+						<item>
+							<widget class="QListWidget" name="rigidBodyList">
+								<property name="readOnly">
+									<bool>true</bool>
+								</property>
+							</widget>
 						</item>
 					</layout>
 				</widget>

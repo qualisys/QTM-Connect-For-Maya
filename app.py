@@ -21,6 +21,7 @@ from mayautil import MayaUtil
 from mayaui import QtmConnectShelf
 from markerstreamer import MarkerStreamer
 from skeletonstreamer import SkeletonStreamer
+from rigidbodystreamer import RigidBodyStreamer
 
 MAYA = False
 
@@ -59,7 +60,7 @@ def qtm_connect_gui():
         else:
             dialog = QtmConnectWidget()
 
-        dialog.show(dockable=True, height=800, width=280)
+        dialog.show(dockable=True, height=800, width=285)
 
 def start():
     parent = _get_maya_main_window()
@@ -119,7 +120,7 @@ def show_gui(restore=False):
         # Create a workspace control for the mixin widget by passing all the
         # needed parameters. See workspaceControl command documentation for all
         # available flags.
-        parent.customMixinWindow.show(dockable=True, height=800, width=280, uiScript='show_gui(restore=True)')
+        parent.customMixinWindow.show(dockable=True, height=800, width=285, uiScript='show_gui(restore=True)')
 
     return parent.customMixinWindow
 
@@ -143,10 +144,11 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             parent._qtmConnect.stop_stream()
             parent._qtmConnect._qtm.disconnect()
 
-        self._qtm               = QQtmRt()
-        self._skeleton_streamer = SkeletonStreamer(self._qtm, self.widget.skeletonList)
-        self._marker_streamer   = MarkerStreamer(self._qtm, self.widget.markerList, self.widget.groupNameField)
-        self._shelf             = QtmConnectShelf()
+        self._qtm                 = QQtmRt()
+        self._skeleton_streamer   = SkeletonStreamer(self._qtm, self.widget.skeletonList)
+        self._marker_streamer     = MarkerStreamer(self._qtm, self.widget.markerList, self.widget.groupNameField)
+        self._rigid_body_streamer = RigidBodyStreamer(self._qtm, self.widget.rigidBodyList)
+        self._shelf               = QtmConnectShelf()
 
         self._shelf.toggle_stream_button('start')
 
@@ -174,15 +176,15 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.skeletonList.setIconSize(QtCore.QSize(32, 16))
         self.widget.skeletonComponentButton.toggled.connect(self.component_changed)
         self.widget.markerComponentButton.toggled.connect(self.component_changed)
+        self.widget.rigidBodyComponentButton.toggled.connect(self.component_changed)
         self.widget.tPoseButton.clicked.connect(self.toggle_t_pose)
 
         self.widget.streamingComponentsLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.streamComponentsLabel.setFixedWidth(100)
         self.widget.skeletonComponentContainer.setFixedHeight(140)
         self.widget.skeletonComponentLayout.setContentsMargins(0, 11, 0, 0)
         self.widget.markerComponentLayout.setContentsMargins(0, 11, 0, 0)
+        self.widget.rigidBodyComponentLayout.setContentsMargins(0, 11, 0, 0)
         
-
         if cmds.optionVar(exists='qtmHost') == 1:
             hostname = 'localhost' if cmds.optionVar(q='qtmHost') == '' else cmds.optionVar(q='qtmHost')
         else:
@@ -206,6 +208,9 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         if self.widget.markerComponentButton.isChecked():
             self._marker_streamer.create()
         
+        if self.widget.rigidBodyComponentButton.isChecked():
+            self._rigid_body_streamer.create()
+
     def _host_changed(self, text):
         self._host = text
         cmds.optionVar(sv=('qtmHost', text))
@@ -222,6 +227,9 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
             if QRTComponentType.ComponentSkeleton in packet.components:
                 self._skeleton_streamer._packet_received(packet)
+
+            if QRTComponentType.Component6d in packet.components:
+                self._rigid_body_streamer._packet_received(packet)
 
     def _event_received(self, event):
         self._output('Event received: {}'.format(event))
@@ -245,6 +253,9 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
             if self.widget.markerComponentButton.isChecked():
                 self._marker_streamer.create()
+
+            if self.widget.rigidBodyComponentButton.isChecked():
+                self._rigid_body_streamer.create()
 
             self._output('Latest event: {}'.format(event))
 
@@ -307,6 +318,9 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
         if self.widget.markerComponentButton.isChecked():
             components.append('3d')
+
+        if self.widget.rigidBodyComponentButton.isChecked():
+            components.append('6d')
 
         self._qtm.stream(' '.join(components))
         self._reset_skeleton_names()
