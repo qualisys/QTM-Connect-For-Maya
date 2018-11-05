@@ -163,6 +163,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._qtm.eventReceived.connect(self._event_received)
         self._qtm.noDataReceived.connect(self._no_data_received)
 
+        self.widget.verticalLayout.setAlignment(QtCore.Qt.AlignTop)
         self.widget.connectButton.clicked.connect(self.connect_qtm)
         self.widget.startButton.clicked.connect(self.stream)
         self.widget.stopButton.clicked.connect(self.stop_stream)
@@ -180,7 +181,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.tPoseButton.clicked.connect(self.toggle_t_pose)
 
         self.widget.streamingComponentsLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.skeletonComponentContainer.setFixedHeight(140)
+        self.widget.connectionContainer.setFixedHeight(88)
         self.widget.skeletonComponentLayout.setContentsMargins(0, 11, 0, 0)
         self.widget.markerComponentLayout.setContentsMargins(0, 11, 0, 0)
         self.widget.rigidBodyComponentLayout.setContentsMargins(0, 11, 0, 0)
@@ -196,8 +197,13 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.is_streaming = False
 
         self._connected_changed(self._qtm.connected)
+        self.component_changed()
 
     def component_changed(self):
+        self.widget.skeletonComponentContainer.setVisible(self.widget.skeletonComponentButton.isChecked())
+        self.widget.markerComponentContainer.setVisible(self.widget.markerComponentButton.isChecked())
+        self.widget.rigidBodyComponentContainer.setVisible(self.widget.rigidBodyComponentButton.isChecked())
+
         if self.is_streaming:
             self._qtm.stop_stream()
             self._shelf.toggle_stream_button('start')
