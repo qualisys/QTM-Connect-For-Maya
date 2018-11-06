@@ -1,6 +1,6 @@
 # QTM Connect for Maya
 
-Stream skeleton and marker data from QTM through the QTM real-time protocol.
+Stream skeleton, rigid bodies and marker data from QTM through the QTM real-time protocol.
 
 ![QTM Connect dialog screenshot](./assets/qtm_connect_maya_dialog.png "QTM Connect dialog")
 
