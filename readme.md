@@ -7,7 +7,7 @@ Stream skeleton, rigid bodies and marker data from QTM through the QTM real-time
 ## Installation
 1. Clone this repo to your machine.
 2. Clone [qualisys_python_sdk](https://github.com/qualisys/qualisys_python_sdk) into the modules folder.
-3. Edit your Maya.env file. Add the following line: `pythonpath=<path_to_qtm_connect_maya>/..`.
+3. Edit your Maya.env file available in one of your Maya folders. Add the following line: `pythonpath=<path_to_qtm_connect_maya>/..`.
 4. Start/restart Maya.
 5. In Maya, open the script editor and run the following Python code:  
 `import qtm_connect_maya;import qtm_connect_maya.mayaui;qtm_connect_mata.mayaui.install()`
