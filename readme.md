@@ -17,7 +17,7 @@ Stream skeleton, rigid bodies and marker data from QTM through the QTM real-time
 To stream skeleton data you must first define a skeleton in QTM. Do this by clicking the `Calibrate skeleton` button in QTM.
 
 1. Ensure that the real-time server in QTM is streaming data. See [Stream data in QTM](#streaming-data-in-qtm)
-2. In the `QTM_Connect` shelf, click on the QTM Connect icon to open the dialog.
+2. In Maya's `QTM_Connect` shelf, click on the QTM Connect icon to open the dialog.
 3. Enter the hostname of your QTM machine and click `Connect`.
 4. Click `Stream from QTM` to start streaming skeleton data.
 
