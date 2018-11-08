@@ -27,8 +27,9 @@ skeleton in the list and clicking the `Go to T-Pose` button.
 
 ### HumanIK
 The naming convention used by the joints is recognized by HumanIK. To
-automatically map joints to a HumanIK characted definition load the `HIK`
+automatically map joints to a HumanIK character definition load the `HIK`
 template.
+![HumanIK pane screenshot](./assets/HumanIK_pane.png "HumanIK pane")
 
 ## Streaming marker data
 1. Ensure that the real-time server in QTM is streaming data. See [Streaming data from QTM](#streaming-data-from-qtm).
