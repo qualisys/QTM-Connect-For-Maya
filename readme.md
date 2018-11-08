@@ -28,8 +28,8 @@ skeleton in the list and clicking the `Go to T-Pose` button.
 ### HumanIK
 The naming convention used by the joints is recognized by HumanIK. To
 automatically map joints to a HumanIK character definition you need to charcaterize your skeleton.
-To do so, go to the HumanIk pane, click on 'Create Character Definition', click on one of the joints of your skeleton (in the 3D view) and then load the `HIK`
-template (folder icon in the HumanIK pane).
+To do so, go to the HumanIk pane, click on 'Create Character Definition', click on one of the joints of your skeleton (in the 3D view), load the `HIK`
+template (folder icon in the HumanIK pane) and enter the skeleton prefix to only focus on the bones of your skeleton (useful if more than one skeletons are streamed).
 ![HumanIK pane screenshot](./assets/HumanIK_pane.png "HumanIK pane")
 
 ## Streaming marker data
