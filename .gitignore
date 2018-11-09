@@ -1,2 +1,3 @@
 *.pyc
 modules/qtm
+installer/output
