@@ -1,3 +1,4 @@
 *.pyc
 modules/qtm
 installer/output
+.vscode/
