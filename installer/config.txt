@@ -1,4 +1,4 @@
 ;!@Install@!UTF-8!
 Title="Install plugin..."
-RunProgram="install.bat"
+RunProgram=".\installer\install.bat"
 ;!@InstallEnd@!
