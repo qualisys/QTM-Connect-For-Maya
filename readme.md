@@ -79,3 +79,10 @@ In QTM:
 2. Open the context menu by right clicking and run `Define rigid body (6DOF)` > `Current Frame` / `Average of frame`.
 
 Rigid bodies can also be edited in `Project Options` > `Processing` > `6DOF Tracking`.
+
+## Update Qualisys Python SDK:
+In terminal, run:
+
+`git subtree pull --prefix modules/qualisys_python_sdk https://github.com/qualisys/qualisys_python_sdk.git <branch/commit> --squash`
+
+where `<branch/commit>` is either a specific branch, or a commit hash.
