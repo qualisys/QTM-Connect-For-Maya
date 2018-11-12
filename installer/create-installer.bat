@@ -1,5 +1,8 @@
 @echo off
 
+rem Change working directory to directory of batch file using (not always same as script dir)
+cd /D "%~dp0"
+
 set "CURRENT_DIR=%cd%"
 
 set "ARCHIVE_NAME=qtm_connect_maya.7z"
