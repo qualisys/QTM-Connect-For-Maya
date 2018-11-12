@@ -10,6 +10,8 @@ set CUSTOM_MAYA_ROOT_PATH=""
 
 :while
 
+rem Localize Maya root path:
+
 if exist "%MAYA_64_ROOT_PATH%" (
     echo "Found 64bit"
     set "MAYA_ROOT_PATH=%MAYA_64_ROOT_PATH%"
@@ -39,6 +41,8 @@ if exist "%MAYA_EXE_PATH%" (
     exit 1
 )
 
+rem Localize "QTM Connect Maya" plugin root path:
+
 set "MAYA_PLUGIN_SOURCE_PATH=%cd%\.."
 set "VERIFY_IF_CORRECT_FOLDER=%MAYA_PLUGIN_SOURCE_PATH%\mayaui.py"
 
@@ -50,11 +54,12 @@ if exist "%VERIFY_IF_CORRECT_FOLDER%" (
     exit 1
 )
 
+rem Copy "QTM Connect Maya" plugin to maya_root_path/bin:
+
 set "QTM_CONNECT_MAYA_FOLDER_NAME=qtm_connect_maya"
 set "MAYA_PLUGIN_DEST_PATH=%MAYA_ROOT_PATH%\bin\%QTM_CONNECT_MAYA_FOLDER_NAME%"
 echo "Copying folder %MAYA_PLUGIN_SOURCE_PATH% to %MAYA_PLUGIN_DEST_PATH%..."
 
-rem Copy whole qtm_connect_maya folder to maya_root
 xcopy  "%MAYA_PLUGIN_SOURCE_PATH%" "%MAYA_PLUGIN_DEST_PATH%" /e /i /h /Y
 
 rem Run maya from command line and execute install script
