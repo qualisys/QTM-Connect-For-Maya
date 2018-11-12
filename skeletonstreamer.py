@@ -36,37 +36,37 @@ class SkeletonStreamer:
         _, skeletons = packet.get_skeletons()
 
         for skeleton in skeletons:
-            for joint_id, joint_position, joint_rotation in skeleton:
-                transformFn = self._joints[joint_id]["transformFn"]
+            for segment_id, segment_position, segment_rotation in skeleton:
+                transformFn = self._segments[segment_id]["transformFn"]
 
                 if self._up_axis == "y":
                     translation = om.MVector(
-                        -joint_position.x * self._unit_conversion,
-                        joint_position.z * self._unit_conversion,
-                        joint_position.y * self._unit_conversion,
+                        -segment_position.x * self._unit_conversion,
+                        segment_position.z * self._unit_conversion,
+                        segment_position.y * self._unit_conversion,
                     )
 
                     rotation = om.MQuaternion(
-                        -joint_rotation.x,
-                        joint_rotation.z,
-                        joint_rotation.y,
-                        joint_rotation.w,
+                        -segment_rotation.x,
+                        segment_rotation.z,
+                        segment_rotation.y,
+                        segment_rotation.w,
                     )
                 else:
                     translation = om.MVector(
-                        joint_position.x * self._unit_conversion,
-                        joint_position.y * self._unit_conversion,
-                        joint_position.z * self._unit_conversion,
+                        segment_position.x * self._unit_conversion,
+                        segment_position.y * self._unit_conversion,
+                        segment_position.z * self._unit_conversion,
                     )
 
                     rotation = om.MQuaternion(
-                        joint_rotation.x,
-                        joint_rotation.y,
-                        joint_rotation.z,
-                        joint_rotation.w,
+                        segment_rotation.x,
+                        segment_rotation.y,
+                        segment_rotation.z,
+                        segment_rotation.w,
                     )
 
-                transformFn = self._joints[joint_id]["transformFn"]
+                transformFn = self._segments[segment_id]["transformFn"]
                 transformFn.setTranslation(translation, om.MSpace.kTransform)
                 transformFn.setRotation(
                     rotation.asEulerRotation(), om.MSpace.kTransform
@@ -99,44 +99,44 @@ class SkeletonStreamer:
 
             self._listWidget.addItem(item)
 
-    def _assume_t_pose(self, joint):
-        transformFn = self._joints[int(joint["@ID"])]["transformFn"]
+    def _assume_t_pose(self, segment):
+        transformFn = self._segments[int(segment["@ID"])]["transformFn"]
 
         if self._up_axis == "y":
             translation = om.MVector(
-                -float(joint["Position"]["@X"]) * self._unit_conversion,
-                float(joint["Position"]["@Z"]) * self._unit_conversion,
-                float(joint["Position"]["@Y"]) * self._unit_conversion,
+                -float(segment["Position"]["@X"]) * self._unit_conversion,
+                float(segment["Position"]["@Z"]) * self._unit_conversion,
+                float(segment["Position"]["@Y"]) * self._unit_conversion,
             )
         else:
             translation = om.MVector(
-                float(joint["Position"]["@X"]) * self._unit_conversion,
-                float(joint["Position"]["@Y"]) * self._unit_conversion,
-                float(joint["Position"]["@Z"]) * self._unit_conversion,
+                float(segment["Position"]["@X"]) * self._unit_conversion,
+                float(segment["Position"]["@Y"]) * self._unit_conversion,
+                float(segment["Position"]["@Z"]) * self._unit_conversion,
             )
 
         transformFn.setTranslation(translation, om.MSpace.kTransform)
         transformFn.setRotation(
             om.MEulerRotation(
-                float(joint["Rotation"]["@X"]),
-                float(joint["Rotation"]["@Y"]),
-                float(joint["Rotation"]["@Z"]),
+                float(segment["Rotation"]["@X"]),
+                float(segment["Rotation"]["@Y"]),
+                float(segment["Rotation"]["@Z"]),
                 om.MEulerRotation.kXYZ,
             ),
             om.MSpace.kTransform,
         )
 
-    def _save_pose(self, joint):
-        transformFn = self._joints[int(joint["@ID"])]["transformFn"]
+    def _save_pose(self, segment):
+        transformFn = self._segments[int(segment["@ID"])]["transformFn"]
 
-        self._saved_poses[int(joint["@ID"])] = {
+        self._saved_poses[int(segment["@ID"])] = {
             "translation": transformFn.translation(om.MSpace.kTransform),
             "rotation": transformFn.rotation(om.MSpace.kTransform),
         }
 
     def create(self):
         modifier = om.MDagModifier()
-        self._joints = {}
+        self._segments = {}
 
         if self._qtm_settings is None and self._qtm.connected:
             self._qtm_settings = self._qtm.get_settings("skeleton")
@@ -153,56 +153,56 @@ class SkeletonStreamer:
             for skeleton in self._skeletons:
                 create = True
 
-                for joint in skeleton["Joint"]:
-                    joint_name = skeleton["@Name"] + "_" + joint["@Name"]
-                    j = MayaUtil.get_node_by_name(joint_name)
+                for segment in skeleton["Joint"]:
+                    segment_name = skeleton["@Name"] + "_" + segment["@Name"]
+                    j = MayaUtil.get_node_by_name(segment_name)
 
                     if j is None:
                         j = modifier.createNode("joint")
 
-                        modifier.renameNode(j, joint_name)
+                        modifier.renameNode(j, segment_name)
                     else:
                         create = False
 
                     transformFn = om.MFnTransform(j)
 
-                    self._joints[int(joint["@ID"])] = {
+                    self._segments[int(segment["@ID"])] = {
                         "MObject": j,
                         "transformFn": transformFn,
                     }
 
-                    if "@Parent_ID" in joint:
+                    if "@Parent_ID" in segment:
                         modifier.reparentNode(
-                            j, self._joints[int(joint["@Parent_ID"])]["MObject"]
+                            j, self._segments[int(segment["@Parent_ID"])]["MObject"]
                         )
 
                     if create:
-                        self._assume_t_pose(joint)
+                        self._assume_t_pose(segment)
 
             modifier.doIt()
 
     def t_pose(self, skeleton_name):
         for skeleton_definition in self._skeletons:
             if skeleton_definition["@Name"] == skeleton_name:
-                for joint in skeleton_definition["Joint"]:
-                    self._save_pose(joint)
-                    self._assume_t_pose(joint)
+                for segment in skeleton_definition["Joint"]:
+                    self._save_pose(segment)
+                    self._assume_t_pose(segment)
 
                 self._in_t_pose.append(skeleton_name)
 
     def resume_pose(self, skeleton_name):
         for skeleton_definition in self._skeletons:
             if skeleton_definition["@Name"] == skeleton_name:
-                for joint in skeleton_definition["Joint"]:
-                    if int(joint["@ID"]) in self._saved_poses:
-                        transformFn = self._joints[int(joint["@ID"])]["transformFn"]
+                for segment in skeleton_definition["Joint"]:
+                    if int(segment["@ID"]) in self._saved_poses:
+                        transformFn = self._segments[int(segment["@ID"])]["transformFn"]
 
                         transformFn.setTranslation(
-                            self._saved_poses[int(joint["@ID"])]["translation"],
+                            self._saved_poses[int(segment["@ID"])]["translation"],
                             om.MSpace.kTransform,
                         )
                         transformFn.setRotation(
-                            self._saved_poses[int(joint["@ID"])]["rotation"],
+                            self._saved_poses[int(segment["@ID"])]["rotation"],
                             om.MSpace.kTransform,
                         )
 
