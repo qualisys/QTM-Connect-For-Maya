@@ -28,5 +28,3 @@ copy /b "%ZIP_SFX%" + "%CONFIG_FILE_PATH%" + "%OUT_DIR%\%ARCHIVE_NAME%" "%OUT_DI
 del "%OUT_DIR%\%ARCHIVE_NAME%" /s
 del "%OUT_DIR%\%CONFIG_FILE%" /s
 del "%OUT_DIR%\%INSTALLER_FILE%" /s
-
-pause

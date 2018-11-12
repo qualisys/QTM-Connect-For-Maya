@@ -32,14 +32,12 @@ if exist "%MAYA_ROOT_PATH%" (
     goto :while
 )
 
-pause
-
 set "MAYA_EXE_PATH=%MAYA_ROOT_PATH%\bin\maya.exe"
 
 if exist "%MAYA_EXE_PATH%" (
     echo "Maya.exe found: %MAYA_EXE_PATH%"
 ) else (
-    echo "Maya.exe NOT found: %MAYA_EXE_PATH%"
+    echo "Maya.exe NOT found at: %MAYA_EXE_PATH%"
     pause
     exit 1
 )
@@ -50,12 +48,10 @@ set "VERIFY_IF_CORRECT_FOLDER=%MAYA_PLUGIN_SOURCE_PATH%\mayaui.py"
 if exist "%VERIFY_IF_CORRECT_FOLDER%" (
     echo "QTM Connect Maya plugin found."
 ) else (
-    echo "QTM Connect Maya plugin not foundfound. Installer must be in plugin root."
+    echo "QTM Connect Maya plugin not found. Installer must be in plugin root."
     pause
     exit 1
 )
-
-pause
 
 set "QTM_CONNECT_MAYA_FOLDER_NAME=qtm_connect_maya"
 set "MAYA_PLUGIN_DEST_PATH=%MAYA_ROOT_PATH%\bin\%QTM_CONNECT_MAYA_FOLDER_NAME%"
@@ -63,8 +59,6 @@ echo "Copying folder %MAYA_PLUGIN_SOURCE_PATH% to %MAYA_PLUGIN_DEST_PATH%..."
 
 rem Copy whole qtm_connect_maya folder to maya_root
 xcopy  "%MAYA_PLUGIN_SOURCE_PATH%" "%MAYA_PLUGIN_DEST_PATH%" /e /i /h /Y
-
-pause
 
 rem Run maya from command line and execute install script
 
