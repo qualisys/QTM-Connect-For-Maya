@@ -1,5 +1,13 @@
 @echo off
 
+fltmc >nul 2>&1 && (
+  rem Running as admin.
+) || (
+  echo "ERROR: Installer must be run as admin."
+  pause
+  exit 1
+)
+
 rem Change working directory to directory of batch file using (not always same as script dir)
 cd /D "%~dp0"
 
