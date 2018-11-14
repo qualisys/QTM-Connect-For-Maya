@@ -153,7 +153,7 @@ class SkeletonStreamer:
             for skeleton in self._skeletons:
                 create = True
 
-                for segment in skeleton["Joint"]:
+                for segment in skeleton["Segment"]:
                     segment_name = skeleton["@Name"] + "_" + segment["@Name"]
                     j = MayaUtil.get_node_by_name(segment_name)
 
@@ -184,7 +184,7 @@ class SkeletonStreamer:
     def t_pose(self, skeleton_name):
         for skeleton_definition in self._skeletons:
             if skeleton_definition["@Name"] == skeleton_name:
-                for segment in skeleton_definition["Joint"]:
+                for segment in skeleton_definition["Segment"]:
                     self._save_pose(segment)
                     self._assume_t_pose(segment)
 
@@ -193,7 +193,7 @@ class SkeletonStreamer:
     def resume_pose(self, skeleton_name):
         for skeleton_definition in self._skeletons:
             if skeleton_definition["@Name"] == skeleton_name:
-                for segment in skeleton_definition["Joint"]:
+                for segment in skeleton_definition["Segment"]:
                     if int(segment["@ID"]) in self._saved_poses:
                         transformFn = self._segments[int(segment["@ID"])]["transformFn"]
 
