@@ -8,7 +8,7 @@ Stream skeleton, rigid bodies and marker data from QTM through the QTM real-time
 Automatic
 1. Download the repo to your machine
 2. Go to qtm_connect_maya\installer and run create-installer.bat
-3. Make sure Maya is closed, go to qtm_connect_maya\installer\output and run installer.exe (if you have a custom path for your Maya folder you might be prompted to specify during the installation)
+3. Make sure Maya is closed, go to qtm_connect_maya\installer\output and run installer.exe (if you have a custom path for your Maya folder you might be prompted to specify it during the installation)
 
 Manual
 1. Clone this repo to your machine.
