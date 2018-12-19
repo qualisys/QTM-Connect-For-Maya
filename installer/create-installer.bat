@@ -26,7 +26,7 @@ xcopy "%CONFIG_FILE_PATH%" "%OUT_DIR%\" /i /h /Y
 xcopy "%INSTALLER_FILE_PATH%" "%OUT_DIR%\" /i /h /Y
 
 rem Create installer
-copy /b "%ZIP_SFX%" + "%CONFIG_FILE_PATH%" + "%OUT_DIR%\%ARCHIVE_NAME%" "%OUT_DIR%\Installer.exe"
+copy /b "%ZIP_SFX%" + "%CONFIG_FILE_PATH%" + "%OUT_DIR%\%ARCHIVE_NAME%" "%OUT_DIR%\QTMConnectForMayaInstaller.exe"
 
 del "%OUT_DIR%\%ARCHIVE_NAME%" /s
 del "%OUT_DIR%\%CONFIG_FILE%" /s
