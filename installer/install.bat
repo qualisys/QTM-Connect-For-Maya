@@ -11,8 +11,8 @@ fltmc >nul 2>&1 && (
 rem Change working directory to directory of batch file using (not always same as script dir)
 cd /D "%~dp0"
 
-set "MAYA_64_ROOT_PATH=C:\Program Files\Autodesk\Maya2018"
-set "MAYA_32_ROOT_PATH=C:\Program Files (x86)\Autodesk\Maya2018"
+set "MAYA_64_ROOT_PATH=C:\Program Files\Autodesk"
+set "MAYA_32_ROOT_PATH=C:\Program Files (x86)\Autodesk"
 set MAYA_ROOT_PATH=""
 set CUSTOM_MAYA_ROOT_PATH=""
 
@@ -38,6 +38,22 @@ if exist "%MAYA_ROOT_PATH%" (
     set /p CUSTOM_MAYA_ROOT_PATH="Please enter Maya installation path: "
     goto :while
 )
+
+:while_version_not_decided
+
+rem Ask user which version of unreal to install to
+echo.
+echo "Installed versions:"
+dir /A:D /B "%MAYA_ROOT_PATH%"
+echo.
+set /p MAYA_VERSION_FOLDER="Select Maya version to install to: "
+
+rem If nothing was typed by user
+if "%MAYA_VERSION_FOLDER%"=="" (
+    goto :while_version_not_decided
+)
+
+set "MAYA_ROOT_PATH=%MAYA_ROOT_PATH%\%MAYA_VERSION_FOLDER%"
 
 set "MAYA_EXE_PATH=%MAYA_ROOT_PATH%\bin\maya.exe"
 
