@@ -86,10 +86,24 @@ echo "Copying folder %MAYA_PLUGIN_SOURCE_PATH% to %MAYA_PLUGIN_DEST_PATH%..."
 
 xcopy  "%MAYA_PLUGIN_SOURCE_PATH%" "%MAYA_PLUGIN_DEST_PATH%" /e /i /h /Y
 
+rem Get 'My documents' path
+powershell "[environment]::getfolderpath(\"mydocuments\")" > temp.txt
+set /p MY_DOCS_PATH=<temp.txt
+set "MAYA_PROJECT_PATH=%MY_DOCS_PATH%\maya\projects\qualisys-example"
+
+rem Copy example project to 'My Documents'\maya\projects\.
+xcopy  "%MAYA_PLUGIN_SOURCE_PATH%\example" "%MAYA_PROJECT_PATH%\"  /e /i /h /Y
+set "QUALISYS_EXAMPLE_SCENE=%MAYA_PROJECT_PATH%\QAvatar.mb"
+
 rem Run maya from command line and execute install script
 
 echo "Installing plugin..."
-start /wait "Install plugin..." "%MAYA_EXE_PATH%" -command "python("""import qtm_connect_maya;import qtm_connect_maya.mayaui;qtm_connect_maya.mayaui.install()""");"
+start /b "Install plugin..." "%MAYA_EXE_PATH%" -file "%QUALISYS_EXAMPLE_SCENE%" -command "python("""import qtm_connect_maya;import qtm_connect_maya.mayaui;qtm_connect_maya.mayaui.install();""");"
+
+rem Wait let it install (hack)
+ping 127.0.0.1 -n 10 > nul
+
+start "" "%MAYA_PROJECT_PATH%"
 
 echo "DONE!"
 pause
