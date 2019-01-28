@@ -8,6 +8,7 @@ Stream skeleton, rigid bodies and marker data from QTM through the QTM real-time
 Automatic
 1. Download the repo to your machine
 2. Go to `qtm_connect_maya\installer` and run `install.bat`
+3. _Optional: In case you want to use a scene with QAvatar, open `QAvatar.mb` in folder `C:\Users\<user>\Documents\maya\projects\qualisys-example`_
 
 Manual
 1. Clone this repo to your machine.
