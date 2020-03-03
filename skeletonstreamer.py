@@ -108,23 +108,27 @@ class SkeletonStreamer:
                 float(segment["Position"]["@Z"]) * self._unit_conversion,
                 float(segment["Position"]["@Y"]) * self._unit_conversion,
             )
+            rotation = om.MQuaternion(
+                -float(segment["Rotation"]["@X"]),
+                float(segment["Rotation"]["@Z"]),
+                float(segment["Rotation"]["@Y"]),
+                float(segment["Rotation"]["@W"]),
+            )
         else:
             translation = om.MVector(
                 float(segment["Position"]["@X"]) * self._unit_conversion,
                 float(segment["Position"]["@Y"]) * self._unit_conversion,
                 float(segment["Position"]["@Z"]) * self._unit_conversion,
             )
-
-        transformFn.setTranslation(translation, om.MSpace.kTransform)
-        transformFn.setRotation(
-            om.MEulerRotation(
+            rotation = om.MQuaternion(
                 float(segment["Rotation"]["@X"]),
                 float(segment["Rotation"]["@Y"]),
                 float(segment["Rotation"]["@Z"]),
-                om.MEulerRotation.kXYZ,
-            ),
-            om.MSpace.kTransform,
-        )
+                float(segment["Rotation"]["@W"]),
+            )
+
+        transformFn.setTranslation(translation, om.MSpace.kTransform)
+        transformFn.setRotation(rotation.asEulerRotation(), om.MSpace.kTransform)
 
     def _save_pose(self, segment):
         transformFn = self._segments[int(segment["@ID"])]["transformFn"]
