@@ -155,10 +155,12 @@ class SkeletonStreamer:
                 self._skeletons = [self._skeletons]
 
             for skeleton in self._skeletons:
+                if not cmds.namespace( exists=skeleton["@Name"] ):
+                    cmds.namespace( add=skeleton["@Name"] )
                 create = True
 
                 for segment in skeleton["Segment"]:
-                    segment_name = skeleton["@Name"] + "_" + segment["@Name"]
+                    segment_name = skeleton["@Name"] + ":" + segment["@Name"]
                     j = MayaUtil.get_node_by_name(segment_name)
 
                     if j is None:
