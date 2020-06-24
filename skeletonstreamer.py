@@ -38,8 +38,6 @@ class SkeletonStreamer:
 
         for skeleton_index, skeleton in enumerate(skeletons):
             for segment_id, segment_position, segment_rotation in skeleton:
-                transformFn = self._segments[skeleton_index][segment_id]["transformFn"]
-
                 if self._up_axis == "y":
                     translation = om.MVector(
                         -segment_position.x * self._unit_conversion,
