@@ -90,7 +90,7 @@ class QQtmRt(QtCore.QObject):
         if response is not None and response != 'QTM RT Interface connected':
             return False
 
-        self.requested_version = '1.19'
+        self.requested_version = '1.21'
         version = self.set_version(version=self.requested_version)
 
         return version == 'Version set to {}'.format(self.requested_version)
