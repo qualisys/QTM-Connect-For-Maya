@@ -217,7 +217,7 @@ class SkeletonStreamer:
         for skeleton_index, skeleton_definition in enumerate(self._skeletons):
             if skeleton_definition["@Name"] == skeleton_name:
                 for segment_id, segment in self._segments[skeleton_index].iteritems():
-                    if int(segment_id) in self._saved_poses[skeleton_index]:
+                    if skeleton_index in self._saved_poses and int(segment_id) in self._saved_poses[skeleton_index]:
                         transformFn = self._segments[skeleton_index][int(segment_id)]["transformFn"]
 
                         transformFn.setTranslation(
