@@ -9,6 +9,7 @@ from qtmparser import QtmParser
 from qtm.packet import QRTPacketType, QRTPacket, QRTEvent
 from qtm.packet import RTheader, RTEvent
 import qtm
+from time import sleep
 
 class QQtmRt(QtCore.QObject):
     connectedChanged = Signal(bool)
@@ -149,6 +150,63 @@ class QQtmRt(QtCore.QObject):
 
         return settings
 
+    # Added by JTD
+            
+    def get_parameters(self, *args):
+        if args is ():
+            args = ['all']
+
+        self._send_command('getparameters {}'.format(' '.join(args)))
+
+        xml_text = self._wait_for_reply()
+        return xml_text
+
+    def send_XMLCommand(self, command):
+
+        cmd = "takecontrol password"
+        self._send_command(cmd)
+        resp = self._wait_for_reply()
+        print "Control response is ", resp
+
+        if resp == "You are now master" or  resp == "You are already master" :
+            newxml = u"<QTM_Settings>\n"
+            newxml += command
+            newxml += u"</QTM_Settings>"
+
+            #print "XML Start"
+            #print newxml
+            #print "XML End"
+            
+            #reprocess_cmd = "stop"
+            #self._send_command(reprocess_cmd)
+            #resp = self._wait_for_reply()
+            #print "Reprocess STOP.  Response is", resp 
+
+            cmd = QtmParser.create_command(newxml,QRTPacketType.PacketXML)
+            self._socket.write(cmd)
+            resp = self._wait_for_reply()
+            print "Pushed XML.  Response is", resp 
+
+            #reprocess_cmd = "reprocess"
+            #self._send_command(reprocess_cmd)
+            #resp = self._wait_for_reply()
+            #print "Reprocess SOLVE.  Response is", resp 
+
+            #reprocess_cmd = "start RTFromFile"
+            #self._send_command(reprocess_cmd)
+            #resp = self._wait_for_reply()
+            #print "start RTFromFile.  Response is", resp 
+            
+            cmd = "releasecontrol"
+            self._send_command(cmd)
+            resp = self._wait_for_reply()
+            print "Release response is ", resp
+        else:
+            print "No XML sent"
+            
+        return resp
+
+
     def get_latest_event(self):
         self._send_command('getstate')
 
@@ -191,3 +249,85 @@ class QQtmRt(QtCore.QObject):
             return
 
         self._socket.disconnectFromHost()
+
+    # ignorant try
+    def _flush_connection(self):
+        try:
+            resp = self._wait_for_reply()
+            print "Flush 1 response: ", resp
+            resp = self._wait_for_reply(event=True)
+            print "Flush 2 response: ", resp
+            return True
+        except:
+            print "Flush 3 captured error"
+            return False
+
+    def _wait_for_right_reply(self, replies, maxTries = 2):
+
+        for i in range (maxTries):
+            print "WFRR: Iteration", str(i)
+            try:
+                resp = self._wait_for_reply()
+                print "WFRR: response is:", resp
+                
+                value = replies.get(resp, None)
+                print "WFRR: value is:", str(value)
+                
+                if value != None:
+                    return value
+            except:
+                return False
+        return False
+                
+
+    def send_StopRTCommand(self, password = ""):
+        takeControl_replies = {"You are now master": True,
+                               "You are aleady master": True,
+                               'Client control disabled in QTM': False,
+                               'Wrong or missing password': False,
+                               'Parse error': False}
+
+        cmd = "takecontrol "+password
+        self._send_command(cmd)
+        if self._wait_for_right_reply(takeControl_replies) :
+
+            cmd = "stop"
+            self._send_command(cmd)
+            resp = self._wait_for_reply()
+            print "PWRTO: start RTFromFile.  Response is", resp 
+
+            cmd = "releasecontrol"
+            self._send_command(cmd)
+            resp = self._wait_for_reply()
+            print "Send Stop: Release response is ", resp
+        else:
+            print "Send Stop: Did not take control"
+            
+        
+    def send_StartRTCommand(self, password = ""):
+        takeControl_replies = {"You are now master": True,
+                               "You are aleady master": True,
+                               'Client control disabled in QTM': False,
+                               'Wrong or missing password': False,
+                               'Parse error': False}
+
+        cmd = "takecontrol "+password
+        self._send_command(cmd)
+        if self._wait_for_right_reply(takeControl_replies):
+
+            cmd = "start RTFromFile"
+            self._send_command(cmd)
+            resp = self._wait_for_reply()
+            print "PWRTO: start RTFromFile.  Response is", resp 
+
+            cmd = "releasecontrol"
+            self._send_command(cmd)
+            resp = self._wait_for_reply()
+            print "Send Start: Release response is ", resp
+
+            resp = self.get_latest_event(event=True)
+            print "Send Start: Latest Event: is ", resp
+
+        else:
+            print "Send Start: Did not take control"
+            

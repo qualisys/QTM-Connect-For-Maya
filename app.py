@@ -22,6 +22,7 @@ from mayaui import QtmConnectShelf
 from markerstreamer import MarkerStreamer
 from skeletonstreamer import SkeletonStreamer
 from rigidbodystreamer import RigidBodyStreamer
+from solverstreamer import SolverStreamer
 
 MAYA = False
 
@@ -165,6 +166,10 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
 
         self.widget.verticalLayout.setAlignment(QtCore.Qt.AlignTop)
         self.widget.connectButton.clicked.connect(self.connect_qtm)
+        self.widget.pullButton.clicked.connect(self.pullSolver)
+        self.widget.stopQTMRTButton.clicked.connect(self.stopQTMRT)
+        self.widget.pushButton.clicked.connect(self.pushSolver)
+        self.widget.startQTMRTButton.clicked.connect(self.startQTMRT)
         self.widget.startButton.clicked.connect(self.stream)
         self.widget.stopButton.clicked.connect(self.stop_stream)
         self.widget.groupButton.clicked.connect(self._marker_streamer.group_markers)
@@ -180,11 +185,18 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.rigidBodyComponentButton.toggled.connect(self.component_changed)
         self.widget.tPoseButton.clicked.connect(self.toggle_t_pose)
 
-        self.widget.streamingComponentsLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.connectionContainer.setFixedHeight(88)
-        self.widget.skeletonComponentLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.markerComponentLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.rigidBodyComponentLayout.setContentsMargins(0, 11, 0, 0)
+        #self.widget.streamingComponentsLayout.setContentsMargins(0, 11, 0, 0)
+        #self.widget.connectionContainer.setFixedHeight(88)
+        self.widget.connectionContainer.setFixedHeight(110)
+        #self.widget.skeletonComponentLayout.setContentsMargins(0, 11, 0, 0)
+        #self.widget.markerComponentLayout.setContentsMargins(0, 11, 0, 0)
+        #self.widget.rigidBodyComponentLayout.setContentsMargins(0, 11, 0, 0)
+
+        # Not implemented yet, make them invisible for now.
+        self.widget.stopQTMRTButton.setVisible(False)
+        self.widget.startQTMRTButton.setVisible(False)
+        self.widget.pushButton.setVisible(False)
+        self.widget.pullButton.setVisible(False)
         
         if cmds.optionVar(exists='qtmHost') == 1:
             hostname = 'localhost' if cmds.optionVar(q='qtmHost') == '' else cmds.optionVar(q='qtmHost')
@@ -194,10 +206,14 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.hostField.textChanged.connect(self._host_changed)
         self.widget.hostField.setText(hostname)
         self._host = self.widget.hostField.text()
+        #self._password = "password"
+        self._password = ""
         self.is_streaming = False
 
         self._connected_changed(self._qtm.connected)
         self.component_changed()
+
+        self._last_event = None
 
     def component_changed(self):
         self.widget.skeletonComponentContainer.setVisible(self.widget.skeletonComponentButton.isChecked())
@@ -238,10 +254,12 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
                 self._rigid_body_streamer._packet_received(packet)
 
     def _event_received(self, event):
+        self._last_event = event
         self._output('Event received: {}'.format(event))
 
     def _output(self, text):
-        pass
+        #pass
+        print(text)
 
     def _connected_changed(self, connected):
         self.is_connected = connected
@@ -249,6 +267,10 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.connectButton.setText('Disconnect' if connected else 'Connect')
         self.widget.hostField.setEnabled(not connected)
         self.widget.startButton.setEnabled(connected)
+        self.widget.pullButton.setEnabled(connected)
+        self.widget.stopQTMRTButton.setEnabled(connected)
+        self.widget.pushButton.setEnabled(connected)
+        self.widget.startQTMRTButton.setEnabled(connected)
         self._shelf.toggle_connect_button(connected)
 
         if connected:
@@ -317,6 +339,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.tPoseButton.setEnabled(not streaming)
     
     def stream(self):
+
         components = []
 
         if self.widget.skeletonComponentButton.isChecked():
@@ -332,6 +355,11 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._reset_skeleton_names()
         self._shelf.toggle_stream_button('stop')
 
+        self.widget.stopQTMRTButton.setEnabled(False)
+        self.widget.pullButton.setEnabled(False)
+        self.widget.pushButton.setEnabled(False)
+        self.widget.startQTMRTButton.setEnabled(False)
+
         self.is_streaming = True
 
     def stop_stream(self):
@@ -339,9 +367,38 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.is_streaming = False
 
         self._shelf.toggle_stream_button('start')
+        
+        self.widget.stopQTMRTButton.setEnabled(True)
+        self.widget.pullButton.setEnabled(True)
+        self.widget.pushButton.setEnabled(True)
+        self.widget.startQTMRTButton.setEnabled(True)
 
     def get_settings_3d(self):
         self._output(str(self._qtm.get_settings('3d')))
+
+    def pullSolver(self):
+        sXML = str(self._qtm.get_parameters("skeleton"))
+        self._solver_streamer     = SolverStreamer(self._qtm)
+        self._solver_streamer.ET_HandlerPull(sXML)
+
+    def stopQTMRT(self):
+        #self.widget.pushButton.setEnabled(True)
+        #self.widget.startButton.setEnabled(False)
+        #self._qtm.send_StopRTCommand()
+        cmds.warning('Stop RT Playing not implemented.')
+
+    def pushSolver(self):
+        self._solver_streamer     = SolverStreamer(self._qtm)
+        sXML = self._solver_streamer.ET_HandlerPush()
+        self._qtm.send_XMLCommand(sXML)
+        self.widget.startQTMRTButton.setEnabled(True)
+
+    def startQTMRT(self):
+        #self.widget.pushButton.setEnabled(False)
+        #self.widget.startButton.setEnabled(True)
+        #self._qtm.send_StartRTCommand()
+        cmds.warning('Start RT Playing not implemented.')
+
 
     def connect_qtm(self):
         if self._qtm.connected:
