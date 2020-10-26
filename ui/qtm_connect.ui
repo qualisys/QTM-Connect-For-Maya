@@ -7,7 +7,7 @@
 				<x>400</x>
 				<y>300</y>
 				<width>400</width>
-				<height>500</height>
+				<height>100</height>
 			</rect>
 		</property>
 		<property name="windowTitle">
@@ -90,6 +90,55 @@
 										</property>
 									</widget>
 								</item>
+							</layout>
+						</item>
+						<item>
+							<layout class="QHBoxLayout" name="SolverPullLayout">
+								<item>
+									<widget class="QPushButton" name="pullButton">
+										<property name="enabled">
+											<bool>false</bool>
+										</property>
+										<property name="text">
+										<string>Pull Solver</string>
+										</property>
+									</widget>
+								</item>
+							</layout>
+						</item>
+						<item>
+							<layout class="QHBoxLayout" name="SolverPushLayout">
+								<item>
+									<widget class="QPushButton" name="stopQTMRTButton">
+										<property name="enabled">
+											<bool>false</bool>
+										</property>
+										<property name="text">
+										<string>Stop QTM RT</string>
+										</property>
+									</widget>
+								</item>
+								<item>
+									<widget class="QPushButton" name="pushButton">
+										<property name="enabled">
+											<bool>false</bool>
+										</property>
+										<property name="text">
+										<string>Push Solver</string>
+										</property>
+									</widget>
+								</item>
+								<item>
+								        <widget class="QPushButton" name="startQTMRTButton">
+									        <property name="enabled">
+											<bool>false</bool>
+										</property>
+										<property name="text">
+										<string>Start QTM RT</string>
+										</property>
+									</widget>
+								</item>
+
 							</layout>
 						</item>
 					</layout>
