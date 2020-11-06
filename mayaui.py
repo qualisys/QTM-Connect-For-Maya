@@ -19,9 +19,13 @@ class QtmConnectShelf:
         self.connected_icon = self.asset_dir + 'connected.png'
         self.start_icon     = self.asset_dir + 'start.png'
         self.stop_icon      = self.asset_dir + 'stop.png'
+        self.import_icon    = self.asset_dir + 'import.png'
+        self.export_icon    = self.asset_dir + 'export.png'
         self.shelf_name     = 'QTM_Connect'
         self.connect_label  = 'Connect to QTM'
         self.stream_label   = 'Start/stop streaming'
+        self.import_label   = 'Import skeleton definition'
+        self.export_label   = 'Export skeleton definition'
 
 
     def install(self):
@@ -40,6 +44,22 @@ class QtmConnectShelf:
             parent=self.shelf_name,
             image1=self.start_icon,
             command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.start()',
+        )
+
+        cmds.shelfButton(
+            'import_definition',
+            label=self.import_label,
+            parent=self.shelf_name,
+            image1=self.import_icon,
+            command='import qtm_connect_maya.QImportSolver;reload(qtm_connect_maya.QImportSolver);qtm_connect_maya.QImportSolver.ImportQTMSkeleton()',
+        )
+
+        cmds.shelfButton(
+            'export_definition',
+            label=self.export_label,
+            parent=self.shelf_name,
+            image1=self.export_icon,
+            command='import qtm_connect_maya.QExportSolver;reload(qtm_connect_maya.QExportSolver);qtm_connect_maya.QExportSolver.ExportQTMSkeleton()',
         )
 
     # Find the button with the specified name. For some reason Maya resets the
