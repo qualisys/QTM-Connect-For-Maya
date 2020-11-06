@@ -86,7 +86,7 @@
 											<bool>false</bool>
 										</property>
 										<property name="text">
-											<string>Stop</string>
+											<string>Stop streaming</string>
 										</property>
 									</widget>
 								</item>
@@ -217,7 +217,7 @@
 								<item>
 									<widget class="QLabel" name="groupLabel">
 										<property name="text">
-											<string>&lt;span style="font-size: 9px;"&gt;Locators will be parented according &lt;br&gt;to the groups created here.&lt;/span&gt;</string>
+											<string>&lt;span style="font-size: 9px;"&gt;Locators will be parented according to the groups created here.&lt;/span&gt;</string>
 										</property>
 									</widget>
 								</item>
