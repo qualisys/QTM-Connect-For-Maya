@@ -384,19 +384,19 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
     def stopQTMRT(self):
         #self.widget.pushButton.setEnabled(True)
         #self.widget.startButton.setEnabled(False)
-        #self._qtm.send_StopRTCommand()
+        #self._qtm.stop_realtime(self._password)
         cmds.warning('Stop RT Playing not implemented.')
 
     def pushSolver(self):
         self._solver_streamer     = SolverStreamer(self._qtm)
         sXML = self._solver_streamer.ET_HandlerPush()
-        self._qtm.send_XMLCommand(sXML)
+        self._qtm.send_xml(sXML, self._password)
         self.widget.startQTMRTButton.setEnabled(True)
 
     def startQTMRT(self):
         #self.widget.pushButton.setEnabled(False)
         #self.widget.startButton.setEnabled(True)
-        #self._qtm.send_StartRTCommand()
+        #self._qtm.start_realtime(self._password)
         cmds.warning('Start RT Playing not implemented.')
 
 

@@ -66,19 +66,13 @@ class SolverStreamer:
         
     def PrettyPrint(self,lSkeletons):
         self._skeletons = ast.literal_eval(lSkeletons)
-        print "Pretty Print Start DDDD!!"
         if type(self._skeletons) is list:
-            print "List Winner!"
             print self._skeletons[0]
         elif type(self._skeletons) is dict:
-            print "Dict Winner!"
             for x in self._skeletons:
                 print x
                 myPrettyPrint(self._skeletons[x])
-
         else:
-            print "Loser!"
             print self._skeletons
-        print "Pretty Print End"
         
         

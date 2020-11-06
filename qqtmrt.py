@@ -161,9 +161,9 @@ class QQtmRt(QtCore.QObject):
         xml_text = self._wait_for_reply()
         return xml_text
 
-    def send_XMLCommand(self, command):
+    def send_xml(self, command, password):
 
-        cmd = "takecontrol password"
+        cmd = "takecontrol " + password
         self._send_command(cmd)
         resp = self._wait_for_reply()
         print "Control response is ", resp
@@ -212,7 +212,7 @@ class QQtmRt(QtCore.QObject):
 
         return self._wait_for_reply(event=True)
 
-    def set_version(self, version='1.18'):
+    def set_version(self, version='1.21'):
         self._send_command('version {}'.format(version))
 
         return self._wait_for_reply()
@@ -250,18 +250,6 @@ class QQtmRt(QtCore.QObject):
 
         self._socket.disconnectFromHost()
 
-    # ignorant try
-    def _flush_connection(self):
-        try:
-            resp = self._wait_for_reply()
-            print "Flush 1 response: ", resp
-            resp = self._wait_for_reply(event=True)
-            print "Flush 2 response: ", resp
-            return True
-        except:
-            print "Flush 3 captured error"
-            return False
-
     def _wait_for_right_reply(self, replies, maxTries = 2):
 
         for i in range (maxTries):
@@ -279,8 +267,7 @@ class QQtmRt(QtCore.QObject):
                 return False
         return False
                 
-
-    def send_StopRTCommand(self, password = ""):
+    def stop_realtime(self, password):
         takeControl_replies = {"You are now master": True,
                                "You are aleady master": True,
                                'Client control disabled in QTM': False,
@@ -304,7 +291,7 @@ class QQtmRt(QtCore.QObject):
             print "Send Stop: Did not take control"
             
         
-    def send_StartRTCommand(self, password = ""):
+    def start_realtime(self, password):
         takeControl_replies = {"You are now master": True,
                                "You are aleady master": True,
                                'Client control disabled in QTM': False,
