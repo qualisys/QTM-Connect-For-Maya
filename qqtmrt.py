@@ -149,7 +149,7 @@ class QQtmRt(QtCore.QObject):
         settings = settings.pop('QTM_Parameters_Ver_' + self.requested_version)
 
         return settings
-
+            
     # Added by JTD
             
     def get_parameters(self, *args):
@@ -168,7 +168,7 @@ class QQtmRt(QtCore.QObject):
         resp = self._wait_for_reply()
         print "Control response is ", resp
 
-        if resp == "You are now master" or  resp == "You are already master" :
+        if resp == "You are now master" or resp == "You are already master" :
             newxml = u"<QTM_Settings>\n"
             newxml += command
             newxml += u"</QTM_Settings>"
@@ -182,7 +182,7 @@ class QQtmRt(QtCore.QObject):
             #resp = self._wait_for_reply()
             #print "Reprocess STOP.  Response is", resp 
 
-            cmd = QtmParser.create_command(newxml,QRTPacketType.PacketXML)
+            cmd = QtmParser.create_command(newxml, QRTPacketType.PacketXML)
             self._socket.write(cmd)
             resp = self._wait_for_reply()
             print "Pushed XML.  Response is", resp 
@@ -274,7 +274,7 @@ class QQtmRt(QtCore.QObject):
                                'Wrong or missing password': False,
                                'Parse error': False}
 
-        cmd = "takecontrol "+password
+        cmd = "takecontrol " + password
         self._send_command(cmd)
         if self._wait_for_right_reply(takeControl_replies) :
 
@@ -298,7 +298,7 @@ class QQtmRt(QtCore.QObject):
                                'Wrong or missing password': False,
                                'Parse error': False}
 
-        cmd = "takecontrol "+password
+        cmd = "takecontrol " + password
         self._send_command(cmd)
         if self._wait_for_right_reply(takeControl_replies):
 
