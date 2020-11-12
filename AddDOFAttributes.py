@@ -31,6 +31,3 @@ def AddDOFAttributes():
         cmds.setAttr(n+ ".YTransDoF", False)
         cmds.addAttr(n,ln="ZTransDoF",at="bool")
         cmds.setAttr(n+ ".ZTransDoF", False)
-    
-    
-AddDOFAttributes()

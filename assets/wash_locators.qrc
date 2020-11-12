@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+	<qresource>
+		<file alias="wash_locators.png">wash_locators_100.png</file>
+		<file>wash_locators_150.png</file>
+		<file>wash_locators_200.png</file>
+	</qresource>
+</RCC>

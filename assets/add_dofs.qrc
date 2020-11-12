@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+	<qresource>
+		<file alias="add_dofs.png">add_dofs_100.png</file>
+		<file>add_dofs_150.png</file>
+		<file>add_dofs_200.png</file>
+	</qresource>
+</RCC>
