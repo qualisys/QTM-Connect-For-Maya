@@ -36,7 +36,10 @@ class SkeletonStreamer:
     def _packet_received(self, packet):
         _, skeletons = packet.get_skeletons()
 
+        # once = True
+        
         for skeleton_index, skeleton in enumerate(skeletons):
+
             for segment_id, segment_position, segment_rotation in skeleton:
                 if self._up_axis == "y":
                     translation = om.MVector(
@@ -64,6 +67,15 @@ class SkeletonStreamer:
                         segment_rotation.z,
                         segment_rotation.w,
                     )
+                ## Debug
+                # if once :
+                #     n = self._segments[skeleton_index][segment_id]["@Name"]
+                #     print ("Skeleton ", n ,"First Q: ",
+                #         segment_rotation.x,
+                #         segment_rotation.y,
+                #         segment_rotation.z,
+                #         segment_rotation.w)
+                #    once = False
 
                 transformFn = self._segments[skeleton_index][segment_id]["transformFn"]
                 transformFn.setTranslation(translation, om.MSpace.kTransform)

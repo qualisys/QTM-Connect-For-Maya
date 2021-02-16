@@ -9,6 +9,7 @@ from qtmparser import QtmParser
 from qtm.packet import QRTPacketType, QRTPacket, QRTEvent
 from qtm.packet import RTheader, RTEvent
 import qtm
+from time import sleep
 
 class QQtmRt(QtCore.QObject):
     connectedChanged = Signal(bool)
@@ -148,13 +149,22 @@ class QQtmRt(QtCore.QObject):
         settings = settings.pop('QTM_Parameters_Ver_' + self.requested_version)
 
         return settings
+            
+    def get_parameters(self, *args):
+        if args is ():
+            args = ['all']
+
+        self._send_command('getparameters {}'.format(' '.join(args)))
+
+        xml_text = self._wait_for_reply()
+        return xml_text
 
     def get_latest_event(self):
         self._send_command('getstate')
 
         return self._wait_for_reply(event=True)
 
-    def set_version(self, version='1.18'):
+    def set_version(self, version='1.21'):
         self._send_command('version {}'.format(version))
 
         return self._wait_for_reply()

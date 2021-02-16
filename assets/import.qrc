@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+	<qresource>
+		<file alias="import.png">import_100.png</file>
+		<file>import_150.png</file>
+		<file>import_200.png</file>
+	</qresource>
+</RCC>

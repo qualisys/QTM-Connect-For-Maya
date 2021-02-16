@@ -102,6 +102,9 @@ class RigidBodyStreamer:
             return
 
         self._bodies = []
+        if self._qtm_settings["The_6D"] == None:
+            cmds.warning("RigidBodyStreamer._init() - No <The_6D> settings.")
+            return
         bodies = self._qtm_settings["The_6D"].get("Body", [])
         if type(bodies) != type([]):
             bodies = [bodies]

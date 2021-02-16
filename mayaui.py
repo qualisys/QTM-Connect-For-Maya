@@ -19,9 +19,19 @@ class QtmConnectShelf:
         self.connected_icon = self.asset_dir + 'connected.png'
         self.start_icon     = self.asset_dir + 'start.png'
         self.stop_icon      = self.asset_dir + 'stop.png'
-        self.shelf_name     = 'QTM_Connect'
-        self.connect_label  = 'Connect to QTM'
-        self.stream_label   = 'Start/stop streaming'
+        self.import_icon    = self.asset_dir + 'import.png'
+        self.export_icon    = self.asset_dir + 'export.png'
+        self.add_dofs_icon  = self.asset_dir + 'add_dofs.png'
+        self.add_attachments_icon = self.asset_dir + 'add_attachments.png'
+        self.wash_locators_icon = self.asset_dir + 'wash_locators.png'
+        self.shelf_name = 'QTM_Connect'
+        self.connect_label = 'Connect to QTM'
+        self.stream_label = 'Start/stop streaming'
+        self.import_label = 'Import skeleton definition'
+        self.export_label = 'Export skeleton definition'
+        self.add_dofs_label = 'Add DOF attributes'
+        self.add_attachments_label = 'Add marker attachments'
+        self.wash_locators_label = 'Wash locators'
 
 
     def install(self):
@@ -30,8 +40,8 @@ class QtmConnectShelf:
         cmds.shelfButton(
             label=self.connect_label,
             parent=shelf_layout,
-            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.qtm_connect_gui()',
-            image1=self.connect_icon
+            image1=self.connect_icon,
+            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.qtm_connect_gui()'
         )
 
         cmds.shelfButton(
@@ -39,7 +49,47 @@ class QtmConnectShelf:
             label=self.stream_label,
             parent=self.shelf_name,
             image1=self.start_icon,
-            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.start()',
+            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.start()'
+        )
+
+        cmds.shelfButton(
+            'import_definition',
+            label=self.import_label,
+            parent=self.shelf_name,
+            image1=self.import_icon,
+            command='import qtm_connect_maya.QImportSolver;reload(qtm_connect_maya.QImportSolver);qtm_connect_maya.QImportSolver.ImportQTMSkeleton()'
+        )
+
+        cmds.shelfButton(
+            'export_definition',
+            label=self.export_label,
+            parent=self.shelf_name,
+            image1=self.export_icon,
+            command='import qtm_connect_maya.QExportSolver;reload(qtm_connect_maya.QExportSolver);qtm_connect_maya.QExportSolver.ExportQTMSkeleton()'
+        )
+
+        cmds.shelfButton(
+            'add_dofs',
+            label=self.add_dofs_label,
+            parent=self.shelf_name,
+            image1=self.add_dofs_icon,
+            command='import qtm_connect_maya.AddDOFAttributes;reload(qtm_connect_maya.AddDOFAttributes);qtm_connect_maya.AddDOFAttributes.AddDOFAttributes()'
+        )
+
+        cmds.shelfButton(
+            'add_attachments',
+            label=self.add_attachments_label,
+            parent=self.shelf_name,
+            image1=self.add_attachments_icon,
+            command='import qtm_connect_maya.AddAttachments;reload(qtm_connect_maya.AddAttachments);qtm_connect_maya.AddAttachments.AddAttachments()'
+        )
+
+        cmds.shelfButton(
+            'wash_locators',
+            label=self.wash_locators_label,
+            parent=self.shelf_name,
+            image1=self.wash_locators_icon,
+            command='import qtm_connect_maya.WashLocators;reload(qtm_connect_maya.WashLocators);qtm_connect_maya.WashLocators.WashLocators()'
         )
 
     # Find the button with the specified name. For some reason Maya resets the

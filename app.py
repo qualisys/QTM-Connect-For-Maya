@@ -180,11 +180,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.rigidBodyComponentButton.toggled.connect(self.component_changed)
         self.widget.tPoseButton.clicked.connect(self.toggle_t_pose)
 
-        self.widget.streamingComponentsLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.connectionContainer.setFixedHeight(88)
-        self.widget.skeletonComponentLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.markerComponentLayout.setContentsMargins(0, 11, 0, 0)
-        self.widget.rigidBodyComponentLayout.setContentsMargins(0, 11, 0, 0)
+        self.widget.connectionContainer.setFixedHeight(110)
         
         if cmds.optionVar(exists='qtmHost') == 1:
             hostname = 'localhost' if cmds.optionVar(q='qtmHost') == '' else cmds.optionVar(q='qtmHost')
@@ -194,10 +190,14 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.hostField.textChanged.connect(self._host_changed)
         self.widget.hostField.setText(hostname)
         self._host = self.widget.hostField.text()
+        #self._password = "password"
+        self._password = ""
         self.is_streaming = False
 
         self._connected_changed(self._qtm.connected)
         self.component_changed()
+
+        self._last_event = None
 
     def component_changed(self):
         self.widget.skeletonComponentContainer.setVisible(self.widget.skeletonComponentButton.isChecked())
@@ -238,10 +238,12 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
                 self._rigid_body_streamer._packet_received(packet)
 
     def _event_received(self, event):
+        self._last_event = event
         self._output('Event received: {}'.format(event))
 
     def _output(self, text):
-        pass
+        #pass
+        print(text)
 
     def _connected_changed(self, connected):
         self.is_connected = connected
@@ -317,6 +319,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.tPoseButton.setEnabled(not streaming)
     
     def stream(self):
+
         components = []
 
         if self.widget.skeletonComponentButton.isChecked():

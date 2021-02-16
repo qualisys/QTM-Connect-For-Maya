@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+	<qresource>
+		<file alias="export.png">export_100.png</file>
+		<file>export_150.png</file>
+		<file>export_200.png</file>
+	</qresource>
+</RCC>
