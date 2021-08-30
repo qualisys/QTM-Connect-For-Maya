@@ -41,7 +41,7 @@ class QtmConnectShelf:
             label=self.connect_label,
             parent=shelf_layout,
             image1=self.connect_icon,
-            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.qtm_connect_gui()'
+            command='import qtm_connect_maya.app;qtm_connect_maya.app.qtm_connect_gui()'
         )
 
         cmds.shelfButton(
@@ -49,7 +49,7 @@ class QtmConnectShelf:
             label=self.stream_label,
             parent=self.shelf_name,
             image1=self.start_icon,
-            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.start()'
+            command='import qtm_connect_maya.app;qtm_connect_maya.app.start()'
         )
 
         cmds.shelfButton(
@@ -57,7 +57,7 @@ class QtmConnectShelf:
             label=self.import_label,
             parent=self.shelf_name,
             image1=self.import_icon,
-            command='import qtm_connect_maya.QImportSolver;reload(qtm_connect_maya.QImportSolver);qtm_connect_maya.QImportSolver.ImportQTMSkeleton()'
+            command='import qtm_connect_maya.QImportSolver;qtm_connect_maya.QImportSolver.ImportQTMSkeleton()'
         )
 
         cmds.shelfButton(
@@ -65,7 +65,7 @@ class QtmConnectShelf:
             label=self.export_label,
             parent=self.shelf_name,
             image1=self.export_icon,
-            command='import qtm_connect_maya.QExportSolver;reload(qtm_connect_maya.QExportSolver);qtm_connect_maya.QExportSolver.ExportQTMSkeleton()'
+            command='import qtm_connect_maya.QExportSolver;qtm_connect_maya.QExportSolver.ExportQTMSkeleton()'
         )
 
         cmds.shelfButton(
@@ -73,7 +73,7 @@ class QtmConnectShelf:
             label=self.add_dofs_label,
             parent=self.shelf_name,
             image1=self.add_dofs_icon,
-            command='import qtm_connect_maya.AddDOFAttributes;reload(qtm_connect_maya.AddDOFAttributes);qtm_connect_maya.AddDOFAttributes.AddDOFAttributes()'
+            command='import qtm_connect_maya.AddDOFAttributes;qtm_connect_maya.AddDOFAttributes.AddDOFAttributes()'
         )
 
         cmds.shelfButton(
@@ -81,7 +81,7 @@ class QtmConnectShelf:
             label=self.add_attachments_label,
             parent=self.shelf_name,
             image1=self.add_attachments_icon,
-            command='import qtm_connect_maya.AddAttachments;reload(qtm_connect_maya.AddAttachments);qtm_connect_maya.AddAttachments.AddAttachments()'
+            command='import qtm_connect_maya.AddAttachments;qtm_connect_maya.AddAttachments.AddAttachments()'
         )
 
         cmds.shelfButton(
@@ -89,7 +89,7 @@ class QtmConnectShelf:
             label=self.wash_locators_label,
             parent=self.shelf_name,
             image1=self.wash_locators_icon,
-            command='import qtm_connect_maya.WashLocators;reload(qtm_connect_maya.WashLocators);qtm_connect_maya.WashLocators.WashLocators()'
+            command='import qtm_connect_maya.WashLocators;qtm_connect_maya.WashLocators.WashLocators()'
         )
 
     # Find the button with the specified name. For some reason Maya resets the
@@ -120,7 +120,7 @@ class QtmConnectShelf:
         cmds.shelfButton(
             stream_button,
             edit=True,
-            command='import qtm_connect_maya.app;reload(qtm_connect_maya.app);qtm_connect_maya.app.' + ('stop()' if mode == 'stop' else 'start()'),
+            command='import qtm_connect_maya.app;qtm_connect_maya.app.' + ('stop()' if mode == 'stop' else 'start()'),
             image1=self.stop_icon if mode == 'stop' else self.start_icon
         )
 

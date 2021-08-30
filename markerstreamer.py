@@ -86,9 +86,9 @@ class MarkerStreamer:
             self._listWidget.addItem(group_item)
 
             for label in marker_group:
-                red = long(label["RGBColor"]) >> 16
-                green = (long(label["RGBColor"]) >> 8) & 0x00FF
-                blue = long(label["RGBColor"]) & 0x0000FF
+                red = int(label["RGBColor"]) >> 16
+                green = (int(label["RGBColor"]) >> 8) & 0x00FF
+                blue = int(label["RGBColor"]) & 0x0000FF
                 marker_color = QtGui.QColor(red, green, blue)
                 icon = load_icon(
                     os.path.dirname(os.path.abspath(__file__))

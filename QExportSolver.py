@@ -75,8 +75,8 @@ class QExportSolver:
     def _SetNamespace(self, namespace):
         self._NS = namespace+u":"
         self._MPNS = self._NS+u"ModelPose:"
-        print "Namespace = ", self._NS
-        print "Model Pose Namespace = ", self._MPNS
+        print ("Namespace = ", self._NS)
+        print ("Model Pose Namespace = ", self._MPNS)
         
     # SetSceneScale()
     #
@@ -108,16 +108,18 @@ class QExportSolver:
         rootNodeName = str(rootNode[0])
         self._rootScale = cmds.getAttr("%s.scaleX" % rootNodeName)
     
-        print "Scene Scale before" , self._sceneScale
-        print "Root Scale        " , self._rootScale
+        print ("Scene Scale before" , self._sceneScale)
+        print ("Root Scale        " , self._rootScale)
         self._sceneScale = self._sceneScale * self._rootScale
-        print "Scene Scale after" , self._sceneScale
+        print ("Scene Scale after" , self._sceneScale)
  
 
     def _Write(self, s):
         if self._fd is not None:
-            os.write(self._fd, s)
-            os.write(self._fd, os.linesep)
+            self._fd.write(s)
+            self._fd.write(os.linesep)
+            #os.write(self._fd, s)
+            #os.write(self._fd, os.linesep)
         else:
             self._sXML = self._sXML + s + u"\n"
             
@@ -505,7 +507,7 @@ def SanityCheck():
                             bPassedTests = False           
                         else:
                             markers = m[0]
-                            print "Found", markers, cmds.nodeType(markers)
+                            print ("Found", markers, cmds.nodeType(markers))
                             parents = cmds.listRelatives(markers,parent=True)
                 
         
@@ -527,8 +529,9 @@ def ExportQTMSkeleton():
             QES = QExportSolver()
             QES.SetSceneScale()
 
-            fd = os.open(fName , os.O_RDWR|os.O_CREAT )
+            #fd = os.open(fName , os.O_RDWR|os.O_CREAT )
+            fd = open(fName , 'w' )
             QES.ExportQTMSkeletonFile(fd)
-            os.close(fd)
-            print "Wrote", fName
+            fd.close()
+            print ("Wrote", fName)
         

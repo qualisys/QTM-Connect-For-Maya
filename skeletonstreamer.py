@@ -41,32 +41,19 @@ class SkeletonStreamer:
         for skeleton_index, skeleton in enumerate(skeletons):
 
             for segment_id, segment_position, segment_rotation in skeleton:
-                if self._up_axis == "y":
-                    translation = om.MVector(
-                        -segment_position.x * self._unit_conversion,
-                        segment_position.z * self._unit_conversion,
-                        segment_position.y * self._unit_conversion,
-                    )
 
-                    rotation = om.MQuaternion(
-                        -segment_rotation.x,
-                        segment_rotation.z,
-                        segment_rotation.y,
-                        segment_rotation.w,
-                    )
-                else:
-                    translation = om.MVector(
-                        segment_position.x * self._unit_conversion,
-                        segment_position.y * self._unit_conversion,
-                        segment_position.z * self._unit_conversion,
-                    )
+                translation = om.MVector(
+                    segment_position.x * self._unit_conversion,
+                    segment_position.y * self._unit_conversion,
+                    segment_position.z * self._unit_conversion,
+                )
 
-                    rotation = om.MQuaternion(
-                        segment_rotation.x,
-                        segment_rotation.y,
-                        segment_rotation.z,
-                        segment_rotation.w,
-                    )
+                rotation = om.MQuaternion(
+                    segment_rotation.x,
+                    segment_rotation.y,
+                    segment_rotation.z,
+                    segment_rotation.w,
+                )
                 ## Debug
                 # if once :
                 #     n = self._segments[skeleton_index][segment_id]["@Name"]
@@ -113,30 +100,18 @@ class SkeletonStreamer:
     def _assume_t_pose(self, skeleton_index, segment):
         transformFn = self._segments[skeleton_index][int(segment["@ID"])]["transformFn"]
 
-        if self._up_axis == "y":
-            translation = om.MVector(
-                -float(segment["DefaultTransform"]["Position"]["@X"]) * self._unit_conversion,
-                float(segment["DefaultTransform"]["Position"]["@Z"]) * self._unit_conversion,
-                float(segment["DefaultTransform"]["Position"]["@Y"]) * self._unit_conversion,
-            )
-            rotation = om.MQuaternion(
-                -float(segment["DefaultTransform"]["Rotation"]["@X"]),
-                float(segment["DefaultTransform"]["Rotation"]["@Z"]),
-                float(segment["DefaultTransform"]["Rotation"]["@Y"]),
-                float(segment["DefaultTransform"]["Rotation"]["@W"]),
-            )
-        else:
-            translation = om.MVector(
-                float(segment["DefaultTransform"]["Position"]["@X"]) * self._unit_conversion,
-                float(segment["DefaultTransform"]["Position"]["@Y"]) * self._unit_conversion,
-                float(segment["DefaultTransform"]["Position"]["@Z"]) * self._unit_conversion,
-            )
-            rotation = om.MQuaternion(
-                float(segment["DefaultTransform"]["Rotation"]["@X"]),
-                float(segment["DefaultTransform"]["Rotation"]["@Y"]),
-                float(segment["DefaultTransform"]["Rotation"]["@Z"]),
-                float(segment["DefaultTransform"]["Rotation"]["@W"]),
-            )
+
+        translation = om.MVector(
+            float(segment["DefaultTransform"]["Position"]["@X"]) * self._unit_conversion,
+            float(segment["DefaultTransform"]["Position"]["@Y"]) * self._unit_conversion,
+            float(segment["DefaultTransform"]["Position"]["@Z"]) * self._unit_conversion,
+        )
+        rotation = om.MQuaternion(
+            float(segment["DefaultTransform"]["Rotation"]["@X"]),
+            float(segment["DefaultTransform"]["Rotation"]["@Y"]),
+            float(segment["DefaultTransform"]["Rotation"]["@Z"]),
+            float(segment["DefaultTransform"]["Rotation"]["@W"]),
+        )
 
         transformFn.setTranslation(translation, om.MSpace.kTransform)
         transformFn.setRotation(rotation.asEulerRotation(), om.MSpace.kTransform)
@@ -226,7 +201,7 @@ class SkeletonStreamer:
     def resume_pose(self, skeleton_name):
         for skeleton_index, skeleton_definition in enumerate(self._skeletons):
             if skeleton_definition["@Name"] == skeleton_name:
-                for segment_id, segment in self._segments[skeleton_index].iteritems():
+                for segment_id, segment in self._segments[skeleton_index].items():
                     if skeleton_index in self._saved_poses and int(segment_id) in self._saved_poses[skeleton_index]:
                         transformFn = self._segments[skeleton_index][int(segment_id)]["transformFn"]
 

@@ -95,7 +95,7 @@ def _get_maya_main_window():
     if ptr is None:
         raise RuntimeError('No Maya window found.')
 
-    return wrapInstance(long(ptr), QtWidgets.QWidget)
+    return wrapInstance(int(ptr), QtWidgets.QWidget)
 
 def show_gui(restore=False):
     parent = _get_maya_main_window()
@@ -227,7 +227,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._qtm.disconnect()
 
     def _packet_received(self, packet):
-        if not isinstance(packet, basestring):
+        if not isinstance(packet, str):
             if QRTComponentType.Component3d in packet.components:
                 self._marker_streamer._packet_received(packet)
 
@@ -302,7 +302,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
     
     def _reset_skeleton_names(self):
         items = []
-        for index in xrange(self.widget.skeletonList.count()):
+        for index in range(self.widget.skeletonList.count()):
             items.append(self.widget.skeletonList.item(index))
 
         for item in items:

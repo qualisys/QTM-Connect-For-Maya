@@ -242,7 +242,12 @@ class QImportSolver:
                         qz = ccs.attrib["Z"]   
                         qw = ccs.attrib["W"]
                         ER = QtoE(qx,qy,qz,qw)                     
-                        #print Spaces(level+1),"Default Transform","Rotation" , px, py, pz, pw            
+                        #print Spaces(level+1),"Default Transform","Rotation" , px, py, pz, pw      
+                        # Get the default transform from the Preferred Angle of the joint
+                        n = str(jMe)
+                        cmds.setAttr("%s.preferredAngleX" % n,ER[0])
+                        cmds.setAttr("%s.preferredAngleY" % n,ER[1])
+                        cmds.setAttr("%s.preferredAngleZ" % n,ER[2])      
             elif cs.tag == "DegreesOfFreedom":
                 #print Spaces(level+1), "DoFs"
                 n = str(jMe)
@@ -409,9 +414,9 @@ class QImportSolver:
                     #print "Do Segments"
                     self._ImportSegments(child) 
                 else:
-                    print "Unrecognized Skeleton child " + child.tag             
+                    print ("Unrecognized Skeleton child " + child.tag   )         
         else:
-            print "Expected skeleton tag.  Found <", tag, ">"
+            print ("Expected skeleton tag.  Found <", tag, ">")
         
   
     #
@@ -434,7 +439,7 @@ class QImportSolver:
                 self._ImportSkeleton(child)
             
         else:
-            print "NO!  <", tag, "> is Not a skeleton definition"
+            print ("NO!  <", tag, "> is Not a skeleton definition")
 
 ################################################################
 #
@@ -460,7 +465,7 @@ def ImportQTMSkeleton():
     fPath = cmds.fileDialog2(fileFilter="QTM Skeleton (*.xml)",caption="Open QTM Skeleton File", fm=1)
     if fPath is not None:
         fName = fPath[0]
-        print fName
+        print (fName)
         dom = ET.parse(fName)
         
         if dom is not None:
