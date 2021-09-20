@@ -1,5 +1,6 @@
 import os, sys, time
 
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/')
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/modules/')
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/modules/qualisys_python_sdk')
 
