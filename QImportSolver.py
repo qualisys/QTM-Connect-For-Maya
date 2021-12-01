@@ -206,6 +206,11 @@ class QImportSolver:
         for cs in segment:
             if cs.tag == "Segment":
                 self._ImportSegment(jMe, cs, level + 1)
+            elif cs.tag == "Solver":
+                n = str(jMe)
+                # Add all the DOF flags and bounds
+                cmds.addAttr(n,ln="Solver",at="bool")
+                cmds.setAttr(n+ ".Solver", True)
             elif cs.tag == "Markers":
                 self._ImportMarkers(jMe, segment, cs, level + 1)
             elif cs.tag == "Transform":
@@ -276,45 +281,111 @@ class QImportSolver:
             
                 for ccs in cs:
                     if ccs.tag == "RotationX":
-                        bounded = False
-                        lb = -180
-                        ub = 180
-                        if "LowerBound" in ccs.attrib:
-                            bounded = True
-                            lb = math.degrees(float(ccs.attrib["LowerBound"]))
-                            ub = math.degrees(float(ccs.attrib["UpperBound"]))
+                        for cccs in ccs:
+                            if cccs.tag == "Constraint":
+                                bounded = False
+                                lb = -180
+                                ub = 180
+                                if "LowerBound" in cccs.attrib:
+                                    bounded = True
+                                    lb = math.degrees(float(cccs.attrib["LowerBound"]))
+                                    ub = math.degrees(float(cccs.attrib["UpperBound"]))
                     
-                        cmds.setAttr(n+ ".XRotDoF", True)
-                        cmds.setAttr(n+".XRotDoF_LowerBound", lb)
-                        cmds.setAttr(n+".XRotDoF_UpperBound", ub)   
+                                cmds.setAttr(n+ ".XRotDoF", True)
+                                cmds.setAttr(n+".XRotDoF_LowerBound", lb)
+                                cmds.setAttr(n+".XRotDoF_UpperBound", ub) 
+
+                            elif cccs.tag == "Couplings":
+                                #print ("Found Couplings for "+ n + ":")
+                                i = 1
+                                for coupling in cccs:
+                                    c_coef = float(coupling.attrib["Coefficient"])
+                                    c_segment = coupling.attrib["Segment"]
+                                    c_coefname = "XRot_CP"+str(i)+"_Coeff"
+                                    c_segmentname = "XRot_CP"+str(i)+"_Segment"
+                                    print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
+                                    print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
+                                    cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
+                                    cmds.addAttr(n,ln=c_segmentname,dt="string")
+                                    cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
+                                    i = i + 1
+
+                            elif cccs.tag == "Goal":
+                                goal_value = float(cccs.attrib["Value"])
+                                goal_weight = float(cccs.attrib["Weight"])
+                                cmds.addAttr(n,ln="XRot_Goal_Value", defaultValue=goal_value)
+                                cmds.addAttr(n,ln="XRot_Goal_Weight",defaultValue=goal_weight)
+
                         #print Spaces(level+2), "RX", bounded, "LowerBound", lb, "UpperBound", ub
                     elif ccs.tag == "RotationY":   
-                        bounded = False
-                        lb = -180
-                        ub = 180
-                        if "LowerBound" in ccs.attrib:
-                            bounded = True
-                            lb = math.degrees(float(ccs.attrib["LowerBound"]))
-                            ub = math.degrees(float(ccs.attrib["UpperBound"]))
-
-                        cmds.setAttr(n+ ".YRotDoF", True)
-                        cmds.setAttr(n+".YRotDoF_LowerBound", lb)
-                        cmds.setAttr(n+".YRotDoF_UpperBound", ub)
-
+                        for cccs in ccs:
+                            if cccs.tag == "Constraint":
+                                bounded = False
+                                lb = -180
+                                ub = 180
+                                if "LowerBound" in cccs.attrib:
+                                    bounded = True
+                                    lb = math.degrees(float(cccs.attrib["LowerBound"]))
+                                    ub = math.degrees(float(cccs.attrib["UpperBound"]))
+                    
+                                cmds.setAttr(n+ ".YRotDoF", True)
+                                cmds.setAttr(n+".YRotDoF_LowerBound", lb)
+                                cmds.setAttr(n+".YRotDoF_UpperBound", ub) 
+                            elif cccs.tag == "Couplings":
+                                #print ("Found Couplings for "+ n + ":")
+                                i = 1
+                                for coupling in cccs:
+                                    c_coef = float(coupling.attrib["Coefficient"])
+                                    c_segment = coupling.attrib["Segment"]
+                                    c_coefname = "YRot_CP"+str(i)+"_Coeff"
+                                    c_segmentname = "YRot_CP"+str(i)+"_Segment"
+                                    print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
+                                    print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
+                                    cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
+                                    cmds.addAttr(n,ln=c_segmentname,dt="string")
+                                    cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
+                                    i = i + 1
+                                    
+                            elif cccs.tag == "Goal":
+                                goal_value = float(cccs.attrib["Value"])
+                                goal_weight = float(cccs.attrib["Weight"])
+                                cmds.addAttr(n,ln="YRot_Goal_Value", defaultValue=goal_value)
+                                cmds.addAttr(n,ln="YRot_Goal_Weight",defaultValue=goal_weight)
                     
                         #print Spaces(level+2), "RY", bounded, "LowerBound", lb, "UpperBound", ub                  
                     elif ccs.tag == "RotationZ":   
-                        bounded = False
-                        lb = -180
-                        ub = 180
-                        if "LowerBound" in ccs.attrib:
-                            bounded = True
-                            lb = math.degrees(float(ccs.attrib["LowerBound"]))
-                            ub = math.degrees(float(ccs.attrib["UpperBound"]))
-
-                        cmds.setAttr(n+ ".ZRotDoF", True)
-                        cmds.setAttr(n+".ZRotDoF_LowerBound", lb)
-                        cmds.setAttr(n+".ZRotDoF_UpperBound", ub)
+                        for cccs in ccs:
+                            if cccs.tag == "Constraint":
+                                bounded = False
+                                lb = -180
+                                ub = 180
+                                if "LowerBound" in cccs.attrib:
+                                    bounded = True
+                                    lb = math.degrees(float(cccs.attrib["LowerBound"]))
+                                    ub = math.degrees(float(cccs.attrib["UpperBound"]))
+                    
+                                cmds.setAttr(n+ ".ZRotDoF", True)
+                                cmds.setAttr(n+".ZRotDoF_LowerBound", lb)
+                                cmds.setAttr(n+".ZRotDoF_UpperBound", ub) 
+                            elif cccs.tag == "Couplings":
+                                #print ("Found Couplings for "+ n + ":")
+                                i = 1
+                                for coupling in cccs:
+                                    c_coef = float(coupling.attrib["Coefficient"])
+                                    c_segment = coupling.attrib["Segment"]
+                                    c_coefname = "ZRot_CP"+str(i)+"_Coeff"
+                                    c_segmentname = "ZRot_CP"+str(i)+"_Segment"
+                                    print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
+                                    print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
+                                    cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
+                                    cmds.addAttr(n,ln=c_segmentname,dt="string")
+                                    cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
+                                    i = i + 1
+                            elif cccs.tag == "Goal":
+                                goal_value = float(cccs.attrib["Value"])
+                                goal_weight = float(cccs.attrib["Weight"])
+                                cmds.addAttr(n,ln="ZRot_Goal_Value", defaultValue=goal_value)
+                                cmds.addAttr(n,ln="ZRot_Goal_Weight",defaultValue=goal_weight)
 
                         #print Spaces(level+2), "RZ", bounded, "LowerBound", lb, "UpperBound", ub
                     elif ccs.tag == "TranslationX":

@@ -20,6 +20,7 @@ class SkeletonStreamer:
         self._in_t_pose = []
         self._skeletons = []
         self._modifier = None
+        self._skeletonsGroupNode = None
 
         self._qtm.connectedChanged.connect(self._connected_changed)
         self._connected_changed(self._qtm.connected)
@@ -36,12 +37,17 @@ class SkeletonStreamer:
     def _packet_received(self, packet):
         _, skeletons = packet.get_skeletons()
 
-        # once = True
-        
+        toYQ = om.MQuaternion(0.707107,0,0, -0.707107)
+        toYM = om.MTransformationMatrix()
+        toYM.rotateBy(toYQ,om.MSpace.kPreTransform)
+        if self._up_axis == "y" and self._skeletonsGroupNode:
+            cmds.setAttr("Skeletons.rotateX", 90)
+            cmds.setAttr("Skeletons.rotateZ", 180)
+
         for skeleton_index, skeleton in enumerate(skeletons):
-
+    
             for segment_id, segment_position, segment_rotation in skeleton:
-
+                
                 translation = om.MVector(
                     segment_position.x * self._unit_conversion,
                     segment_position.y * self._unit_conversion,
@@ -54,15 +60,6 @@ class SkeletonStreamer:
                     segment_rotation.z,
                     segment_rotation.w,
                 )
-                ## Debug
-                # if once :
-                #     n = self._segments[skeleton_index][segment_id]["@Name"]
-                #     print ("Skeleton ", n ,"First Q: ",
-                #         segment_rotation.x,
-                #         segment_rotation.y,
-                #         segment_rotation.z,
-                #         segment_rotation.w)
-                #    once = False
 
                 transformFn = self._segments[skeleton_index][segment_id]["transformFn"]
                 transformFn.setTranslation(translation, om.MSpace.kTransform)
@@ -146,6 +143,14 @@ class SkeletonStreamer:
             if type(self._skeletons) != type([]):
                 self._skeletons = [self._skeletons]
 
+        
+            self._skeletonsGroupNode = MayaUtil.get_node_by_name("Skeletons")
+
+            if self._skeletonsGroupNode is None:
+                self._skeletonsGroupNode = cmds.createNode("transform", name="Skeletons")
+                #print(f"    Creating new Skeltons group node")
+
+
             for skeleton_index, skeleton in enumerate(self._skeletons):
                 if not cmds.namespace( exists=skeleton["@Name"] ):
                     cmds.namespace( add=skeleton["@Name"] )
@@ -177,6 +182,9 @@ class SkeletonStreamer:
             self._modifier.reparentNode(
                 j, self._segments[skeleton_index][int(parent_id)]["MObject"]
             )
+        elif create:
+            self._modifier.doIt()
+            cmds.parent(segment_name, self._skeletonsGroupNode)
 
         if create:
             self._assume_t_pose(skeleton_index, segment)
@@ -192,7 +200,7 @@ class SkeletonStreamer:
     def t_pose(self, skeleton_name):
         for skeleton_index, skeleton_definition in enumerate(self._skeletons):
             if skeleton_definition["@Name"] == skeleton_name:
-                for segment_id, segment in self._segments[skeleton_index].iteritems():
+                for segment_id, segment in self._segments[skeleton_index].items():
                     self._save_pose(skeleton_index, segment)
                     self._assume_t_pose(skeleton_index, segment)
 

@@ -117,9 +117,8 @@ class QExportSolver:
     def _Write(self, s):
         if self._fd is not None:
             self._fd.write(s)
-            self._fd.write(os.linesep)
-            #os.write(self._fd, s)
-            #os.write(self._fd, os.linesep)
+            #self._fd.write(os.linesep)
+            self._fd.write(u"\n")
         else:
             self._sXML = self._sXML + s + u"\n"
             
@@ -254,15 +253,78 @@ class QExportSolver:
             if bRX:
                 lb = math.radians(cmds.getAttr("%s.XRotDoF_LowerBound" % nodeName))
                 ub = math.radians(cmds.getAttr("%s.XRotDoF_UpperBound" % nodeName))
-                self._Write( Spaces(level+2)+"<RotationX LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
+                self._Write( Spaces(level+2)+"<RotationX>")
+                self._Write( Spaces(level+3)+"<Constraint LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
+                                # Check for coupling definition
+                bHasCoupling1 = cmds.attributeQuery("XRot_CP1_Coeff",node=nodeName, exists=True)
+                bHasCoupling2 = cmds.attributeQuery("XRot_CP2_Coeff",node=nodeName, exists=True)
+
+                if bHasCoupling1:
+                    bCP1_coeff = cmds.getAttr("%s.XRot_CP1_Coeff"% nodeName)
+                    bCP1_segment = cmds.getAttr("%s.XRot_CP1_Segment"% nodeName)
+                if bHasCoupling2:
+                    bCP2_coeff = cmds.getAttr("%s.XRot_CP2_Coeff"% nodeName)
+                    bCP2_segment = cmds.getAttr("%s.XRot_CP2_Segment"% nodeName)
+                if bHasCoupling1:
+                    self._Write( Spaces(level+3) + "<Couplings>")
+                    self._Write( Spaces(level+4)+ "<Coupling Coefficient=\""+str(bCP1_coeff)+"\" DegreeOfFreedom=\"RotationX\" Segment=\""+ bCP1_segment+"\"/>")
+                    if bHasCoupling2:
+                        self._Write( Spaces(level+4)+ "<Coupling Coefficient=\""+str(bCP2_coeff)+"\" DegreeOfFreedom=\"RotationX\" Segment=\""+ bCP2_segment+"\"/>")
+
+                    self._Write( Spaces(level+3) + "</Couplings>")
+                self._Write( Spaces(level+2)+"</RotationX>")
+
             if bRY:     
                 lb = math.radians(cmds.getAttr("%s.YRotDoF_LowerBound" % nodeName))
                 ub = math.radians(cmds.getAttr("%s.YRotDoF_UpperBound" % nodeName))
-                self._Write( Spaces(level+2)+"<RotationY LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
+                #self._Write( Spaces(level+2)+"<RotationY LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
+                self._Write( Spaces(level+2)+"<RotationY>")
+                self._Write( Spaces(level+3)+"<Constraint LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
+
+                # Check for coupling definition
+                bHasCoupling1 = cmds.attributeQuery("YRot_CP1_Coeff",node=nodeName, exists=True)
+                bHasCoupling2 = cmds.attributeQuery("YRot_CP2_Coeff",node=nodeName, exists=True)
+
+                if bHasCoupling1:
+                    bCP1_coeff = cmds.getAttr("%s.YRot_CP1_Coeff"% nodeName)
+                    bCP1_segment = cmds.getAttr("%s.YRot_CP1_Segment"% nodeName)
+                if bHasCoupling2:
+                    bCP2_coeff = cmds.getAttr("%s.YRot_CP2_Coeff"% nodeName)
+                    bCP2_segment = cmds.getAttr("%s.YRot_CP2_Segment"% nodeName)
+                if bHasCoupling1:
+                    self._Write( Spaces(level+3) + "<Couplings>")
+                    self._Write( Spaces(level+4)+ "<Coupling Coefficient=\""+str(bCP1_coeff)+"\" DegreeOfFreedom=\"RotationY\" Segment=\""+ bCP1_segment+"\"/>")
+                    if bHasCoupling2:
+                        self._Write( Spaces(level+4)+ "<Coupling Coefficient=\""+str(bCP2_coeff)+"\" DegreeOfFreedom=\"RotationY\" Segment=\""+ bCP2_segment+"\"/>")
+
+                    self._Write( Spaces(level+3) + "</Couplings>")
+                self._Write( Spaces(level+2)+"</RotationY>")
+
+
             if bRZ: 
                 lb = math.radians(cmds.getAttr("%s.ZRotDoF_LowerBound" % nodeName))
                 ub = math.radians(cmds.getAttr("%s.ZRotDoF_UpperBound" % nodeName))
-                self._Write( Spaces(level+2)+"<RotationZ LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
+                self._Write( Spaces(level+2)+"<RotationZ>")
+                self._Write( Spaces(level+3)+"<Constraints LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
+                                # Check for coupling definition
+                bHasCoupling1 = cmds.attributeQuery("ZRot_CP1_Coeff",node=nodeName, exists=True)
+                bHasCoupling2 = cmds.attributeQuery("ZRot_CP2_Coeff",node=nodeName, exists=True)
+
+                if bHasCoupling1:
+                    bCP1_coeff = cmds.getAttr("%s.ZRot_CP1_Coeff"% nodeName)
+                    bCP1_segment = cmds.getAttr("%s.ZRot_CP1_Segment"% nodeName)
+                if bHasCoupling2:
+                    bCP2_coeff = cmds.getAttr("%s.ZRot_CP2_Coeff"% nodeName)
+                    bCP2_segment = cmds.getAttr("%s.ZRot_CP2_Segment"% nodeName)
+                if bHasCoupling1:
+                    self._Write( Spaces(level+3) + "<Couplings>")
+                    self._Write( Spaces(level+4)+ "<Coupling Coefficient=\""+str(bCP1_coeff)+"\" DegreeOfFreedom=\"RotationZ\" Segment=\""+ bCP1_segment+"\"/>")
+                    if bHasCoupling2:
+                        self._Write( Spaces(level+4)+ "<Coupling Coefficient=\""+str(bCP2_coeff)+"\" DegreeOfFreedom=\"RotationZ\" Segment=\""+ bCP2_segment+"\"/>")
+
+                    self._Write( Spaces(level+3) + "</Couplings>")
+                self._Write( Spaces(level+2)+"</RotationZ>")
+
             if bTX:
                 self._Write( Spaces(level+2)+"<TranslationX/>")
             if bTY:
@@ -294,6 +356,10 @@ class QExportSolver:
             end_py = str(cmds.getAttr("%s.translateY" % endNode) * self._sceneScale)
             end_pz = str(cmds.getAttr("%s.translateZ" % endNode) * self._sceneScale)
 
+        # Check for solver root
+        bHasSolver = cmds.attributeQuery("Solver",node=str(jointNode), exists=True)
+        if bHasSolver :
+            self._Write( Spaces(level+1) +"<Solver> Global Optimization </Solver>")
         self._ExportTransform(jointNode,level+1)
 
         # Hardcode Dofs for now, root has translation and rotation

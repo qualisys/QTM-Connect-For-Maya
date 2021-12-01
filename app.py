@@ -23,6 +23,7 @@ from mayaui import QtmConnectShelf
 from markerstreamer import MarkerStreamer
 from skeletonstreamer import SkeletonStreamer
 from rigidbodystreamer import RigidBodyStreamer
+import importlib
 
 MAYA = False
 
@@ -100,6 +101,7 @@ def _get_maya_main_window():
 
 def show_gui(restore=False):
     parent = _get_maya_main_window()
+
 
     ''' When the control is restoring, the workspace control has already been created and
     all that needs to be done is restoring its UI.
