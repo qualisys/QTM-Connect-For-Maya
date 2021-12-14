@@ -255,7 +255,8 @@ class QExportSolver:
                 ub = math.radians(cmds.getAttr("%s.XRotDoF_UpperBound" % nodeName))
                 self._Write( Spaces(level+2)+"<RotationX>")
                 self._Write( Spaces(level+3)+"<Constraint LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
-                                # Check for coupling definition
+
+                # Check for coupling definition
                 bHasCoupling1 = cmds.attributeQuery("XRot_CP1_Coeff",node=nodeName, exists=True)
                 bHasCoupling2 = cmds.attributeQuery("XRot_CP2_Coeff",node=nodeName, exists=True)
 
@@ -277,7 +278,6 @@ class QExportSolver:
             if bRY:     
                 lb = math.radians(cmds.getAttr("%s.YRotDoF_LowerBound" % nodeName))
                 ub = math.radians(cmds.getAttr("%s.YRotDoF_UpperBound" % nodeName))
-                #self._Write( Spaces(level+2)+"<RotationY LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
                 self._Write( Spaces(level+2)+"<RotationY>")
                 self._Write( Spaces(level+3)+"<Constraint LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
 
@@ -306,7 +306,8 @@ class QExportSolver:
                 ub = math.radians(cmds.getAttr("%s.ZRotDoF_UpperBound" % nodeName))
                 self._Write( Spaces(level+2)+"<RotationZ>")
                 self._Write( Spaces(level+3)+"<Constraints LowerBound=\""+str(lb)+"\" UpperBound=\""+str(ub)+"\"/>")
-                                # Check for coupling definition
+
+                # Check for coupling definition
                 bHasCoupling1 = cmds.attributeQuery("ZRot_CP1_Coeff",node=nodeName, exists=True)
                 bHasCoupling2 = cmds.attributeQuery("ZRot_CP2_Coeff",node=nodeName, exists=True)
 
