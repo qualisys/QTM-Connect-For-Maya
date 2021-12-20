@@ -1,5 +1,6 @@
 import os, sys, time
 
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/')
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/modules/')
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/modules/qualisys_python_sdk')
 
@@ -22,6 +23,7 @@ from mayaui import QtmConnectShelf
 from markerstreamer import MarkerStreamer
 from skeletonstreamer import SkeletonStreamer
 from rigidbodystreamer import RigidBodyStreamer
+import importlib
 
 MAYA = False
 
@@ -95,10 +97,11 @@ def _get_maya_main_window():
     if ptr is None:
         raise RuntimeError('No Maya window found.')
 
-    return wrapInstance(long(ptr), QtWidgets.QWidget)
+    return wrapInstance(int(ptr), QtWidgets.QWidget)
 
 def show_gui(restore=False):
     parent = _get_maya_main_window()
+
 
     ''' When the control is restoring, the workspace control has already been created and
     all that needs to be done is restoring its UI.
@@ -227,7 +230,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._qtm.disconnect()
 
     def _packet_received(self, packet):
-        if not isinstance(packet, basestring):
+        if not isinstance(packet, str):
             if QRTComponentType.Component3d in packet.components:
                 self._marker_streamer._packet_received(packet)
 
@@ -302,7 +305,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
     
     def _reset_skeleton_names(self):
         items = []
-        for index in xrange(self.widget.skeletonList.count()):
+        for index in range(self.widget.skeletonList.count()):
             items.append(self.widget.skeletonList.item(index))
 
         for item in items:

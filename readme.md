@@ -18,6 +18,10 @@ Manual
 5. In Maya, open the script editor and run the following Python code:  
 `import qtm_connect_maya;import qtm_connect_maya.mayaui;qtm_connect_maya.mayaui.install()`
 
+### Note on Maya versions
+Maya2022 uses Python3.7, earlier versions use Python2.7.  The main branch of the plugin has been updated to Python3.7.
+For earlier vesions of Maya you must use the Python2.7 branch.
+
 ## Streaming skeleton data
 To stream skeleton data you must first define a skeleton in QTM. Do this by clicking the `Calibrate skeleton` button in QTM.
 

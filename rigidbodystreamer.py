@@ -17,6 +17,7 @@ class RigidBodyStreamer:
         self._listWidget = listWidget
         self._bodies = None
         self._unit_conversion = 0.1
+        self._rigidBodiesGroupNode = None
 
         self._qtm.connectedChanged.connect(self._connected_changed)
         self._connected_changed(self._qtm.connected)
@@ -40,57 +41,34 @@ class RigidBodyStreamer:
             transformFn = self._bodies[i]["transformFn"]
 
             if self._up_axis == "y":
-                translation = om.MVector(
-                    -body_position.x * self._unit_conversion,
-                    body_position.z * self._unit_conversion,
-                    body_position.y * self._unit_conversion,
-                )
-                matrix = MMatrix(
-                    [
-                        rot[0],
-                        -rot[2],
-                        -rot[1],
-                        0,
-                        -rot[6],
-                        rot[8],
-                        rot[7],
-                        0,
-                        -rot[3],
-                        rot[5],
-                        rot[4],
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                    ]
-                )
-            else:
-                translation = om.MVector(
-                    body_position.x * self._unit_conversion,
-                    body_position.y * self._unit_conversion,
-                    body_position.z * self._unit_conversion,
-                )
-                matrix = MMatrix(
-                    [
-                        rot[0],
-                        rot[1],
-                        rot[2],
-                        0,
-                        rot[3],
-                        rot[4],
-                        rot[5],
-                        0,
-                        rot[6],
-                        rot[7],
-                        rot[8],
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                    ]
-                )
+                cmds.setAttr("RigidBodies.rotateX", 90)
+                cmds.setAttr("RigidBodies.rotateZ", 180)
+
+            translation = om.MVector(
+                body_position.x * self._unit_conversion,
+                body_position.y * self._unit_conversion,
+                body_position.z * self._unit_conversion,
+            )
+            matrix = MMatrix(
+                [
+                    rot[0],
+                    rot[1],
+                    rot[2],
+                    0,
+                    rot[3],
+                    rot[4],
+                    rot[5],
+                    0,
+                    rot[6],
+                    rot[7],
+                    rot[8],
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                ]
+            )
 
             transformFn.setTransformation(MTransformationMatrix(matrix))
             transformFn.setTranslation(translation, om.MSpace.kTransform)
@@ -125,11 +103,19 @@ class RigidBodyStreamer:
 
             self._listWidget.addItem(item)
 
+
+
     def create(self):
         if self._bodies == None:
             return
 
         modifier = om.MDagModifier()
+        self._rigidBodiesGroupNode = MayaUtil.get_node_by_name("RigidBodies")
+
+        if self._rigidBodiesGroupNode is None:
+            self._rigidBodiesGroupNode = cmds.createNode("transform", name="RigidBodies")
+            #print(f"    Creating new RIgidBodies group node")
+
 
         for body in self._bodies:
             parent = MayaUtil.get_node_by_name(body["Name"])
@@ -139,11 +125,14 @@ class RigidBodyStreamer:
 
                 modifier.renameNode(parent, body["Name"])
                 modifier.doIt()
+                cmds.parent(body["Name"],self._rigidBodiesGroupNode) #parent is the child
 
             transformFn = om.MFnTransform(parent)
 
-            for i, point in enumerate(body["Point"]):
-                point_name = body["Name"] + "_" + str(i)
+            Points = body["Points"]
+            for i, point in enumerate(Points["Point"]):
+                #point_name = point["Name"] + "_" + str(i)
+                point_name = point["@Name"]
                 locator = MayaUtil.get_node_by_name(point_name)
 
                 if locator is None:
@@ -157,18 +146,12 @@ class RigidBodyStreamer:
                 pointTransformFn = om.MFnTransform(locator)
                 translation = None
 
-                if self._up_axis == "y":
-                    translation = om.MVector(
-                        -float(point["X"]) * self._unit_conversion,
-                        float(point["Z"]) * self._unit_conversion,
-                        float(point["Y"]) * self._unit_conversion,
-                    )
-                else:
-                    translation = om.MVector(
-                        float(point["X"]) * self._unit_conversion,
-                        float(point["Y"]) * self._unit_conversion,
-                        float(point["Z"]) * self._unit_conversion,
-                    )
+
+                translation = om.MVector(
+                    float(point["@X"]) * self._unit_conversion,
+                    float(point["@Y"]) * self._unit_conversion,
+                    float(point["@Z"]) * self._unit_conversion,
+                )
 
                 pointTransformFn.setTranslation(translation, om.MSpace.kTransform)
             self._bodies[body["Index"]].update(

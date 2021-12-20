@@ -36,22 +36,16 @@ class MarkerStreamer:
     def _packet_received(self, packet):
         _, markers = packet.get_3d_markers()
 
+        if self._up_axis == "y":
+            cmds.setAttr("mocapMarkers.rotateX", 90)
+            cmds.setAttr("mocapMarkers.rotateZ", 180)
+
         for i, marker in enumerate(markers):
             transformFn = self._markers[i]["transformFn"]
-
-            if self._up_axis == "y":
-                translation = om.MVector(
-                    -marker.x * self._unit_conversion,
-                    marker.z * self._unit_conversion,
-                    marker.y * self._unit_conversion,
-                )
-            else:
-                translation = om.MVector(
+            translation = om.MVector(
                     marker.x * self._unit_conversion,
                     marker.y * self._unit_conversion,
-                    marker.z * self._unit_conversion,
-                )
-
+                    marker.z * self._unit_conversion)
             transformFn.setTranslation(translation, om.MSpace.kTransform)
 
     def _init(self):
@@ -86,9 +80,9 @@ class MarkerStreamer:
             self._listWidget.addItem(group_item)
 
             for label in marker_group:
-                red = long(label["RGBColor"]) >> 16
-                green = (long(label["RGBColor"]) >> 8) & 0x00FF
-                blue = long(label["RGBColor"]) & 0x0000FF
+                red = int(label["RGBColor"]) >> 16
+                green = (int(label["RGBColor"]) >> 8) & 0x00FF
+                blue = int(label["RGBColor"]) & 0x0000FF
                 marker_color = QtGui.QColor(red, green, blue)
                 icon = load_icon(
                     os.path.dirname(os.path.abspath(__file__))

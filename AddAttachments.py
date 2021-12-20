@@ -12,8 +12,8 @@ def AddAttachments():
             markerName = str(m).split(":")[-1]
             a = jointName + "." + markerName
             if cmds.attributeQuery(markerName,node=jointName, exists=True):
-                print "Attachment", markerName, "already exists"
+                print ("Attachment", markerName, "already exists")
             else:
                 a = jointName + "." + markerName
-                print a
+                print (a)
                 cmds.addAttr(jointName,ln=markerName, defaultValue=1.0)
