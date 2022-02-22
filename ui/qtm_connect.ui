@@ -1,204 +1,210 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-	<class>Form</class>
-	<widget class="QWidget" name="Form">
-		<property name="geometry">
-			<rect>
-				<x>400</x>
-				<y>300</y>
-				<width>400</width>
-				<height>100</height>
-			</rect>
-		</property>
-		<property name="windowTitle">
-			<string>Form</string>
-		</property>
-		<layout class="QVBoxLayout" name="verticalLayout">
-			<item>
-				<widget class="QWidget" name="connectionContainer">
-					<layout class="QVBoxLayout" name="connectionLayout">
-						<item>
-							<layout class="QHBoxLayout" name="horizontalLayout_3">
-								<item>
-									<widget class="QLineEdit" name="hostField">
-										<property name="text">
-										</property>
-									</widget>
-								</item>
-								<item>
-									<widget class="QPushButton" name="connectButton">
-										<property name="text">
-										<string>Connect</string>
-										</property>
-									</widget>
-								</item>
-							</layout>
-						</item>
-						<item>
-							<layout class="QHBoxLayout" name="streamingComponentsLayout">
-								<item>
-									<widget class="QCheckBox" name="skeletonComponentButton">
-										<property name="text">
-											<string>Skeletons</string>
-										</property>
-										<property name="checked">
-											<bool>true</bool>
-										</property>
-									</widget>
-								</item>
-								<item>
-									<widget class="QCheckBox" name="markerComponentButton">
-										<property name="text">
-											<string>Markers</string>
-										</property>
-										<property name="checked">
-											<bool>false</bool>
-										</property>
-									</widget>
-								</item>
-								<item>
-									<widget class="QCheckBox" name="rigidBodyComponentButton">
-										<property name="text">
-											<string>Rigid bodies</string>
-										</property>
-										<property name="checked">
-											<bool>false</bool>
-										</property>
-									</widget>
-								</item>
-							</layout>
-						</item>
-						<item>
-							<layout class="QHBoxLayout" name="horizontalLayout">
-								<item>
-									<widget class="QPushButton" name="startButton">
-									<property name="enabled">
-										<bool>false</bool>
-									</property>
-									<property name="text">
-										<string>Stream from QTM</string>
-									</property>
-									</widget>
-								</item>
-								<item>
-									<widget class="QPushButton" name="stopButton">
-										<property name="enabled">
-											<bool>false</bool>
-										</property>
-										<property name="text">
-											<string>Stop streaming</string>
-										</property>
-									</widget>
-								</item>
-							</layout>
-						</item>
-					</layout>
-				</widget>
-			</item>
-			<item>
-				<widget class="QWidget" name="skeletonComponentContainer">
-					<layout class="QVBoxLayout" name="skeletonComponentLayout">
-						<item>
-							<widget class="QLabel" name="skeletonListLabel">
-								<property name="text">
-									<string>Skeletons</string>
-								</property>
-							</widget>
-						</item>
-						<item>
-							<widget class="QListWidget" name="skeletonList">
-								<property name="readOnly">
-									<bool>true</bool>
-								</property>
-							</widget>
-						</item>
-						<item>
-							<widget class="QPushButton" name="tPoseButton">
-							<property name="enabled">
-								<bool>false</bool>
-							</property>
-							<property name="text">
-								<string>Go to T-pose</string>
-							</property>
-							</widget>
-						</item>
-					</layout>
-				</widget>
-			</item>
-			<item>
-				<widget class="QWidget" name="markerComponentContainer">
-					<layout class="QVBoxLayout" name="markerComponentLayout">
-						<item>
-							<widget class="QLabel" name="skeletonListLabel">
-								<property name="text">
-									<string>Markers</string>
-								</property>
-							</widget>
-						</item>
-						<item>
-							<widget class="QListWidget" name="markerList">
-								<property name="readOnly">
-									<bool>true</bool>
-								</property>
-							</widget>
-						</item>
-						<item>
-							<layout class="QVBoxLayout" name="markerGroupLayout">
-								<item>
-									<layout class="QHBoxLayout" name="markerGroupButtonLayout">
-										<item>
-											<widget class="QLineEdit" name="groupNameField">
-												<property name="text"></property>
-											</widget>
-										</item>
-										<item>
-											<widget class="QPushButton" name="groupButton">
-												<property name="enabled">
-													<bool>false</bool>
-												</property>
-												<property name="text">
-													<string>Group</string>
-												</property>
-											</widget>
-										</item>
-									</layout>
-								</item>
-								<item>
-								</item>
-								<item>
-									<widget class="QLabel" name="groupLabel">
-										<property name="text">
-											<string>&lt;span style="font-size: 9px;"&gt;Locators will be parented according to the groups created here.&lt;/span&gt;</string>
-										</property>
-									</widget>
-								</item>
-							</layout>
-						</item>
-					</layout>
-				</widget>
-			</item>
-			<item>
-				<widget class="QWidget" name="rigidBodyComponentContainer">
-					<layout class="QVBoxLayout" name="rigidBodyComponentLayout">
-						<item>
-							<widget class="QLabel" name="rigidBodyListLabel">
-								<property name="text">
-									<string>Rigid bodies</string>
-								</property>
-							</widget>
-						</item>
-						<item>
-							<widget class="QListWidget" name="rigidBodyList">
-								<property name="readOnly">
-									<bool>true</bool>
-								</property>
-							</widget>
-						</item>
-					</layout>
-				</widget>
-			</item>
-		</layout>
-	</widget>
-	<resources/>
-	<connections/>
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>460</width>
+    <height>688</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="connectionLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLineEdit" name="hostField">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="connectButton">
+         <property name="text">
+          <string>Connect</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="streamingComponentsLayout">
+       <item>
+        <widget class="QCheckBox" name="skeletonComponentButton">
+         <property name="text">
+          <string>Skeletons</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="markerComponentButton">
+         <property name="text">
+          <string>Markers</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="rigidBodyComponentButton">
+         <property name="text">
+          <string>Rigid bodies</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="startButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Stream from QTM</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="stopButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Stop streaming</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="skeletonComponentLayout">
+     <item>
+      <widget class="QLabel" name="skeletonListLabel">
+       <property name="text">
+        <string>Skeletons</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="skeletonList">
+       <property name="readOnly" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="tPoseButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Go to T-pose</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="markerComponentLayout">
+     <item>
+      <widget class="QLabel" name="skeletonListLabel">
+       <property name="text">
+        <string>Markers</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="markerList">
+       <property name="readOnly" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="markerGroupLayout">
+       <item>
+        <layout class="QHBoxLayout" name="markerGroupButtonLayout">
+         <item>
+          <widget class="QLineEdit" name="groupNameField">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="groupButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Group</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="groupLabel">
+         <property name="text">
+          <string>&lt;span style=&quot;font-size: 9px;&quot;&gt;Locators will be parented according to the groups created here.&lt;/span&gt;</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="rigidBodyComponentLayout">
+     <item>
+      <widget class="QLabel" name="rigidBodyListLabel">
+       <property name="text">
+        <string>Rigid bodies</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="rigidBodyList">
+       <property name="readOnly" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="lineEditSkeletonName"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="getMarkers">
+     <property name="text">
+      <string>Get Marker in current frame</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
 </ui>
