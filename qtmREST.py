@@ -12,9 +12,7 @@ def GetData(Markers=True,hostIp = "127.0.0.1", Start = 0, End=0):
         query['Start'] = str(Start)
     if End:
         query['End'] = str(End)    
-    #query = {'Markers':'true', 'Start':'0', "End":"10"}
-    #query = {'Markers':'true'}
-    #print(query)
+    print(reqString)
     response = requests.get(reqString)
     messurmentsResponse = response.json()
     messurmentGUID = ""
@@ -36,7 +34,7 @@ def GetData(Markers=True,hostIp = "127.0.0.1", Start = 0, End=0):
     #markers = rJson["Markers"]
 
 def GetLabledMarkers(hostIp = "127.0.0.1",Range = [0,0], GetCurrentFrame = False):
-    fileInfo,time = GetData(Markers=False)
+    fileInfo,time = GetData(Markers=False, hostIp=hostIp)
     start = fileInfo["Timebase"]["Range"]["Start"]
     end = fileInfo["Timebase"]["Range"]["End"]
     if  Range[0]:
@@ -56,6 +54,7 @@ def GetLabledMarkers(hostIp = "127.0.0.1",Range = [0,0], GetCurrentFrame = False
 
     print(start)
     print(end)
+    print(hostIp)
     data,reqTime = GetData(Markers=True, hostIp = hostIp, Start = start, End = start+10)
     timeForTenFrames = reqTime
     framesToFetch = int(np.trunc(20/timeForTenFrames))
@@ -73,7 +72,7 @@ def GetLabledMarkers(hostIp = "127.0.0.1",Range = [0,0], GetCurrentFrame = False
     for frameStart in range(start, end, framesToFetch):
         tic = t.perf_counter()
         print("Frame: "+ str(frameStart) + " to " + str(frameStart + framesToFetch-1))
-        data,reqTime = GetData(Markers=True, Start = frameStart, End = frameStart+framesToFetch-1)
+        data,reqTime = GetData(Markers=True, hostIp = hostIp, Start = frameStart, End = frameStart+framesToFetch-1)
         remTime = int(np.round((end-frameStart) * reqTime/(framesToFetch-1)))
         print("Fetched: " + str(framesToFetch-1) + " frames in " + str(reqTime) + " second, approximate time left " + t.strftime('%H:%M:%S', t.gmtime(remTime)))
         
@@ -84,7 +83,31 @@ def GetLabledMarkers(hostIp = "127.0.0.1",Range = [0,0], GetCurrentFrame = False
                 part_start = part["Range"]["Start"]
                 part_end = part["Range"]["End"]
                 part_values = np.matrix(part["Values"])
-                marker_data[marker["Name"]].loc[part_start:part_end]= part_values       
+                marker_data[marker["Name"]].loc[part_start:part_end]= part_values      
         toc = t.perf_counter()
         print(f"Fetch and sort the data in {toc - tic:0.4f} seconds")
     return marker_data,fileInfo
+
+def grabCurrentFrame(ip="127.0.0.1"):
+    print(ip)
+    data, info = GetData(Markers=False,hostIp = ip)
+    currentFrame = data["CurrentFrame"]
+    data, info = GetData(Markers=True,hostIp = ip, Start=currentFrame,End=currentFrame)
+    markers = data["Markers"]
+    marker_data ={}
+    for marker in markers:    
+        df = pd.DataFrame(index=range(currentFrame,currentFrame+1),columns=['x','y','z','residual'], dtype='float')
+        df.name = marker["Name"]
+        marker_data[marker["Name"]] = df
+    for marker in markers:    
+            #df = pd.DataFrame(index=range(start,end+1),columns=['x','y','z','residual'], dtype='float')
+            for part in marker["Parts"]:
+                part_start = part["Range"]["Start"]
+                part_end = part["Range"]["End"]
+                part_values = np.matrix(part["Values"])
+                marker_data[marker["Name"]].loc[part_start:part_end]= part_values      
+    return marker_data, info
+
+if __name__ == '__main__':
+    data = grabCurrentFrame(ip="10.211.55.3")
+    print(data)
