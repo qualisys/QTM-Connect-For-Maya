@@ -25,6 +25,8 @@ from skeletonstreamer import SkeletonStreamer
 from rigidbodystreamer import RigidBodyStreamer
 import importlib
 
+from qtmREST import GetData, GetLabledMarkers
+
 MAYA = False
 
 try:
@@ -38,7 +40,6 @@ try:
         _print_error('Cannot find Qt bindings.')
 
     MAYA = True
-
 except:
     pass
 
@@ -127,6 +128,35 @@ def show_gui(restore=False):
 
     return parent.customMixinWindow
 
+def UpdateMarkers(markerdata):
+    #print(f"Update Markers with{markerdata}")
+    for marker in markerdata:
+        namespace,shortname = marker.split("_")
+        groupnodename = f"{namespace}:Markers"
+        groupnodes = cmds.ls(groupnodename)
+        if not groupnodes:
+            groupnode = cmds.group(em=True,name=groupnodename)
+            print(f"New Namespace is {namespace}")
+
+        else:
+            groupnode = groupnodes[0]
+
+        # hardcode mm to cm for now
+        px = markerdata[marker]["x"].values[0] / 10.0
+        py = markerdata[marker]["y"].values[0] / 10.0
+        pz = markerdata[marker]["z"].values[0] / 10.0
+
+        fullname = f"{namespace}:{shortname}"
+        if not cmds.objExists(fullname):
+            print(f"Adding Marker {shortname} to {namespace}")
+            cmds.spaceLocator(name=fullname)
+            cmds.select(fullname)
+            cmds.move(px,py,pz, ls=True)
+            cmds.scale(3,3,3)
+            cmds.select(groupnodename)
+            cmds.parent(fullname)
+
+
 class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
     def __init__(self, parent=_get_maya_main_window() if MAYA else None):
         super(QtmConnectWidget, self).__init__(parent=parent)
@@ -182,8 +212,9 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.markerComponentButton.toggled.connect(self.component_changed)
         self.widget.rigidBodyComponentButton.toggled.connect(self.component_changed)
         self.widget.tPoseButton.clicked.connect(self.toggle_t_pose)
+        self.widget.getMarkers.clicked.connect(self.get_markers)
 
-        self.widget.connectionContainer.setFixedHeight(110)
+        #self.widget.connectionContainer.setFixedHeight(110)
         
         if cmds.optionVar(exists='qtmHost') == 1:
             hostname = 'localhost' if cmds.optionVar(q='qtmHost') == '' else cmds.optionVar(q='qtmHost')
@@ -203,9 +234,9 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self._last_event = None
 
     def component_changed(self):
-        self.widget.skeletonComponentContainer.setVisible(self.widget.skeletonComponentButton.isChecked())
-        self.widget.markerComponentContainer.setVisible(self.widget.markerComponentButton.isChecked())
-        self.widget.rigidBodyComponentContainer.setVisible(self.widget.rigidBodyComponentButton.isChecked())
+        #self.widget.skeletonComponentContainer.setVisible(self.widget.skeletonComponentButton.isChecked())
+        #self.widget.markerComponentContainer.setVisible(self.widget.markerComponentButton.isChecked())
+        #self.widget.rigidBodyComponentContainer.setVisible(self.widget.rigidBodyComponentButton.isChecked())
 
         if self.is_streaming:
             self._qtm.stop_stream()
@@ -302,7 +333,20 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
                 self._skeleton_streamer.t_pose(skeleton_name)
                 item.setText(skeleton_name + ' [T-pose]')
                 self.widget.tPoseButton.setText('Resume pose')
-    
+    def get_markers(self):
+        #self._output(f"You selected GetMarkers!")
+        #response, seconds = GetData()
+        #marker_data, fileInfo = GetLabledMarkers(GetCurrentFrame=True)
+        marker_data, fileInfo = GetLabledMarkers()
+        if marker_data is not False:
+            #self._output(f"Got a response")
+            #print (f"Response is {response}")
+            #print(f"FileInfo {fileInfo}")
+            #print(f"Marker Data is {marker_data}")
+            UpdateMarkers(marker_data)
+        else:
+            self._output(f"Did not get a reponse")
+        
     def _reset_skeleton_names(self):
         items = []
         for index in range(self.widget.skeletonList.count()):

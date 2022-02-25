@@ -1,6 +1,7 @@
 import requests
 import numpy as np
 import pandas as pd
+import time as t
 
 def GetData(Markers=True,hostIp = "127.0.0.1", Start = 0, End=0):
     reqString = "http://"+ hostIp + ":7979/api/experimental/measurements/"
@@ -34,7 +35,7 @@ def GetData(Markers=True,hostIp = "127.0.0.1", Start = 0, End=0):
     #rJson = response.json()
     #markers = rJson["Markers"]
 
-def GetLabledMarkers(hostIp = "127.0.0.1",Range = [0,0]):
+def GetLabledMarkers(hostIp = "127.0.0.1",Range = [0,0], GetCurrentFrame = False):
     fileInfo,time = GetData(Markers=False)
     start = fileInfo["Timebase"]["Range"]["Start"]
     end = fileInfo["Timebase"]["Range"]["End"]
@@ -48,7 +49,11 @@ def GetLabledMarkers(hostIp = "127.0.0.1",Range = [0,0]):
             end = Range[1]    
         else:
             print("End value: " + str(Range[0]) + " is outside of QTM set range: "+  str(start) + " to " + str(end) + " setting end to: " + str(end))
-        
+    if GetCurrentFrame:
+        start = fileInfo["CurrentFrame"]
+        #end = fileInfo["CurrentFrame"]
+        end = start + 9
+
     print(start)
     print(end)
     data,reqTime = GetData(Markers=True, hostIp = hostIp, Start = start, End = start+10)
