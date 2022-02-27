@@ -4,6 +4,7 @@ import math
 import os
 from pymel.all import *
 import pymel.core.datatypes as dt
+import tempfile
 
 #
 #
@@ -601,4 +602,20 @@ def ExportQTMSkeleton():
             QES.ExportQTMSkeletonFile(fd)
             fd.close()
             print ("Wrote", fName)
+
+def gexXmlSkeleton():
+    bOK = SanityCheck()
+    if bOK:
+        with tempfile.TemporaryFile() as fd:
+            QES = QExportSolver()
+            QES.SetSceneScale()
+            QES.ExportQTMSkeletonFile(fd)
+            fd.seek(0)
+            skeletonXML = fd.read()
+            fd.close()
+    if skeletonXML:
+        return skeletonXML
+    else:
+        return None
+
         

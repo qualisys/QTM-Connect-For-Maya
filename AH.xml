@@ -1,0 +1,891 @@
+<QTM_Skeleton_File>
+    <Skeleton Name="AH">
+        <Scale>1.000000</Scale>
+        <Segments>
+            <Segment Name="Hips" ID="1">
+                <Solver>Global Optimization</Solver>
+                <Transform>
+                    <Position X="1794.399079" Y="2692.154850" Z="985.372515"/>
+                    <Rotation X="-0.032421" Y="0.001430" Z="-0.029185" W="0.999047"/>
+                </Transform>
+                <DefaultTransform>
+                    <Position X="0.000000" Y="0.000000" Z="985.372515"/>
+                    <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                </DefaultTransform>
+                <DegreesOfFreedom>
+                    <RotationX/>
+                    <RotationY/>
+                    <RotationZ/>
+                    <TranslationX/>
+                    <TranslationY/>
+                    <TranslationZ/>
+                </DegreesOfFreedom>
+                <Endpoint/>
+                <Markers>
+                    <Marker Name="WaistRFront">
+                        <Position X="136.364741" Y="151.112695" Z="58.440699"/>
+                        <Weight>1.000000</Weight>
+                    </Marker>
+                    <Marker Name="WaistLFront">
+                        <Position X="-136.364741" Y="157.094254" Z="70.612112"/>
+                        <Weight>1.000000</Weight>
+                    </Marker>
+                    <Marker Name="WaistRBack">
+                        <Position X="70.146439" Y="-62.451003" Z="90.207221"/>
+                        <Weight>1.000000</Weight>
+                    </Marker>
+                    <Marker Name="WaistLBack">
+                        <Position X="-70.146439" Y="-67.994341" Z="83.719905"/>
+                        <Weight>1.000000</Weight>
+                    </Marker>
+                    <Marker Name="LPelvisExtra">
+                        <Position X="-183.877789" Y="5.037782" Z="62.861221"/>
+                        <Weight>1.000000</Weight>
+                    </Marker>
+                    <Marker Name="RPelvisExtra">
+                        <Position X="170.191738" Y="5.388888" Z="55.748901"/>
+                        <Weight>1.000000</Weight>
+                    </Marker>
+                </Markers>
+                <RigidBodies/>
+                <Segment Name="Spine" ID="2">
+                    <Transform>
+                        <Position X="-4.124009" Y="0.067910" Z="86.963563"/>
+                        <Rotation X="-0.000000" Y="0.000000" Z="0.031535" W="0.999503"/>
+                    </Transform>
+                    <DefaultTransform>
+                        <Position X="-4.124009" Y="0.067910" Z="86.963563"/>
+                        <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                    </DefaultTransform>
+                    <DegreesOfFreedom>
+                        <RotationX>
+                            <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                        </RotationX>
+                        <RotationY>
+                            <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                        </RotationY>
+                        <RotationZ>
+                            <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                        </RotationZ>
+                    </DegreesOfFreedom>
+                    <Endpoint/>
+                    <Markers>
+                        <Marker Name="WaistRBack">
+                            <Position X="70.181646" Y="-67.076451" Z="3.243658"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="WaistLBack">
+                            <Position X="-70.181646" Y="-63.764941" Z="-3.243658"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="BackR">
+                            <Position X="120.627414" Y="-84.673665" Z="243.439630"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="BackL">
+                            <Position X="-114.202249" Y="-77.137956" Z="228.371256"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="SpineExtra3">
+                            <Position X="-13.745398" Y="-68.123745" Z="104.704911"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="SpineExtra2">
+                            <Position X="-10.346596" Y="-88.858615" Z="223.017508"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="SpineExtra1">
+                            <Position X="-6.147995" Y="-95.592952" Z="327.674291"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                    </Markers>
+                    <RigidBodies/>
+                    <Segment Name="Spine1" ID="3">
+                        <Transform>
+                            <Position X="-0.000000" Y="-0.000000" Z="147.087338"/>
+                            <Rotation X="-0.000000" Y="-0.000000" Z="0.000000" W="1.000000"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="-0.000000" Y="0.000000" Z="147.087338"/>
+                            <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Endpoint/>
+                        <Markers>
+                            <Marker Name="Chest">
+                                <Position X="0.000000" Y="162.914617" Z="191.833428"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                            <Marker Name="BackL">
+                                <Position X="-114.202249" Y="-77.137956" Z="81.283917"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                            <Marker Name="BackR">
+                                <Position X="120.627414" Y="-84.673665" Z="96.352292"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                        </Markers>
+                        <RigidBodies/>
+                        <Segment Name="Spine2" ID="4">
+                            <Transform>
+                                <Position X="0.000000" Y="0.000000" Z="171.601895"/>
+                                <Rotation X="-0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="0.000000" Y="0.000000" Z="171.601895"/>
+                                <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint/>
+                            <Markers>
+                                <Marker Name="Chest">
+                                    <Position X="0.000000" Y="162.914617" Z="20.231533"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="SpineTop">
+                                    <Position X="0.000000" Y="-65.420696" Z="171.601895"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="BackR">
+                                    <Position X="120.627414" Y="-84.673665" Z="-75.249603"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="BackL">
+                                    <Position X="-114.202249" Y="-77.137956" Z="-90.317977"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                            </Markers>
+                            <RigidBodies/>
+                            <Segment Name="Neck" ID="5">
+                                <Transform>
+                                    <Position X="0.000000" Y="-0.000000" Z="171.601895"/>
+                                    <Rotation X="-0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="0.000000" Y="0.000000" Z="171.601895"/>
+                                    <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint/>
+                                <Markers>
+                                    <Marker Name="SpineTop">
+                                        <Position X="0.000000" Y="-65.420696" Z="0.000000"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="HeadR">
+                                        <Position X="72.265243" Y="21.644536" Z="184.120295"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="HeadL">
+                                        <Position X="-106.630554" Y="18.227400" Z="177.343614"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                </Markers>
+                                <RigidBodies/>
+                                <Segment Name="Head" ID="6">
+                                    <Transform>
+                                        <Position X="-8.872878" Y="31.854260" Z="99.683272"/>
+                                        <Rotation X="0.032662" Y="-0.036988" Z="0.009269" W="0.998739"/>
+                                    </Transform>
+                                    <DefaultTransform>
+                                        <Position X="-8.872878" Y="31.854260" Z="99.683272"/>
+                                        <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                    </DefaultTransform>
+                                    <DegreesOfFreedom>
+                                        <RotationX>
+                                            <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                        </RotationX>
+                                        <RotationY>
+                                            <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                        </RotationY>
+                                        <RotationZ>
+                                            <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                        </RotationZ>
+                                    </DegreesOfFreedom>
+                                    <Endpoint X="0.000000" Y="0.000000" Z="198.676877"/>
+                                    <Markers>
+                                        <Marker Name="HeadFront">
+                                            <Position X="-3.099313" Y="94.010014" Z="151.475950"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="HeadTop">
+                                            <Position X="-0.000000" Y="-27.393827" Z="196.779266"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="HeadR">
+                                            <Position X="87.027335" Y="-6.433628" Z="78.753383"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="HeadL">
+                                            <Position X="-91.908019" Y="-6.535881" Z="85.343901"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                    </Markers>
+                                    <RigidBodies/>
+                                </Segment>
+                            </Segment>
+                            <Segment Name="LeftShoulder" ID="7">
+                                <Transform>
+                                    <Position X="0.000000" Y="21.806899" Z="73.543669"/>
+                                    <Rotation X="0.032358" Y="-0.002479" Z="-0.001481" W="0.999472"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="0.000000" Y="21.806899" Z="73.543669"/>
+                                    <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-0.349066" UpperBound="0.349066"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-0.349066" UpperBound="0.349066"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-0.349066" UpperBound="0.349066"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint/>
+                                <Markers>
+                                    <Marker Name="SpineTop">
+                                        <Position X="0.748801" Y="-80.701272" Z="103.493058"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="LShoulderTop">
+                                        <Position X="-122.451622" Y="-16.002798" Z="119.300059"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="LShoulderBack">
+                                        <Position X="-123.655318" Y="-108.319363" Z="50.254952"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                </Markers>
+                                <RigidBodies/>
+                                <Segment Name="LeftArm" ID="8">
+                                    <Transform>
+                                        <Position X="-122.451622" Y="-16.002798" Z="70.270946"/>
+                                        <Rotation X="0.115878" Y="-0.059000" Z="0.059888" W="0.989699"/>
+                                    </Transform>
+                                    <DefaultTransform>
+                                        <Position X="-122.451622" Y="-16.002798" Z="70.270946"/>
+                                        <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                    </DefaultTransform>
+                                    <DegreesOfFreedom>
+                                        <RotationX>
+                                            <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                                        </RotationX>
+                                        <RotationY>
+                                            <Constraint LowerBound="-3.665191" UpperBound="3.665191"/>
+                                        </RotationY>
+                                        <RotationZ>
+                                            <Constraint LowerBound="-3.141593" UpperBound="3.141593"/>
+                                        </RotationZ>
+                                    </DegreesOfFreedom>
+                                    <Endpoint/>
+                                    <Markers>
+                                        <Marker Name="LElbowIn">
+                                            <Position X="-302.985724" Y="-0.806427" Z="58.142871"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="LElbowOut">
+                                            <Position X="-325.370115" Y="0.806427" Z="-58.142871"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="LArm">
+                                            <Position X="-202.910585" Y="-48.063244" Z="19.640098"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="LShoulderTop">
+                                            <Position X="6.406341" Y="10.899254" Z="47.371077"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="LArm2">
+                                            <Position X="-118.008697" Y="32.190744" Z="45.881300"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                    </Markers>
+                                    <RigidBodies/>
+                                    <Segment Name="LeftForeArm" ID="9">
+                                        <Transform>
+                                            <Position X="-314.177920" Y="0.000000" Z="0.000000"/>
+                                            <Rotation X="-0.001988" Y="0.112153" Z="-0.126204" W="0.985642"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="-314.177920" Y="0.000000" Z="0.000000"/>
+                                            <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                            <RotationX>
+                                                <Constraint LowerBound="-1.570796" UpperBound="4.188790"/>
+                                            </RotationX>
+                                            <RotationY>
+                                                <Constraint LowerBound="-0.523599" UpperBound="0.523599"/>
+                                            </RotationY>
+                                            <RotationZ>
+                                                <Constraint LowerBound="-4.188790" UpperBound="1.570796"/>
+                                            </RotationZ>
+                                        </DegreesOfFreedom>
+                                        <Endpoint/>
+                                        <Markers>
+                                            <Marker Name="LElbowOut">
+                                                <Position X="2.070299" Y="-0.124910" Z="-59.179450"/>
+                                                <Weight>1.000000</Weight>
+                                            </Marker>
+                                            <Marker Name="LWristIn">
+                                                <Position X="-261.294318" Y="45.366719" Z="0.000000"/>
+                                                <Weight>1.000000</Weight>
+                                            </Marker>
+                                            <Marker Name="LWristOut">
+                                                <Position X="-248.037989" Y="-45.366719" Z="0.000000"/>
+                                                <Weight>1.000000</Weight>
+                                            </Marker>
+                                            <Marker Name="LLowerArm">
+                                                <Position X="-131.785061" Y="-41.180537" Z="19.760555"/>
+                                                <Weight>1.000000</Weight>
+                                            </Marker>
+                                        </Markers>
+                                        <RigidBodies/>
+                                        <Segment Name="LeftHand" ID="10">
+                                            <Transform>
+                                                <Position X="-254.666153" Y="-0.000000" Z="0.000000"/>
+                                                <Rotation X="0.001428" Y="-0.093393" Z="0.128852" W="0.987255"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="-254.666153" Y="-0.000000" Z="0.000000"/>
+                                                <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                                <RotationX>
+                                                    <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                                </RotationX>
+                                                <RotationY>
+                                                    <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                                </RotationY>
+                                                <RotationZ>
+                                                    <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                                </RotationZ>
+                                            </DegreesOfFreedom>
+                                            <Endpoint X="-70.386043" Y="8.093707" Z="0.000000"/>
+                                            <Markers>
+                                                <Marker Name="LWristOut">
+                                                    <Position X="-5.237599" Y="-45.548209" Z="0.000000"/>
+                                                    <Weight>1.000000</Weight>
+                                                </Marker>
+                                                <Marker Name="LWristIn">
+                                                    <Position X="5.237599" Y="45.548209" Z="0.000000"/>
+                                                    <Weight>1.000000</Weight>
+                                                </Marker>
+                                                <Marker Name="LHandOut">
+                                                    <Position X="-76.087462" Y="-45.548209" Z="0.000000"/>
+                                                    <Weight>1.000000</Weight>
+                                                </Marker>
+                                            </Markers>
+                                            <RigidBodies/>
+                                        </Segment>
+                                    </Segment>
+                                </Segment>
+                            </Segment>
+                            <Segment Name="RightShoulder" ID="11">
+                                <Transform>
+                                    <Position X="0.000000" Y="21.806899" Z="73.543669"/>
+                                    <Rotation X="0.032358" Y="-0.002479" Z="-0.001481" W="0.999472"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="0.000000" Y="21.806899" Z="73.543669"/>
+                                    <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-0.349066" UpperBound="0.349066"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-0.349066" UpperBound="0.349066"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-0.349066" UpperBound="0.349066"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint/>
+                                <Markers>
+                                    <Marker Name="RShoulderTop">
+                                        <Position X="127.077235" Y="-16.002798" Z="108.326531"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="RShoulderBack">
+                                        <Position X="126.654743" Y="-98.706810" Z="51.614088"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="SpineTop">
+                                        <Position X="0.748801" Y="-80.701272" Z="103.493058"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                </Markers>
+                                <RigidBodies/>
+                                <Segment Name="RightArm" ID="12">
+                                    <Transform>
+                                        <Position X="127.077235" Y="-16.002798" Z="59.297419"/>
+                                        <Rotation X="0.081956" Y="0.044646" Z="-0.014755" W="0.995526"/>
+                                    </Transform>
+                                    <DefaultTransform>
+                                        <Position X="127.077235" Y="-16.002798" Z="59.297419"/>
+                                        <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                    </DefaultTransform>
+                                    <DegreesOfFreedom>
+                                        <RotationX>
+                                            <Constraint LowerBound="-2.094395" UpperBound="2.094395"/>
+                                        </RotationX>
+                                        <RotationY>
+                                            <Constraint LowerBound="-3.665191" UpperBound="3.665191"/>
+                                        </RotationY>
+                                        <RotationZ>
+                                            <Constraint LowerBound="-3.141593" UpperBound="3.141593"/>
+                                        </RotationZ>
+                                    </DegreesOfFreedom>
+                                    <Endpoint/>
+                                    <Markers>
+                                        <Marker Name="RElbowIn">
+                                            <Position X="304.923646" Y="-8.232602" Z="61.537495"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="RElbowOut">
+                                            <Position X="318.687790" Y="8.232602" Z="-61.537495"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="RArm">
+                                            <Position X="193.195221" Y="-44.159466" Z="33.164372"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="RShoulderTop">
+                                            <Position X="-4.476940" Y="7.935876" Z="48.175022"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                        <Marker Name="RArm2">
+                                            <Position X="99.723517" Y="41.689235" Z="42.712057"/>
+                                            <Weight>1.000000</Weight>
+                                        </Marker>
+                                    </Markers>
+                                    <RigidBodies/>
+                                    <Segment Name="RightForeArm" ID="13">
+                                        <Transform>
+                                            <Position X="311.805718" Y="0.000000" Z="0.000000"/>
+                                            <Rotation X="0.014172" Y="-0.123771" Z="0.055323" W="0.990666"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="311.805718" Y="0.000000" Z="0.000000"/>
+                                            <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                            <RotationX>
+                                                <Constraint LowerBound="-1.570796" UpperBound="4.188790"/>
+                                            </RotationX>
+                                            <RotationY>
+                                                <Constraint LowerBound="-0.523599" UpperBound="0.523599"/>
+                                            </RotationY>
+                                            <RotationZ>
+                                                <Constraint LowerBound="-1.570796" UpperBound="4.188790"/>
+                                            </RotationZ>
+                                        </DegreesOfFreedom>
+                                        <Endpoint/>
+                                        <Markers>
+                                            <Marker Name="RElbowOut">
+                                                <Position X="-7.684832" Y="6.515208" Z="-61.648174"/>
+                                                <Weight>1.000000</Weight>
+                                            </Marker>
+                                            <Marker Name="RWristIn">
+                                                <Position X="263.600068" Y="46.081728" Z="0.000000"/>
+                                                <Weight>1.000000</Weight>
+                                            </Marker>
+                                            <Marker Name="RWristOut">
+                                                <Position X="268.971689" Y="-46.081728" Z="0.000000"/>
+                                                <Weight>1.000000</Weight>
+                                            </Marker>
+                                        </Markers>
+                                        <RigidBodies/>
+                                        <Segment Name="RightHand" ID="14">
+                                            <Transform>
+                                                <Position X="266.285879" Y="-0.000000" Z="-0.000000"/>
+                                                <Rotation X="-0.027562" Y="0.236191" Z="-0.056257" W="0.969685"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="266.285879" Y="0.000000" Z="0.000000"/>
+                                                <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                                <RotationX>
+                                                    <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                                </RotationX>
+                                                <RotationY>
+                                                    <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                                </RotationY>
+                                                <RotationZ>
+                                                    <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                                </RotationZ>
+                                            </DegreesOfFreedom>
+                                            <Endpoint X="78.582711" Y="13.822724" Z="0.000000"/>
+                                            <Markers>
+                                                <Marker Name="RWristOut">
+                                                    <Position X="7.996775" Y="-45.461971" Z="0.000000"/>
+                                                    <Weight>1.000000</Weight>
+                                                </Marker>
+                                                <Marker Name="RWristIn">
+                                                    <Position X="-7.996775" Y="45.461971" Z="0.000000"/>
+                                                    <Weight>1.000000</Weight>
+                                                </Marker>
+                                                <Marker Name="RHandOut">
+                                                    <Position X="87.785936" Y="-45.461971" Z="0.000000"/>
+                                                    <Weight>1.000000</Weight>
+                                                </Marker>
+                                            </Markers>
+                                            <RigidBodies/>
+                                        </Segment>
+                                    </Segment>
+                                </Segment>
+                            </Segment>
+                        </Segment>
+                    </Segment>
+                </Segment>
+                <Segment Name="LeftUpLeg" ID="15">
+                    <Transform>
+                        <Position X="-109.226585" Y="16.697266" Z="-35.916345"/>
+                        <Rotation X="0.088101" Y="-0.000702" Z="0.039851" W="0.995314"/>
+                    </Transform>
+                    <DefaultTransform>
+                        <Position X="-109.226585" Y="16.697266" Z="-35.916345"/>
+                        <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                    </DefaultTransform>
+                    <DegreesOfFreedom>
+                        <RotationX>
+                            <Constraint LowerBound="-1.570796" UpperBound="3.665191"/>
+                        </RotationX>
+                        <RotationY>
+                            <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                        </RotationY>
+                        <RotationZ>
+                            <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                        </RotationZ>
+                    </DegreesOfFreedom>
+                    <Endpoint/>
+                    <Markers>
+                        <Marker Name="LKneeIn">
+                            <Position X="63.639267" Y="-31.435012" Z="-464.608305"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="LThigh">
+                            <Position X="-10.421474" Y="136.111951" Z="-234.336212"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="LKneeOut">
+                            <Position X="-63.639267" Y="23.582235" Z="-435.230837"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                    </Markers>
+                    <RigidBodies/>
+                    <Segment Name="LeftLeg" ID="16">
+                        <Transform>
+                            <Position X="0.000000" Y="-3.926389" Z="-449.919571"/>
+                            <Rotation X="-0.133223" Y="0.019793" Z="-0.010896" W="0.990828"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="0.000000" Y="-3.926389" Z="-449.919571"/>
+                            <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-3.665191" UpperBound="1.570796"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Endpoint/>
+                        <Markers>
+                            <Marker Name="LAnkleIn">
+                                <Position X="53.422431" Y="-24.879226" Z="-403.690599"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                            <Marker Name="LKneeOut">
+                                <Position X="-64.846830" Y="21.602972" Z="18.725377"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                            <Marker Name="LShin">
+                                <Position X="-81.352591" Y="-15.045093" Z="-241.796992"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                            <Marker Name="LAnkleOut">
+                                <Position X="-53.422431" Y="-17.675466" Z="-408.301293"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                        </Markers>
+                        <RigidBodies/>
+                        <Segment Name="LeftFoot" ID="17">
+                            <Transform>
+                                <Position X="0.000000" Y="-21.277346" Z="-405.995946"/>
+                                <Rotation X="0.077754" Y="-0.019171" Z="0.009199" W="0.996746"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="0.000000" Y="-21.277346" Z="-405.995946"/>
+                                <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint/>
+                            <Markers>
+                                <Marker Name="LHeelBack">
+                                    <Position X="-1.374278" Y="-68.844311" Z="-50.430773"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="LForefootIn">
+                                    <Position X="51.820480" Y="176.338807" Z="-74.431796"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="LForefootOut">
+                                    <Position X="-54.569035" Y="188.381985" Z="-76.904120"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="LHeel2">
+                                    <Position X="-49.118826" Y="-14.750983" Z="-63.891151"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                            </Markers>
+                            <RigidBodies/>
+                            <Segment Name="LeftToeBase" ID="18">
+                                <Transform>
+                                    <Position X="-0.000000" Y="111.028440" Z="-64.347218"/>
+                                    <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="0.000000" Y="111.028440" Z="-64.347218"/>
+                                    <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-3.141593" UpperBound="3.141593"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint X="-0.000000" Y="100.631347" Z="0.000000"/>
+                                <Markers>
+                                    <Marker Name="LForefootIn">
+                                        <Position X="51.820480" Y="65.310368" Z="-10.084578"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="LForefootOut">
+                                        <Position X="-54.569035" Y="77.353546" Z="-12.556901"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="LToeTip">
+                                        <Position X="3.876772" Y="99.023246" Z="17.493867"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                </Markers>
+                                <RigidBodies/>
+                            </Segment>
+                        </Segment>
+                    </Segment>
+                </Segment>
+                <Segment Name="RightUpLeg" ID="19">
+                    <Transform>
+                        <Position X="109.226585" Y="16.697266" Z="-35.916345"/>
+                        <Rotation X="0.086624" Y="0.007937" Z="-0.028323" W="0.995807"/>
+                    </Transform>
+                    <DefaultTransform>
+                        <Position X="109.226585" Y="16.697266" Z="-35.916345"/>
+                        <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                    </DefaultTransform>
+                    <DegreesOfFreedom>
+                        <RotationX>
+                            <Constraint LowerBound="-1.570796" UpperBound="3.665191"/>
+                        </RotationX>
+                        <RotationY>
+                            <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                        </RotationY>
+                        <RotationZ>
+                            <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                        </RotationZ>
+                    </DegreesOfFreedom>
+                    <Endpoint/>
+                    <Markers>
+                        <Marker Name="RKneeIn">
+                            <Position X="-73.159736" Y="-21.313612" Z="-447.548911"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="RThigh">
+                            <Position X="10.422976" Y="143.841431" Z="-236.682617"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                        <Marker Name="RKneeOut">
+                            <Position X="73.159736" Y="13.686938" Z="-426.381325"/>
+                            <Weight>1.000000</Weight>
+                        </Marker>
+                    </Markers>
+                    <RigidBodies/>
+                    <Segment Name="RightLeg" ID="20">
+                        <Transform>
+                            <Position X="0.000000" Y="-3.813337" Z="-436.965118"/>
+                            <Rotation X="-0.119379" Y="-0.021826" Z="0.012597" W="0.992529"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="0.000000" Y="-3.813337" Z="-436.965118"/>
+                            <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-3.665191" UpperBound="1.570796"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Endpoint/>
+                        <Markers>
+                            <Marker Name="RAnkleIn">
+                                <Position X="-52.941420" Y="-25.110392" Z="-422.179056"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                            <Marker Name="RKneeOut">
+                                <Position X="74.022354" Y="13.033797" Z="11.019734"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                            <Marker Name="RShin">
+                                <Position X="34.264101" Y="36.715907" Z="-266.518911"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                            <Marker Name="RAnkleOut">
+                                <Position X="52.941420" Y="-19.421660" Z="-427.543112"/>
+                                <Weight>1.000000</Weight>
+                            </Marker>
+                        </Markers>
+                        <RigidBodies/>
+                        <Segment Name="RightFoot" ID="21">
+                            <Transform>
+                                <Position X="0.000000" Y="-22.266026" Z="-424.861084"/>
+                                <Rotation X="0.065553" Y="0.013113" Z="-0.006651" W="0.997741"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="0.000000" Y="-22.266026" Z="-424.861084"/>
+                                <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-2.617994" UpperBound="2.617994"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint/>
+                            <Markers>
+                                <Marker Name="RHeelBack">
+                                    <Position X="6.595542" Y="-67.263542" Z="-45.187333"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="RForefootIn">
+                                    <Position X="-48.417709" Y="175.573422" Z="-64.252319"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="RForefootOut">
+                                    <Position X="61.608792" Y="173.867973" Z="-72.327366"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                                <Marker Name="RHeel2">
+                                    <Position X="49.709668" Y="-22.340387" Z="-49.626201"/>
+                                    <Weight>1.000000</Weight>
+                                </Marker>
+                            </Markers>
+                            <RigidBodies/>
+                            <Segment Name="RightToeBase" ID="22">
+                                <Transform>
+                                    <Position X="-0.000000" Y="111.439582" Z="-66.040067"/>
+                                    <Rotation X="-0.000000" Y="-0.000000" Z="0.000000" W="1.000000"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="0.000000" Y="111.439582" Z="-66.040067"/>
+                                    <Rotation X="0.000000" Y="0.000000" Z="0.000000" W="1.000000"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-3.141593" UpperBound="3.141593"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-1.570796" UpperBound="1.570796"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint X="0.000000" Y="104.125739" Z="0.000000"/>
+                                <Markers>
+                                    <Marker Name="RForefootIn">
+                                        <Position X="-48.417709" Y="64.133840" Z="1.787748"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="RForefootOut">
+                                        <Position X="61.608792" Y="62.428391" Z="-6.287299"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                    <Marker Name="RToeTip">
+                                        <Position X="4.357259" Y="101.131112" Z="24.406600"/>
+                                        <Weight>1.000000</Weight>
+                                    </Marker>
+                                </Markers>
+                                <RigidBodies/>
+                            </Segment>
+                        </Segment>
+                    </Segment>
+                </Segment>
+            </Segment>
+        </Segments>
+    </Skeleton>
+</QTM_Skeleton_File>

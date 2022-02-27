@@ -4,6 +4,8 @@ import math
 import os
 from pymel.all import *
 import pymel.core.datatypes as dt
+from PySide2 import QtCore, QtGui, QtWidgets
+import qqtmrt
 
 #
 # Quaternion to Euler angle conversion
@@ -14,7 +16,7 @@ def QtoE(qx,qy,qz,qw):
     y = float(qy)
     z = float(qz)
     w = float(qw)
-    
+
     t0 = +2.0 * (w * x + y * z)
     t1 = +1.0 - 2.0 * (x * x + y * y)
     X = math.degrees(math.atan2(t0, t1))
@@ -29,7 +31,7 @@ def QtoE(qx,qy,qz,qw):
     Z = math.degrees(math.atan2(t3, t4))
 
     return X, Y, Z
-    
+
 
 # For indenting to make the printout pretty
 def Spaces(level):
@@ -59,7 +61,7 @@ class QImportSolver:
         self._rootScale = 1.0
         self._NS = u":"
         self._MPNS = self._NS+u"ModelPose:"
-            
+
     def _SetNamespace(self, namespace):
         self._NS = namespace+u":"
         self._MPNS = self._NS+u"ModelPose:"
@@ -69,13 +71,13 @@ class QImportSolver:
             cmds.namespace(add="ModelPose", parent=namespace)
         #print "Namespace = ", self._NS
         #print "Model Pose Namespace = ", self._MPNS
-        
+
     # SetSceneScale()
     #
     # Calculate the conversion factor for converting the current scene units into mm, which QTM requires.
     #     [mm | millimeter | cm | centimeter | m | meter | km | kilometer | in | inch | ft | foot | yd | yard | mi | mile]
     def SetSceneScale(self):
-    
+
         cu = cmds.currentUnit( query=True, linear=True )
         if cu == "cm":
             self._sceneScale = 0.1
@@ -95,8 +97,8 @@ class QImportSolver:
             self._sceneScale = 1.0
 
         #print "Scene Scale" , self._sceneScale
- 
-       
+
+
 
     #
     # Create marker locators information
@@ -117,15 +119,15 @@ class QImportSolver:
             if cm.tag == "Marker":
                 plainname = cm.attrib["Name"]
                 mname = self._NS+plainname
-                
+
                 #print Spaces(level), "Marker", mname
- 
-                # if marker exists don't make a new one, just create attributes for it in the joint.           
+
+                # if marker exists don't make a new one, just create attributes for it in the joint.
                 if not cmds.objExists(mname):
                     loc = cmds.spaceLocator(name=mname)
                     cmds.setAttr("%s.overrideEnabled" % mname, 1)
                     cmds.setAttr("%s.overrideColor" % mname, 22)
-                
+
                     cmds.select(ParentNode)
                     #cmds.select(ParentNode, add=True)
                     cmds.parent(loc)
@@ -140,14 +142,14 @@ class QImportSolver:
                     bSkip = True
 
                 cmds.addAttr(ParentNode,ln=plainname, defaultValue=1.0)
-            
+
                 for ccm in cm:
                     if ccm.tag == "Position":
                         px = float(ccm.attrib["X"]) * self._sceneScale / self._rootScale
                         py = float(ccm.attrib["Y"]) * self._sceneScale / self._rootScale
                         pz = float(ccm.attrib["Z"]) * self._sceneScale / self._rootScale
                         #print Spaces(level+1), "Position", px, py, pz
-                    
+
                         if not bSkip:
                             # Actually make a new marker
                             cmds.select(loc)
@@ -159,7 +161,7 @@ class QImportSolver:
                         a = str(ParentNode)+'.'+plainname
                         cmds.setAttr(a, w)
                         #print Spaces(level+1), "Weight" , w
-    
+
 
     def _ImportSolver(self, solver):
         if solver.text == "Global Optimization" :
@@ -167,17 +169,17 @@ class QImportSolver:
             return True
         else:
             return False
- 
-    # 
+
+    #
     # ImportSegment
-    # 
+    #
     # Recursive routine for importing a segment (joint) definition.
     #
-    # ParentNode - Maya joint node that is the parent of the new segment to be created  
+    # ParentNode - Maya joint node that is the parent of the new segment to be created
     # segment    - XML definition of the segment
     # level      - for pretty printing debug statements
     # bIsRoot    - Root is special, skeleton scale information is stashed there
-    #     
+    #
     def _ImportSegment(self, ParentNode, segment, level,bIsRoot=False):
         tag       = segment.tag
         attrib    = segment.attrib
@@ -195,14 +197,14 @@ class QImportSolver:
         jMeRadius = jMe+".radius"
         cmds.setAttr(jMeRadius, 1)
         cmds.setAttr("%s.segmentScaleCompensate" % str(jMe), 0)
-    
+
         # stash the root scale in the root joint
         if bIsRoot:
             cmds.setAttr("%s.scaleX" % str(jMe), self._rootScale)
             cmds.setAttr("%s.scaleY" % str(jMe), self._rootScale)
             cmds.setAttr("%s.scaleZ" % str(jMe), self._rootScale)
             #print "Set Root Scale", str(self._rootScale), str(jMe)
-        
+
         for cs in segment:
             if cs.tag == "Segment":
                 self._ImportSegment(jMe, cs, level + 1)
@@ -218,41 +220,41 @@ class QImportSolver:
                     if ccs.tag == "Position":
                         px = float(ccs.attrib["X"]) * self._sceneScale / self._rootScale
                         py = float(ccs.attrib["Y"]) * self._sceneScale / self._rootScale
-                        pz = float(ccs.attrib["Z"]) * self._sceneScale / self._rootScale                  
-                        #print Spaces(level+1),"Transform Position" , px, py, pz 
-                        #cmds.joint(edit=True, position=[px,py,pz]) 
+                        pz = float(ccs.attrib["Z"]) * self._sceneScale / self._rootScale
+                        #print Spaces(level+1),"Transform Position" , px, py, pz
+                        #cmds.joint(edit=True, position=[px,py,pz])
                         cmds.select(jMe)
-                        cmds.move(px,py,pz,ls=True)        
+                        cmds.move(px,py,pz,ls=True)
                     elif ccs.tag == "Rotation":
                         qx = ccs.attrib["X"]
                         qy = ccs.attrib["Y"]
-                        qz = ccs.attrib["Z"]   
+                        qz = ccs.attrib["Z"]
                         qw = ccs.attrib["W"]
                         ER = QtoE(qx,qy,qz,qw)
-                        #print Spaces(level+1),"Transform Rotation E" , ER[0], ER[1], ER[2]                     
+                        #print Spaces(level+1),"Transform Rotation E" , ER[0], ER[1], ER[2]
                         #print Spaces(level+1),"Transform Rotation" , qx, qy, qz, qw
-                        cmds.select(jMe) 
-                        cmds.rotate(ER[0], ER[1],ER[2])  
-                             
+                        cmds.select(jMe)
+                        cmds.rotate(ER[0], ER[1],ER[2])
+
             elif cs.tag == "DefaultTransform":
                 for ccs in cs:
                     if ccs.tag == "Position":
                         px = float(ccs.attrib["X"]) * self._sceneScale / self._rootScale
                         py = float(ccs.attrib["Y"]) * self._sceneScale / self._rootScale
-                        pz = float(ccs.attrib["Z"]) * self._sceneScale / self._rootScale                    
-                        #print Spaces(level+1),"Default Transform", "Position" , px, py, pz           
+                        pz = float(ccs.attrib["Z"]) * self._sceneScale / self._rootScale
+                        #print Spaces(level+1),"Default Transform", "Position" , px, py, pz
                     elif ccs.tag == "Rotation":
                         qx = ccs.attrib["X"]
                         qy = ccs.attrib["Y"]
-                        qz = ccs.attrib["Z"]   
+                        qz = ccs.attrib["Z"]
                         qw = ccs.attrib["W"]
-                        ER = QtoE(qx,qy,qz,qw)                     
-                        #print Spaces(level+1),"Default Transform","Rotation" , px, py, pz, pw      
+                        ER = QtoE(qx,qy,qz,qw)
+                        #print Spaces(level+1),"Default Transform","Rotation" , px, py, pz, pw
                         # Get the default transform from the Preferred Angle of the joint
                         n = str(jMe)
                         cmds.setAttr("%s.preferredAngleX" % n,ER[0])
                         cmds.setAttr("%s.preferredAngleY" % n,ER[1])
-                        cmds.setAttr("%s.preferredAngleZ" % n,ER[2])      
+                        cmds.setAttr("%s.preferredAngleZ" % n,ER[2])
             elif cs.tag == "DegreesOfFreedom":
                 #print Spaces(level+1), "DoFs"
                 n = str(jMe)
@@ -261,24 +263,24 @@ class QImportSolver:
                 cmds.setAttr(n+ ".XRotDoF", False)
                 cmds.addAttr(n,ln="XRotDoF_LowerBound", defaultValue=-360)
                 cmds.addAttr(n,ln="XRotDoF_UpperBound", defaultValue=360)
-        
+
                 cmds.addAttr(n,ln="YRotDoF",at="bool")
                 cmds.setAttr(n+".YRotDoF", False)
                 cmds.addAttr(n,ln="YRotDoF_LowerBound", defaultValue=-360)
                 cmds.addAttr(n,ln="YRotDoF_UpperBound", defaultValue=360)
-        
+
                 cmds.addAttr(n,ln="ZRotDoF",at="bool")
                 cmds.setAttr(n+".ZRotDoF", False)
                 cmds.addAttr(n,ln="ZRotDoF_LowerBound", defaultValue=-360)
                 cmds.addAttr(n,ln="ZRotDoF_UpperBound", defaultValue=360)
-        
+
                 cmds.addAttr(n,ln="XTransDoF",at="bool")
                 cmds.setAttr(n+ ".XTransDoF", False)
                 cmds.addAttr(n,ln="YTransDoF",at="bool")
                 cmds.setAttr(n+ ".YTransDoF", False)
                 cmds.addAttr(n,ln="ZTransDoF",at="bool")
                 cmds.setAttr(n+ ".ZTransDoF", False)
-            
+
                 for ccs in cs:
                     if ccs.tag == "RotationX":
                         for cccs in ccs:
@@ -290,10 +292,10 @@ class QImportSolver:
                                     bounded = True
                                     lb = math.degrees(float(cccs.attrib["LowerBound"]))
                                     ub = math.degrees(float(cccs.attrib["UpperBound"]))
-                    
+
                                 cmds.setAttr(n+ ".XRotDoF", True)
                                 cmds.setAttr(n+".XRotDoF_LowerBound", lb)
-                                cmds.setAttr(n+".XRotDoF_UpperBound", ub) 
+                                cmds.setAttr(n+".XRotDoF_UpperBound", ub)
 
                             elif cccs.tag == "Couplings":
                                 #print ("Found Couplings for "+ n + ":")
@@ -317,7 +319,7 @@ class QImportSolver:
                                 cmds.addAttr(n,ln="XRot_Goal_Weight",defaultValue=goal_weight)
 
                         #print Spaces(level+2), "RX", bounded, "LowerBound", lb, "UpperBound", ub
-                    elif ccs.tag == "RotationY":   
+                    elif ccs.tag == "RotationY":
                         for cccs in ccs:
                             if cccs.tag == "Constraint":
                                 bounded = False
@@ -327,10 +329,10 @@ class QImportSolver:
                                     bounded = True
                                     lb = math.degrees(float(cccs.attrib["LowerBound"]))
                                     ub = math.degrees(float(cccs.attrib["UpperBound"]))
-                    
+
                                 cmds.setAttr(n+ ".YRotDoF", True)
                                 cmds.setAttr(n+".YRotDoF_LowerBound", lb)
-                                cmds.setAttr(n+".YRotDoF_UpperBound", ub) 
+                                cmds.setAttr(n+".YRotDoF_UpperBound", ub)
                             elif cccs.tag == "Couplings":
                                 #print ("Found Couplings for "+ n + ":")
                                 i = 1
@@ -345,15 +347,15 @@ class QImportSolver:
                                     cmds.addAttr(n,ln=c_segmentname,dt="string")
                                     cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
                                     i = i + 1
-                                    
+
                             elif cccs.tag == "Goal":
                                 goal_value = float(cccs.attrib["Value"])
                                 goal_weight = float(cccs.attrib["Weight"])
                                 cmds.addAttr(n,ln="YRot_Goal_Value", defaultValue=goal_value)
                                 cmds.addAttr(n,ln="YRot_Goal_Weight",defaultValue=goal_weight)
-                    
-                        #print Spaces(level+2), "RY", bounded, "LowerBound", lb, "UpperBound", ub                  
-                    elif ccs.tag == "RotationZ":   
+
+                        #print Spaces(level+2), "RY", bounded, "LowerBound", lb, "UpperBound", ub
+                    elif ccs.tag == "RotationZ":
                         for cccs in ccs:
                             if cccs.tag == "Constraint":
                                 bounded = False
@@ -363,10 +365,10 @@ class QImportSolver:
                                     bounded = True
                                     lb = math.degrees(float(cccs.attrib["LowerBound"]))
                                     ub = math.degrees(float(cccs.attrib["UpperBound"]))
-                    
+
                                 cmds.setAttr(n+ ".ZRotDoF", True)
                                 cmds.setAttr(n+".ZRotDoF_LowerBound", lb)
-                                cmds.setAttr(n+".ZRotDoF_UpperBound", ub) 
+                                cmds.setAttr(n+".ZRotDoF_UpperBound", ub)
                             elif cccs.tag == "Couplings":
                                 #print ("Found Couplings for "+ n + ":")
                                 i = 1
@@ -392,15 +394,15 @@ class QImportSolver:
                         cmds.setAttr(n+ ".XTransDoF", True)
                         #print Spaces(level+2), "PX"
                         dofX = True
-                    elif ccs.tag == "TranslationY":  
-                        cmds.setAttr(n+ ".YTransDoF", True) 
-                        #print Spaces(level+2), "PY"   
+                    elif ccs.tag == "TranslationY":
+                        cmds.setAttr(n+ ".YTransDoF", True)
+                        #print Spaces(level+2), "PY"
                         dofY = True
-                    elif ccs.tag == "TranslationZ": 
-                        cmds.setAttr(n+ ".ZTransDoF", True)  
+                    elif ccs.tag == "TranslationZ":
+                        cmds.setAttr(n+ ".ZTransDoF", True)
                         #print Spaces(level+2), "PZ"
                         dofZ = True
-            elif cs.tag == "Endpoint":  
+            elif cs.tag == "Endpoint":
                 if "X" in cs.attrib:
                     px = float(cs.attrib["X"]) * self._sceneScale / self._rootScale
                     py = float(cs.attrib["Y"]) * self._sceneScale / self._rootScale
@@ -410,19 +412,19 @@ class QImportSolver:
                     cmds.select(jMe)
                     jEP = cmds.joint(name=EPName)
                     cmds.select(jEP)
-                    cmds.move(px,py,pz,ls=True)             
+                    cmds.move(px,py,pz,ls=True)
                 else:
                     #print Spaces(level+1), "Endpoint"
                     cmds.select(ParentNode)
-            elif cs.tag == "RigidBodies":  
+            elif cs.tag == "RigidBodies":
                 #print Spaces(level+1), "RigidBodies"
-                cmds.select(ParentNode)    
-               
+                cmds.select(ParentNode)
+
     #
     # This is the start of the segments hierarchy
-    #      
+    #
     # There is really only supposed to be one "Segment" tag
-    #  
+    #
     # gGroupName  - Maya group node that is the scene root
     # segments    - The XML list of segments
     #
@@ -435,11 +437,11 @@ class QImportSolver:
             ctag = c.tag
             if c.tag == "Segment":
                 self._ImportSegment(None,c,0,True)
-        
+
     #
     # At the start of the skeleton definition, this is like the
     # group node, segments start below
-    # 
+    #
     # Skeleton - The XML node that must work out to have a "Skeleton" tag
     #
     # Also looks for the Solver tag that must exist.
@@ -454,18 +456,18 @@ class QImportSolver:
     # is the group node for all the markers.
     # This is not passed along, subroutines will find the Maya node
     # themselves.  Kind of like a global variable.
-    #       
+    #
     def _ImportSkeleton(self, skeleton):
         tag    = skeleton.tag
         attrib = skeleton.attrib
         # print tag
         #print attrib
-    
+
         name = attrib["Name"]
         if tag == "Skeleton":
             #print "Yes!! A Skeleton named " + name
             self._SetNamespace(name)
-            
+
             #gGroupName = cmds.group( em=True,name=name)
             gMarkers = cmds.group(em=True,name=self._NS+u"Markers")
             for child in skeleton:
@@ -474,7 +476,7 @@ class QImportSolver:
                     # Nothing is really done with this, could be used for a sanity check later.
                     if self._ImportSolver(child):
                         #print "A Globally Optimized Solver"
-                        GOS = True 
+                        GOS = True
                     else:
                         #print "Not a GO"
                         GOS = False
@@ -483,21 +485,21 @@ class QImportSolver:
                     #print "Root Scale", self._rootScale
                 elif child.tag == "Segments":
                     #print "Do Segments"
-                    self._ImportSegments(child) 
+                    self._ImportSegments(child)
                 else:
-                    print ("Unrecognized Skeleton child " + child.tag   )         
+                    print ("Unrecognized Skeleton child " + child.tag   )
         else:
             print ("Expected skeleton tag.  Found <", tag, ">")
-        
-  
+
+
     #
     # this is where the XML traversing starts
     #
     # root  - The root of the XML tree that was read from the file.
-    #  
+    #
     def ImportQTMSkeletonFile(self,root):
         tag = root.tag
-    
+
         if tag == "QTM_Skeleton_File":
             #print "Yes!! A Skeleton file"
             # will be only one child
@@ -508,7 +510,7 @@ class QImportSolver:
             # will be only one child
             for child in root :
                 self._ImportSkeleton(child)
-            
+
         else:
             print ("NO!  <", tag, "> is Not a skeleton definition")
 
@@ -532,15 +534,15 @@ class QImportSolver:
 # NOTE:  This routine completely NUKES the current Maya scene, use with caution.
 #
 def ImportQTMSkeleton():
-    
+
     fPath = cmds.fileDialog2(fileFilter="QTM Skeleton (*.xml)",caption="Open QTM Skeleton File", fm=1)
     if fPath is not None:
         fName = fPath[0]
         print (fName)
         dom = ET.parse(fName)
-        
+
         if dom is not None:
-            root = dom.getroot()             
+            root = dom.getroot()
             QIS = QImportSolver()
             QIS.SetSceneScale()
 
@@ -549,5 +551,26 @@ def ImportQTMSkeleton():
             cmds.currentUnit( linear='cm' )
 
             QIS.ImportQTMSkeletonFile(root)
-  
 
+def ImportSkeletonDirect(host="127.0.0.1"):
+    q = qqtmrt.QQtmRt()
+    settings = None
+    if (q.connect_to_qtm(host=host)):
+        settings = q.get_parameters("skeletons")
+        dom = ET.fromstring(settings)
+        dom.tag = "QTM_Skeleton_File"
+        root = dom.getroot()
+        QIS = QImportSolver()
+        QIS.SetSceneScale()
+        QIS.ImportQTMSkeletonFile(root)
+
+def ImportQTMSkeletonNoMaya():
+    dom = ET.parse("AH.xml")
+    root = dom.getroot()
+    for child in root.findall():
+        print(child.tag)
+        print(child.attrib)
+    print(dom)
+
+if __name__ == '__main__':
+    ImportSkeletonDirect()
