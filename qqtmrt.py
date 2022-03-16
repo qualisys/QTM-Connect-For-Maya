@@ -3,13 +3,13 @@ from Qt import QtNetwork
 from Qt import QtCore
 from Qt.QtCore import Signal, Property
 
-#import xml2json
+import xml2json
 from qtmparser import QtmParser
 
-import modules.qualisys_python_sdk.qtm
+import qtm
 
-from modules.qualisys_python_sdk.qtm.packet import QRTPacketType, QRTPacket, QRTEvent
-from modules.qualisys_python_sdk.qtm.packet import RTheader, RTEvent
+from qtm.packet import QRTPacketType, QRTPacket, QRTEvent
+from qtm.packet import RTheader, RTEvent
 
 from time import sleep
 
@@ -147,9 +147,10 @@ class QQtmRt(QtCore.QObject):
         settings = xml_text
         options = lambda: None
         options.pretty = False
-        #json_text = xml2json.xml2json(xml_text, options)
-        #settings = json.loads(json_text)
-        #settings = settings.pop('QTM_Parameters_Ver_' + self.requested_version)
+        json_text = xml2json.xml2json(xml_text, options)
+        settings = json.loads(json_text)
+        settings = settings.pop('QTM_Parameters_Ver_' + self.requested_version)
+        print(f"get_settings: settings type is {type(settings)}  Settings is: {settings}")
 
         return settings
 
@@ -194,11 +195,31 @@ class QQtmRt(QtCore.QObject):
         self._send_command('streamframes stop')
         # Hackish so that any packets already on the way will be delivered and parsed correctly.
         QtCore.QTimer.singleShot(500, self._delayed_stream_stop)
+
     def takeControl(self, password=""):
         cmd = "takecontrol %s" % password
         self._send_command(cmd)
         return self._wait_for_reply()
 
+
+    def set_skeletons(self, sXML):
+        reply = self.takeControl("gait1")
+        if reply == "You are now master" or reply == "You are already master":
+            newxml = u"<QTM_Settings>\n"
+            newxml += sXML
+            newxml += u"</QTM_Settings>"
+
+            cmd = QtmParser.create_command(newxml, QRTPacketType.PacketXML)
+            self._socket.write(cmd)
+            resp = self._wait_for_reply()
+            print(f"Pushed XML.  Response is {resp}")
+
+            return resp
+        else:
+            print(f"Could not take control: {reply}")
+
+    def get_skeletons(self):
+        return None
 
     def connect_to_qtm(self, host='127.0.0.1', timeout=3000):
         if self._connected:

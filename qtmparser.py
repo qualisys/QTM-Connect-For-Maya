@@ -1,7 +1,7 @@
 import struct
 
-from modules.qualisys_python_sdk.qtm.packet import QRTPacketType, QRTPacket, QRTEvent
-from modules.qualisys_python_sdk.qtm.packet import RTheader, RTEvent, RTCommand
+from qtm.packet import QRTPacketType, QRTPacket, QRTEvent
+from qtm.packet import RTheader, RTEvent, RTCommand
 
 class QtmParser(object):
     @staticmethod

@@ -60,18 +60,23 @@ class SkeletonStreamer:
                     segment_rotation.z,
                     segment_rotation.w,
                 )
-
-                transformFn = self._segments[skeleton_index][segment_id]["transformFn"]
-                transformFn.setTranslation(translation, om.MSpace.kTransform)
-                transformFn.setRotation(
-                    rotation.asEulerRotation(), om.MSpace.kTransform
-                )
+                try:
+                    transformFn = self._segments[skeleton_index][segment_id]["transformFn"]
+                    transformFn.setTranslation(translation, om.MSpace.kTransform)
+                    transformFn.setRotation(
+                        rotation.asEulerRotation(), om.MSpace.kTransform
+                    )
+                except KeyError:
+                    print(f"KeyError - skeleton_index {skeleton_index}; segment_id {segment_id}; _segments{self._segments}")
 
     def _update_ui(self):
         self._listWidget.clear()
 
         if self._qtm.connected:
             self._qtm_settings = self._qtm.get_settings("skeleton")
+            print(f"_update_ui: _qtm_settings is {type(self._qtm_settings)}")
+        else:
+            self._qtm_settings = None
 
         if (
             self._qtm_settings is None

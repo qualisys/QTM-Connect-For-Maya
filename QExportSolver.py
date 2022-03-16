@@ -618,4 +618,11 @@ def gexXmlSkeleton():
     else:
         return None
 
-        
+def PushXMLSkeleton():
+    bOK = SanityCheck()
+    if bOK:
+        QES = QExportSolver()
+        QES.SetSceneScale()
+        QES.ExportQTMSkeletonFile(None) # No file means to create XML string
+        return QES._sXML
+    return None

@@ -201,6 +201,26 @@
     </widget>
    </item>
    <item>
+		   <widget class="QPushButton" name="pullSkeletons">
+			   <property name="enabled">
+				   <bool>false</bool>
+			   </property>
+		   <property name="text">
+			   <string>Pull Skeletons from QTM</string>
+		   </property>
+   </widget>
+   </item>
+	  <item>
+		  <widget class="QPushButton" name="pushSkeleton">
+			  <property name="enabled">
+				  <bool>false</bool>
+			  </property>
+			  <property name="text">
+				  <string>Push Skeleton to QTM</string>
+			  </property>
+		  </widget>
+	  </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
    </item>
   </layout>

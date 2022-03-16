@@ -25,7 +25,12 @@ from skeletonstreamer import SkeletonStreamer
 from rigidbodystreamer import RigidBodyStreamer
 import importlib
 
-from qtmREST import GetData, GetLabledMarkers
+from qtmREST import GetData, GetLabledMarkers, grabCurrentFrame
+
+from QExportSolver import PushXMLSkeleton
+import QImportSolver
+
+import xml.etree.ElementTree as ET
 
 MAYA = False
 
@@ -131,7 +136,7 @@ def show_gui(restore=False):
 def UpdateMarkers(markerdata):
     #print(f"Update Markers with{markerdata}")
     for marker in markerdata:
-        namespace,shortname = marker.split("_")
+        namespace,shortname = marker.split("_",1)
         groupnodename = f"{namespace}:Markers"
         groupnodes = cmds.ls(groupnodename)
         if not groupnodes:
@@ -150,11 +155,16 @@ def UpdateMarkers(markerdata):
         if not cmds.objExists(fullname):
             print(f"Adding Marker {shortname} to {namespace}")
             cmds.spaceLocator(name=fullname)
+            cmds.setAttr("%s.overrideEnabled" % fullname, 1)
+            cmds.setAttr("%s.overrideColor" % fullname, 22)
             cmds.select(fullname)
             cmds.move(px,py,pz, ls=True)
             cmds.scale(3,3,3)
             cmds.select(groupnodename)
             cmds.parent(fullname)
+        else:
+            cmds.select(fullname)
+            cmds.move(px,py,pz)
 
 
 class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
@@ -178,6 +188,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             parent._qtmConnect._qtm.disconnect()
 
         self._qtm                 = QQtmRt()
+        print(f"InitQtmConnectionWidget QQtmRt is {type(self._qtm)}")
         self._skeleton_streamer   = SkeletonStreamer(self._qtm, self.widget.skeletonList)
         self._marker_streamer     = MarkerStreamer(self._qtm, self.widget.markerList, self.widget.groupNameField)
         self._rigid_body_streamer = RigidBodyStreamer(self._qtm, self.widget.rigidBodyList)
@@ -213,6 +224,8 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.rigidBodyComponentButton.toggled.connect(self.component_changed)
         self.widget.tPoseButton.clicked.connect(self.toggle_t_pose)
         self.widget.getMarkers.clicked.connect(self.get_markers)
+        self.widget.pushSkeleton.clicked.connect(self.push_skeleton)
+        self.widget.pullSkeletons.clicked.connect(self.pull_skeletons)
 
         #self.widget.connectionContainer.setFixedHeight(110)
         
@@ -285,6 +298,8 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.connectButton.setText('Disconnect' if connected else 'Connect')
         self.widget.hostField.setEnabled(not connected)
         self.widget.startButton.setEnabled(connected)
+        self.widget.pushSkeleton.setEnabled(connected)
+        self.widget.pullSkeletons.setEnabled(connected)
         self._shelf.toggle_connect_button(connected)
 
         if connected:
@@ -337,7 +352,8 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         #self._output(f"You selected GetMarkers!")
         #response, seconds = GetData()
         #marker_data, fileInfo = GetLabledMarkers(GetCurrentFrame=True)
-        marker_data, fileInfo = GetLabledMarkers()
+        #marker_data, fileInfo = GetLabledMarkers()
+        marker_data, fileInfo = grabCurrentFrame()
         if marker_data is not False:
             #self._output(f"Got a response")
             #print (f"Response is {response}")
@@ -346,7 +362,30 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             UpdateMarkers(marker_data)
         else:
             self._output(f"Did not get a reponse")
-        
+    def push_skeleton(self):
+        print(f"In Push Skeleton")
+        XML = PushXMLSkeleton()
+        if XML:
+            #print(f"XML is {XML}")
+            resp = self._qtm.set_skeletons(XML)
+            print(f"Response from Pushing skeleton: {resp}")
+        else:
+            print(f"No Valid Model Pose")
+
+    def pull_skeletons(self):
+        print(f"In Pull Skeletons")
+        sXML = self._qtm.get_parameters("skeleton")
+        root = ET.fromstring(sXML)
+        print(f"root is {type(root)}")
+        tag = root.tag
+        print(f"Root Tag is {tag}")
+        for skeletons in root:
+            for skeleton in skeletons:
+                print(f"skeleton {skeleton.tag}")
+                QIS = QImportSolver.QImportSolver()
+                QIS.SetSceneScale()
+                QIS.ImportQTMSkeletonStream(skeleton)
+
     def _reset_skeleton_names(self):
         items = []
         for index in range(self.widget.skeletonList.count()):
@@ -364,6 +403,8 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         self.widget.startButton.setEnabled(not streaming)
         self.widget.stopButton.setEnabled(streaming)
         self.widget.tPoseButton.setEnabled(not streaming)
+        self.widget.pushSkeleton.setEnabled(not streaming)
+        self.widget.pullSkeletons.setEnabled(not streaming)
     
     def stream(self):
 

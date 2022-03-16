@@ -5,7 +5,7 @@ import os
 from pymel.all import *
 import pymel.core.datatypes as dt
 from PySide2 import QtCore, QtGui, QtWidgets
-import qqtmrt
+#import qqtmrt
 
 #
 # Quaternion to Euler angle conversion
@@ -283,6 +283,11 @@ class QImportSolver:
 
                 for ccs in cs:
                     if ccs.tag == "RotationX":
+                        lb = -360
+                        ub = 360
+                        cmds.setAttr(n+ ".XRotDoF", True)
+                        cmds.setAttr(n+".XRotDoF_LowerBound", lb)
+                        cmds.setAttr(n+".XRotDoF_UpperBound", ub)
                         for cccs in ccs:
                             if cccs.tag == "Constraint":
                                 bounded = False
@@ -293,7 +298,6 @@ class QImportSolver:
                                     lb = math.degrees(float(cccs.attrib["LowerBound"]))
                                     ub = math.degrees(float(cccs.attrib["UpperBound"]))
 
-                                cmds.setAttr(n+ ".XRotDoF", True)
                                 cmds.setAttr(n+".XRotDoF_LowerBound", lb)
                                 cmds.setAttr(n+".XRotDoF_UpperBound", ub)
 
@@ -320,6 +324,11 @@ class QImportSolver:
 
                         #print Spaces(level+2), "RX", bounded, "LowerBound", lb, "UpperBound", ub
                     elif ccs.tag == "RotationY":
+                        lb = -360
+                        ub = 360
+                        cmds.setAttr(n+ ".YRotDoF", True)
+                        cmds.setAttr(n+".YRotDoF_LowerBound", lb)
+                        cmds.setAttr(n+".YRotDoF_UpperBound", ub)
                         for cccs in ccs:
                             if cccs.tag == "Constraint":
                                 bounded = False
@@ -330,7 +339,6 @@ class QImportSolver:
                                     lb = math.degrees(float(cccs.attrib["LowerBound"]))
                                     ub = math.degrees(float(cccs.attrib["UpperBound"]))
 
-                                cmds.setAttr(n+ ".YRotDoF", True)
                                 cmds.setAttr(n+".YRotDoF_LowerBound", lb)
                                 cmds.setAttr(n+".YRotDoF_UpperBound", ub)
                             elif cccs.tag == "Couplings":
@@ -356,6 +364,11 @@ class QImportSolver:
 
                         #print Spaces(level+2), "RY", bounded, "LowerBound", lb, "UpperBound", ub
                     elif ccs.tag == "RotationZ":
+                        lb = -360
+                        ub = 360
+                        cmds.setAttr(n+ ".ZRotDoF", True)
+                        cmds.setAttr(n+".ZRotDoF_LowerBound", lb)
+                        cmds.setAttr(n+".ZRotDoF_UpperBound", ub)
                         for cccs in ccs:
                             if cccs.tag == "Constraint":
                                 bounded = False
@@ -366,7 +379,6 @@ class QImportSolver:
                                     lb = math.degrees(float(cccs.attrib["LowerBound"]))
                                     ub = math.degrees(float(cccs.attrib["UpperBound"]))
 
-                                cmds.setAttr(n+ ".ZRotDoF", True)
                                 cmds.setAttr(n+".ZRotDoF_LowerBound", lb)
                                 cmds.setAttr(n+".ZRotDoF_UpperBound", ub)
                             elif cccs.tag == "Couplings":
@@ -513,6 +525,13 @@ class QImportSolver:
 
         else:
             print ("NO!  <", tag, "> is Not a skeleton definition")
+    
+    def ImportQTMSkeletonStream(self,root):
+        tag = root.tag
+        if tag == "Skeleton":
+            self._ImportSkeleton(root)
+        else:
+            print(f"{tag} is not from a skeleton stream")
 
 ################################################################
 #
