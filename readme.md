@@ -21,7 +21,11 @@ Manual
 ### Note on Maya versions
 Maya2022 uses Python3.7, earlier versions use Python2.7.  The main branch of the plugin has been updated to Python3.7.
 For earlier vesions of Maya you must use the Python2.7 branch.
-
+### Note on Maya python install
+To use the "Get Marker in current frame" tool you need to install "numpy" and "pandas" in your Maya python.  
+1. In a command shell go to the "bin" folder of your Maya installation
+2. Execute './mayapy -m pip install numpy'
+3. Execute './mayapy -m pip install pandas'
 ## Streaming skeleton data
 To stream skeleton data you must first define a skeleton in QTM. Do this by clicking the `Calibrate skeleton` button in QTM.
 
@@ -88,7 +92,15 @@ In QTM:
 2. Open the context menu by right clicking and run `Define rigid body (6DOF)` > `Current Frame` / `Average of frame`.
 
 Rigid bodies can also be edited in `Project Options` > `Processing` > `6DOF Tracking`.
-
+## Get Marker in current frame
+This returns the markers from QTM.  This is good for updating the solver model to a new marker pose.
+## Pull Skeletons from QTM
+Retrieves all skeleton solver definitions for those skeletons from QTM.  You will end up with two skeletons 
+for each model:
+the model pose skeleton and the skeleton you can stream data onto.
+## Push Skeleton to QTM
+Not fully implemented yet.  Currently only pushes one skeleton back to QTM which wipes out all the other definitons in QTM.
+Don't use unless you know exactly what you're doing.
 ## Update Qualisys Python SDK:
 In terminal, run:
 
