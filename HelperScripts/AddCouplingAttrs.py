@@ -5,7 +5,10 @@ import maya.cmds as cmds
 # If you want the parent entered as the coupled segment, Set
 # parentAsDefault to True
 #
-attrs = ['ZR1','YR1','XR1']
+#attrs = ['ZR1','YR1','XR1']
+attrs = ['ZR1']
+#attrs = ['ZR1','ZR2','YR1','YR2']
+#attrs = ['XR1','XR2']
 parentAsDefault = True
 couplings = {'XR1': ("XRot_CP1_Coeff", 0.7, "XRot_CP1_Segment", ""),
              'XR2': ("XRot_CP2_Coeff", 0.7, "XRot_CP2_Segment", ""),

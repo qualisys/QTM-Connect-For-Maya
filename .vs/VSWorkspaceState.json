@@ -1,9 +1,10 @@
 {
   "ExpandedNodes": [
     "",
+    "\\HelperScripts",
     "\\modules",
     "\\ui"
   ],
-  "SelectedNode": "\\modules",
+  "SelectedNode": "\\readme.md",
   "PreviewInSolutionExplorer": false
 }

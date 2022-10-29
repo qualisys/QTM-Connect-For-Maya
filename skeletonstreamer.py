@@ -166,6 +166,7 @@ class SkeletonStreamer:
             self._modifier.doIt()
 
     def add_segment(self, skeleton_index, segment, parent_id):
+        #print(f"add_segment segment: {segment}")
         segment_name = self._skeletons[skeleton_index]["@Name"] + ":" + segment["@Name"]
         create = True
         j = MayaUtil.get_node_by_name(segment_name)
