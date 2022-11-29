@@ -1,10 +1,7 @@
 import xml.etree.ElementTree as ET
 import maya.cmds as cmds
 import math
-import os
 from pymel.all import *
-import pymel.core.datatypes as dt
-from PySide2 import QtCore, QtGui, QtWidgets
 #import qqtmrt
 
 #
@@ -442,11 +439,8 @@ class QImportSolver:
     #
     #def _ImportSegments(self, gGroupName, segments):
     def _ImportSegments(self, segments):
-        tag    = segments.tag
-        attrib = segments.attrib
 
         for c in segments:
-            ctag = c.tag
             if c.tag == "Segment":
                 self._ImportSegment(None,c,0,True)
 
@@ -472,8 +466,6 @@ class QImportSolver:
     def _ImportSkeleton(self, skeleton):
         tag    = skeleton.tag
         attrib = skeleton.attrib
-        # print tag
-        #print attrib
 
         name = attrib["Name"]
         if tag == "Skeleton":
@@ -547,7 +539,8 @@ class QImportSolver:
 #
 # The code in the shelf command should be:
 #    import QImportSolver
-#    reload(QImportSolver)
+#    import importlib
+#    importlib.reload(QImportSolver)
 #    QImportSolver.ImportQTMSkeleton()
 #
 # NOTE:  This routine completely NUKES the current Maya scene, use with caution.
