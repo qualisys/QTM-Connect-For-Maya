@@ -57,7 +57,7 @@ def JointRot(jointname,markerset):
     e[0] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.rotateX")
     e[1] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.rotateY")
     e[2] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.rotateZ")
-    R = scipy.spatial.transform.Rotation.from_euler("xyz",e, degrees=True)
+    R = qscipy.QRotation.from_euler("xyz",e)
     return R
 
 def RotationFromReference(v_up, v_front):
@@ -81,8 +81,7 @@ def QRotationFromReference(v_up, v_front):
     Z = normalize(v_up)
     X = normalize(np.cross(v_front,Z))
     Y = normalize(np.cross(Z,X))
-    R = qscipy.QRotation()
-    R = R.from_matrix([X,Y,Z])
+    R = qscipy.QRotation.from_matrix([X,Y,Z])
     return R
 
 def RotationBetweenVectors(v1,v2):
@@ -98,10 +97,11 @@ def RotationBetweenVectors(v1,v2):
 def QRotationBetweenVectors(v1,v2):
     axis = np.cross(v1,v2)
     l = np.linalg.norm(axis)
-    R = qscipy.QRotation()
     if not math.isclose(l+1.0,1.0):
         theta = np.arcsin(l)
-        R = R.from_axis_angle(normalize(axis), theta)
+        R = qscipy.QRotation.from_axis_angle(normalize(axis), theta)
+    else:
+        R = qscipy.QRotation()
     return R
 def SetJointLocal(jointname,markerset,pos,rot):
     fullname = f"{markerset}:ModelPose:{jointname}"
@@ -120,6 +120,10 @@ def SetJointGlobal(jointname,markerset,pos,rot):
     else:
         cmds.xform(fullname, ws=True, ro=(rot[0],rot[1],rot[2]))
 
+#
+# The aim of each rule is to find the Z (up) axis and the
+# Y (front) axis.  From this a global rotation value is
+# computed and then set in the node.
 def _Hips_rule(joint,markers,markerset):
     WRB = MarkerPos("WaistRBack",markerset)
     WLB = MarkerPos("WaistLBack",markerset)
