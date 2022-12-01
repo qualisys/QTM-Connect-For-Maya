@@ -4,7 +4,7 @@ will cause 32 bit applications to crash.
 """
 import numpy as np
 import math
-# import scipy
+
 
 class QRotation:
     """
@@ -27,36 +27,102 @@ class QRotation:
         R.M[2][2] = S.M[2][0]*O.M[0][2] + S.M[2][1]*O.M[1][2] + S.M[2][2]*O.M[2][2]
         return  R
 
-    def from_matrix(self,mat):
-        self.M = mat
-        return self
+    @staticmethod
+    def from_matrix(mat):
+        R = QRotation()
+        R.M = mat
+        return R
 
-    def from_axis_angle(self, axis, angle):
+    @staticmethod
+    def from_axis_angle(axis, angle):
         """
         Angle in radians
         see p 466 of Graphics Gems 1
         """
+        R = QRotation()
         x = axis[0]
         y = axis[1]
         z = axis[2]
         s = math.sin(angle)
         c = math.cos(angle)
         t = 1.0 - c
-        self.M[0][0] = t * x * x + c
-        self.M[0][1] = t * x * y + s * z
-        self.M[0][2] = t * x * z - s * y
-        self.M[1][0] = t * x * y - s * z
-        self.M[1][1] = t * y * y + c
-        self.M[1][2] = t * y * z + s * x
-        self.M[2][0] = t * x * z + s * y
-        self.M[2][1] = t * y * z - s * x
-        self.M[2][2] = t * z * z + c
-        return self
+        R.M[0][0] = t * x * x + c
+        R.M[0][1] = t * x * y + s * z
+        R.M[0][2] = t * x * z - s * y
+        R.M[1][0] = t * x * y - s * z
+        R.M[1][1] = t * y * y + c
+        R.M[1][2] = t * y * z + s * x
+        R.M[2][0] = t * x * z + s * y
+        R.M[2][1] = t * y * z - s * x
+        R.M[2][2] = t * z * z + c
+        return R
+    @staticmethod
+    def from_x_rot(deg):
+        R = QRotation()
+        rad = math.radians(deg)
+        s = math.sin(rad)
+        c = math.cos(rad)
+        R.M[0][0] = 1.0
+        R.M[0][1] = 0.0
+        R.M[0][2] = 0.0
+        R.M[1][0] = 0.0
+        R.M[1][1] = c
+        R.M[1][2] = s
+        R.M[2][0] = 0.0
+        R.M[2][1] = -s
+        R.M[2][2] = c
+        return R
+    @staticmethod
+    def from_y_rot(deg):
+        R = QRotation()
+        rad = math.radians(deg)
+        s = math.sin(rad)
+        c = math.cos(rad)
+        R.M[0][0] = c
+        R.M[0][1] = 0.0
+        R.M[0][2] = -s
+        R.M[1][0] = 0.0
+        R.M[1][1] = 1.0
+        R.M[1][2] = 0.0
+        R.M[2][0] = s
+        R.M[2][1] = 0.0
+        R.M[2][2] = c
+        return R
+    @staticmethod
+    def from_z_rot(deg):
+        R = QRotation()
+        rad = math.radians(deg)
+        s = math.sin(rad)
+        c = math.cos(rad)
+        R.M[0][0] = c
+        R.M[0][1] = s
+        R.M[0][2] = 0.0
+        R.M[1][0] = -s
+        R.M[1][1] = c
+        R.M[1][2] = 0.0
+        R.M[2][0] = 0.0
+        R.M[2][1] = 0.0
+        R.M[2][2] = 1.0
+        return R
+    @staticmethod
+    def from_euler(order:str, e):
+        R = QRotation()
+        Rx = QRotation.from_x_rot(e[0])
+        Ry = QRotation.from_y_rot(e[1])
+        Rz = QRotation.from_z_rot(e[2])
+        for axis in order:
+            if axis == 'x' or axis == 'X':
+                R = R * Rx
+            elif axis == 'y' or axis == 'Y':
+                R = R * Ry
+            else:
+                R = R * Rz
+        return R
 
     def inv(self):
-        N = QRotation()
-        N.M = np.linalg.inv(self.M)
-        return N
+        self.M = np.linalg.inv(self.M)
+        return self
+
     def as_euler_xyz(self):
         """ Return the euler angles in degrees.  No error checking."""
         b = math.asin(-self.M[0][2])
@@ -80,12 +146,40 @@ class QRotation:
         return np.array([0.0,0.0,0.0])
 
 
+def normalize(n):
+    l = np.linalg.norm(n)
+    return n/l
 
 def run_tests():
-    M = QRotation()
+    """
+    Compare/validate results with scipy
+    """
+    import scipy
+    import random
+
+    # Euler angle test
+    e = np.array([0.0,0.0,0.0])
+    e[0] = random.uniform(-360.0,360.0)
+    e[1] = random.uniform(-360.0,360.0)
+    e[2] = random.uniform(-360.0,360.0)
+    print(f"Euler rotation is {e}")
+    M = QRotation.from_euler("xyz",e)
     print(f"M is {M}")
-    # R = scipy.spatial.transform.Rotation.from_matrix([[1.0,0.0,0.0], [0.0,1.0,0.0], [0.0,0.0,1.0]])
-    # print(f"R is {R.as_matrix()}")
+    R = scipy.spatial.transform.Rotation.from_euler("xyz",e, degrees=True)
+    print(f"R.inv() is \n{R.inv().as_matrix()}")
+
+    # axis-angle/rotvec test
+    a = np.array([0.0,0.0,0.0])
+    a[0] = random.uniform(-1.0,1.0)
+    a[1] = random.uniform(-1.0,1.0)
+    a[2] = random.uniform(-1.0,1.0) 
+    a = normalize(a) 
+    theta = math.radians(random.uniform(-180.0,180.0))
+    M = QRotation.from_axis_angle(a,theta)
+    R = scipy.spatial.transform.Rotation.from_rotvec(a * theta)
+    print(f"Axis Angle is {a} {theta}")
+    print(f"M is {M}")
+    print(f"R.inv() is \n{R.inv().as_matrix()}")
 
 #print(f"__name__ is {__name__}")
 #print(f"__file__ is {__file__}")
