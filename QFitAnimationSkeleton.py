@@ -4,7 +4,16 @@ Fit the selected QTM Animation skeleton to the matching marker cloud.
 
 import maya.cmds as cmds
 import numpy as np
-import scipy
+import math
+#import scipy
+import importlib
+import os, sys
+here = "C:/Program Files/Autodesk/Maya2023/bin/qtm_connect_maya/"
+if not here in sys.path:
+    sys.path.append("C:/Program Files/Autodesk/Maya2023/bin/qtm_connect_maya/")
+
+import qscipy
+importlib.reload(qscipy)
 
 def normalize(n):
     l = np.linalg.norm(n)
@@ -34,6 +43,14 @@ def JointPos(jointname, markerset):
     #print(f"{fullname} world matrix is {world_mat}")
     retval = np.array(world_mat[12:15])
     return retval
+def JointPosLocal(jointname, markerset):
+    fullname = f"{markerset}:ModelPose:{jointname}"
+    p = np.array([0.0,0.0,0.0])
+    p[0] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.translateX")
+    p[1] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.translateY")
+    p[2] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.translateZ")
+    return p
+    
 def JointRot(jointname,markerset):
     fullname = f"{markerset}:ModelPose:{jointname}"
     e = np.array([0.0,0.0,0.0])
@@ -55,7 +72,37 @@ def RotationFromReference(v_up, v_front):
     R = scipy.spatial.transform.Rotation.from_matrix([X,Y,Z])
     return R.inv()
 
+def QRotationFromReference(v_up, v_front):
+    """ 
+    Return the global rotation from the given reference frame described by an up vector
+    and a front vector.  These two do not have to be perfectly orthogonal nor unit vectors.
+    The up vector maps to Z, the front vector to Y.
+    """
+    Z = normalize(v_up)
+    X = normalize(np.cross(v_front,Z))
+    Y = normalize(np.cross(Z,X))
+    R = qscipy.QRotation()
+    R = R.from_matrix([X,Y,Z])
+    return R
 
+def RotationBetweenVectors(v1,v2):
+    axis = np.cross(v1,v2)
+    l = np.linalg.norm(axis)
+    if l < 0.0001:
+        R = scipy.spatial.transform.Rotation.from_euler("xyz",np.array([0.0,0.0,0.0]))
+    else:
+        theta = np.arcsin(l)
+        rotvec = normalize(axis)*theta
+        R = scipy.spatial.transform.Rotation.from_rotvec(rotvec)
+    return R
+def QRotationBetweenVectors(v1,v2):
+    axis = np.cross(v1,v2)
+    l = np.linalg.norm(axis)
+    R = qscipy.QRotation()
+    if not math.isclose(l+1.0,1.0):
+        theta = np.arcsin(l)
+        R = R.from_axis_angle(normalize(axis), theta)
+    return R
 def SetJointLocal(jointname,markerset,pos,rot):
     fullname = f"{markerset}:ModelPose:{jointname}"
     if pos is not None:
@@ -72,9 +119,6 @@ def SetJointGlobal(jointname,markerset,pos,rot):
         cmds.xform(fullname, ws=True, ro=(rot[0],rot[1],rot[2]), t=(pos[0],pos[1],pos[2]))
     else:
         cmds.xform(fullname, ws=True, ro=(rot[0],rot[1],rot[2]))
-        
-
-
 
 def _Hips_rule(joint,markers,markerset):
     WRB = MarkerPos("WaistRBack",markerset)
@@ -95,10 +139,13 @@ def _Hips_rule(joint,markers,markerset):
     HipsUp = normalize(np.subtract(HipsEnd, HipsStart))
     HipsForward = OrthogonalizeV2(HipsUp,CenterVec)
 
-    RTotal = RotationFromReference(HipsUp,HipsForward)
-    e = RTotal.as_euler("xyz",degrees =True)
-
-    SetJointGlobal("Hips", markerset, HipsStart,e)
+    #RTotal = RotationFromReference(HipsUp,HipsForward)
+    QRTotal = QRotationFromReference(HipsUp,HipsForward)
+    #e = RTotal.as_euler("xyz",degrees =True)
+    qe = QRTotal.as_euler("xyz")
+    #print(f"scipy euler {e}")
+    #print(f"QScipy euler {qe}")
+    SetJointGlobal("Hips", markerset, HipsStart,qe)
     
 def _Spine_rule(joint,markers,markerset):
     SpineTop = MarkerPos("SpineTop",markerset)
@@ -109,8 +156,8 @@ def _Spine_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(SpineTop,Spine))
     FrontVec = SpineTopChestVec
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("Spine", markerset, None,e)
 
 def _Spine1_rule(joint,markers,markerset):
@@ -122,8 +169,8 @@ def _Spine1_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(SpineTop,Spine1))
     FrontVec = SpineTopChestVec
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("Spine1", markerset, None,e)
 
 def _Spine2_rule(joint,markers,markerset):
@@ -135,8 +182,8 @@ def _Spine2_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(SpineTop,Spine2))
     FrontVec = SpineTopChestVec
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("Spine2", markerset, None,e)
 
 def _LeftShoulder_rule(joint,markers,markerset):
@@ -152,8 +199,8 @@ def _LeftShoulder_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(Neck,Spine2))
     FrontVec = np.cross(UpVec,ShoulderToElbowVec)
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("LeftShoulder", markerset, None,e)
 
 def _LeftArm_rule(joint,markers,markerset):
@@ -168,14 +215,15 @@ def _LeftArm_rule(joint,markers,markerset):
     WristVec = normalize(np.subtract(WristOut,WristIn))
     HandVec = normalize(np.subtract(HandOut,WristOut))
 
-    ArmToElbowVec = normalize(np.subtract(LeftArm,MidElbow))
+    ArmToElbowVec = normalize(np.subtract(MidElbow,LeftArm))
 
-    UpVec = normalize(np.cross(WristVec,HandVec))
-    FrontVec = np.cross(UpVec,ArmToElbowVec)
+    HandUpVec = normalize(np.cross(HandVec,WristVec))
+    FrontVec = np.cross(ArmToElbowVec,HandUpVec)
+    UpVec = normalize(np.cross(FrontVec,ArmToElbowVec))
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
-    SetJointGlobal("RightArm", markerset, None,e)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
+    SetJointGlobal("LeftArm", markerset, None,e)
 
 def _LeftForeArm_rule(joint,markers,markerset):
     LeftForeArm = JointPos("LeftForeArm",markerset)
@@ -188,12 +236,12 @@ def _LeftForeArm_rule(joint,markers,markerset):
 
     ElbowToWristVec = normalize(np.subtract(LeftForeArm,MidWrist))
 
-    PalmVec = normalize(np.cross(WristVec,HandVec))
+    PalmVec = normalize(np.cross(HandVec,WristVec))
     FrontVec = np.cross(PalmVec,ElbowToWristVec)
     UpVec = np.cross(ElbowToWristVec, FrontVec)
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("LeftForeArm", markerset, None,e)
 
 def _LeftHand_rule(joint,markers,markerset):
@@ -206,8 +254,13 @@ def _LeftHand_rule(joint,markers,markerset):
     UpVec = normalize(np.cross(HandVec,WristVec))
     FrontVec = normalize(np.subtract(WristIn,WristOut))
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    XOffsetVec = normalize(JointPosLocal("LeftHand_end",markerset))
+    ROffset = QRotationBetweenVectors(XOffsetVec,np.array([-1.0,0.0,0.0]))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+    RTotal = R * ROffset
+
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("LeftHand", markerset, None,e)
 
 def _RightShoulder_rule(joint,markers,markerset):
@@ -223,8 +276,8 @@ def _RightShoulder_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(Neck,Spine2))
     FrontVec = np.cross(UpVec,ShoulderToElbowVec)
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("RightShoulder", markerset, None,e)
 
 def _RightArm_rule(joint,markers,markerset):
@@ -239,13 +292,14 @@ def _RightArm_rule(joint,markers,markerset):
     WristVec = normalize(np.subtract(WristOut,WristIn))
     HandVec = normalize(np.subtract(HandOut,WristOut))
 
-    ArmToElbowVec = normalize(np.subtract(MidElbow,RightArm))
+    ArmToElbowVec = normalize(np.subtract(RightArm,MidElbow))
 
-    UpVec = normalize(np.cross(WristVec,HandVec))
-    FrontVec = np.cross(UpVec,ArmToElbowVec)
+    HandUpVec = normalize(np.cross(HandVec,WristVec))
+    FrontVec = np.cross(HandUpVec,ArmToElbowVec)
+    UpVec = normalize(np.cross(FrontVec,ArmToElbowVec))
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("RightArm", markerset, None,e)
 
 def _RightForeArm_rule(joint,markers,markerset):
@@ -263,8 +317,8 @@ def _RightForeArm_rule(joint,markers,markerset):
     FrontVec = np.cross(PalmVec,ElbowToWristVec)
     UpVec = np.cross(ElbowToWristVec, FrontVec)
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("RightForeArm", markerset, None,e)
 
 def _RightHand_rule(joint,markers,markerset):
@@ -277,8 +331,15 @@ def _RightHand_rule(joint,markers,markerset):
     UpVec = normalize(np.cross(WristVec,HandVec))
     FrontVec = normalize(np.subtract(WristIn,WristOut))
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    XOffsetVec = normalize(JointPosLocal("RightHand_end",markerset))
+    ROffset = QRotationBetweenVectors(XOffsetVec,np.array([1.0,0.0,0.0]))
+    #eOffset = ROffset.as_euler("xyz", degrees = True)
+    #print(f"Right Hand offset is {eOffset}")
+
+    R = QRotationFromReference(UpVec,FrontVec)
+    RTotal = R * ROffset
+
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("RightHand", markerset, None,e)
 
 def _Neck_rule(joint,markers,markerset):
@@ -290,8 +351,8 @@ def _Neck_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(HeadTop,SpineTop))
     FrontVec = TopToFrontVec
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("Neck", markerset, None,e)
 
 def _Head_rule(joint,markers,markerset):
@@ -310,8 +371,8 @@ def _Head_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(UpGoal,Head))
     FrontVec = TopToFrontVec
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("Head", markerset, None,e)
 
 def _LeftUpLeg_rule(joint,markers,markerset):
@@ -326,8 +387,8 @@ def _LeftUpLeg_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(LeftUpLeg,UpGoal))
     FrontVec = HeelToeVec
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("LeftUpLeg", markerset, None,e)
 
 def _LeftLeg_rule(joint,markers,markerset):
@@ -351,8 +412,8 @@ def _RightUpLeg_rule(joint,markers,markerset):
     UpVec = normalize(np.subtract(RightUpLeg,UpGoal))
     FrontVec = HeelToeVec
 
-    RTotal = RotationFromReference(UpVec,FrontVec)
-    e = RTotal.as_euler("xyz",degrees =True)
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
     SetJointGlobal("RightUpLeg", markerset, None,e)
 
 
