@@ -88,7 +88,9 @@ def GetLabledMarkers(hostIp = "127.0.0.1",Range = [0,0], GetCurrentFrame = False
         print(f"Fetch and sort the data in {toc - tic:0.4f} seconds")
     return marker_data,fileInfo
 
-def grabCurrentFrame(ip="127.0.0.1"):
+def grabCurrentFrame(ip="localhost"):
+    if ip == "localhost":
+        ip = "127.0.0.1"
     print(ip)
     data, info = GetData(Markers=False,hostIp = ip)
     currentFrame = data["CurrentFrame"]

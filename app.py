@@ -353,7 +353,7 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
         #response, seconds = GetData()
         #marker_data, fileInfo = GetLabledMarkers(GetCurrentFrame=True)
         #marker_data, fileInfo = GetLabledMarkers()
-        marker_data, fileInfo = grabCurrentFrame()
+        marker_data, fileInfo = grabCurrentFrame(self._host)
         if marker_data is not False:
             #self._output(f"Got a response")
             #print (f"Response is {response}")

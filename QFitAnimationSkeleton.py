@@ -22,22 +22,59 @@ def OrthogonalizeV2(v1,v2):
     c = np.cross(v1,v2)
     o = normalize(np.cross(c,v1))
     return o
+def closest_line_seg_line_seg(p1, p2, p3, p4):
+    """
+    Return the line segment whose endpoints are the closest
+    points on each line closest to each other
+    """
+    P1 = p1
+    P2 = p3
+    V1 = p2 - p1
+    V2 = p4 - p3
+    V21 = P2 - P1
+
+    v22 = np.dot(V2, V2)
+    v11 = np.dot(V1, V1)
+    v21 = np.dot(V2, V1)
+    v21_1 = np.dot(V21, V1)
+    v21_2 = np.dot(V21, V2)
+    denom = v21 * v21 - v22 * v11
+
+    if np.isclose(denom, 0.):
+        s = 0.
+        t = (v11 * s - v21_1) / v21
+    else:
+        s = (v21_2 * v21 - v22 * v21_1) / denom
+        t = (-v21_1 * v21 + v11 * v21_2) / denom
+
+    s = max(min(s, 1.), 0.)
+    t = max(min(t, 1.), 0.)
+
+    p_a = P1 + s * V1
+    p_b = P2 + t * V2
+
+    return p_a, p_b
+
 def MarkerPos(markername,markerset):
+    """
+    Local marker position, but since its parent hasn't moved
+    it's like a global position.
+    """
     fullname = f"{markerset}:{markername}"
     node = cmds.ls(fullname)
     retval = np.array([0.0,0.0,0.0])
     if node is None:
         print(f"Could not find marker position for {fullname}")
         return retval
-    a = f"{markerset}:{markername}.translateX"
-    retval[0] = cmds.getAttr(a)
-    a = f"{markerset}:{markername}.translateY"
-    retval[1] = cmds.getAttr(a)
-    a = f"{markerset}:{markername}.translateZ"
-    retval[2] = cmds.getAttr(a)
+    retval[0] = cmds.getAttr(f"{markerset}:{markername}.translateX")
+    retval[1] = cmds.getAttr(f"{markerset}:{markername}.translateY")
+    retval[2] = cmds.getAttr(f"{markerset}:{markername}.translateZ")
     return retval
 
 def JointPos(jointname, markerset):
+    """
+    Global joint position
+    """
     fullname = f"{markerset}:ModelPose:{jointname}"
     world_mat = cmds.xform(fullname, q=True, m=True, ws=True)
     #print(f"{fullname} world matrix is {world_mat}")
@@ -207,7 +244,7 @@ def _LeftShoulder_rule(joint,markers,markerset):
     e = RTotal.as_euler("xyz")
     SetJointGlobal("LeftShoulder", markerset, None,e)
 
-def _LeftArm_rule(joint,markers,markerset):
+def _LeftArm_rule_old(joint,markers,markerset):
     LArm = MarkerPos("LArm",markerset)
     LElbowOut = MarkerPos("LElbowOut",markerset)
     SpineTop = MarkerPos("SpineTop",markerset)
@@ -228,7 +265,28 @@ def _LeftArm_rule(joint,markers,markerset):
     RTotal = QRotationFromReference(UpVec,FrontVec)
     e = RTotal.as_euler("xyz")
     SetJointGlobal("LeftArm", markerset, None,e)
+def _LeftArm_rule(joint,markers,markerset):
+    LElbowOut = MarkerPos("LElbowOut",markerset)
+    LElbowFloor = np.array([LElbowOut[0],LElbowOut[1],0.0])
 
+    LeftArm = JointPos("LeftArm",markerset)
+    LWristOut = MarkerPos("LWristOut",markerset)
+    LWristIn = MarkerPos("LWristIn",markerset)
+    LWristMid = np.add(LWristIn, LWristOut)* 0.5
+    LHandOut = MarkerPos("LHandOut",markerset)
+    WristVec = normalize(np.subtract(LWristOut,LWristIn))
+    HandVec = normalize(np.subtract(LHandOut,LWristOut))
+    p1,p2 = closest_line_seg_line_seg(LElbowOut,LElbowFloor,LeftArm, LWristMid)
+
+    ArmToElbowVec = normalize(np.subtract(p1,LeftArm))
+
+    HandUpVec = normalize(np.cross(HandVec,WristVec))
+    FrontVec = np.cross(ArmToElbowVec,HandUpVec)
+    UpVec = normalize(np.cross(FrontVec,ArmToElbowVec))
+
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
+    SetJointGlobal("LeftArm", markerset, None,e)
 def _LeftForeArm_rule(joint,markers,markerset):
     LeftForeArm = JointPos("LeftForeArm",markerset)
     WristOut = MarkerPos("LWristOut",markerset)
@@ -247,7 +305,8 @@ def _LeftForeArm_rule(joint,markers,markerset):
     RTotal = QRotationFromReference(UpVec,FrontVec)
     e = RTotal.as_euler("xyz")
     SetJointGlobal("LeftForeArm", markerset, None,e)
-
+def _LeftForeArmRoll_rule(joint,markers,markerset):
+    pass
 def _LeftHand_rule(joint,markers,markerset):
     WristOut = MarkerPos("LWristOut",markerset)
     WristIn = MarkerPos("LWristIn",markerset)
@@ -284,7 +343,7 @@ def _RightShoulder_rule(joint,markers,markerset):
     e = RTotal.as_euler("xyz")
     SetJointGlobal("RightShoulder", markerset, None,e)
 
-def _RightArm_rule(joint,markers,markerset):
+def _RightArm_rule_old(joint,markers,markerset):
     RArm = MarkerPos("RArm",markerset)
     RElbowOut = MarkerPos("RElbowOut",markerset)
     SpineTop = MarkerPos("SpineTop",markerset)
@@ -298,6 +357,30 @@ def _RightArm_rule(joint,markers,markerset):
 
     ArmToElbowVec = normalize(np.subtract(RightArm,MidElbow))
 
+    HandUpVec = normalize(np.cross(HandVec,WristVec))
+    FrontVec = np.cross(HandUpVec,ArmToElbowVec)
+    UpVec = normalize(np.cross(FrontVec,ArmToElbowVec))
+
+    RTotal = QRotationFromReference(UpVec,FrontVec)
+    e = RTotal.as_euler("xyz")
+    SetJointGlobal("RightArm", markerset, None,e)
+
+def _RightArm_rule(joint,markers,markerset):
+    RElbowOut = MarkerPos("RElbowOut",markerset)
+    RElbowFloor = np.array([RElbowOut[0],RElbowOut[1],0.0])
+
+    RWristOut = MarkerPos("RWristOut",markerset)
+    RWristIn = MarkerPos("RWristIn",markerset)
+    RWristMid = np.add(RWristIn, RWristOut)* 0.5
+    RightArm = JointPos("RightArm",markerset)
+    RHandOut = MarkerPos("RHandOut",markerset)
+    WristVec = normalize(np.subtract(RWristOut,RWristIn))
+    HandVec = normalize(np.subtract(RHandOut,RWristOut))
+
+    p1,p2 = closest_line_seg_line_seg(RElbowOut,RElbowFloor,RightArm, RWristMid)
+    # print(f"p1 is {p1}")
+    # print(f"p2 is {p2}")
+    ArmToElbowVec = normalize(np.subtract(RightArm,p1))
     HandUpVec = normalize(np.cross(HandVec,WristVec))
     FrontVec = np.cross(HandUpVec,ArmToElbowVec)
     UpVec = normalize(np.cross(FrontVec,ArmToElbowVec))
@@ -323,7 +406,11 @@ def _RightForeArm_rule(joint,markers,markerset):
 
     RTotal = QRotationFromReference(UpVec,FrontVec)
     e = RTotal.as_euler("xyz")
+    print(f"RFA name {str(joint).split(':')[-1]}")
     SetJointGlobal("RightForeArm", markerset, None,e)
+
+def _RightForeArmRoll_rule(joint,markers,markerset):
+    pass
 
 def _RightHand_rule(joint,markers,markerset):
     WristOut = MarkerPos("RWristOut",markerset)
@@ -344,6 +431,7 @@ def _RightHand_rule(joint,markers,markerset):
     RTotal = R * ROffset
 
     e = RTotal.as_euler("xyz")
+    print(f"RH name {str(joint).split(':')[-1]}")
     SetJointGlobal("RightHand", markerset, None,e)
 
 def _Neck_rule(joint,markers,markerset):
@@ -432,6 +520,128 @@ def _RightToeBase_rule(joint,markers,markerset):
 
 
 
+def _RightInHandThumb_rule(joint,markers):
+	pass
+
+def _RightHandThumb1_rule(joint,markers):
+	pass
+
+def _RightHandThumb2_rule(joint,markers):
+	pass
+
+def _RightHandThumb3_rule(joint,markers):
+	pass
+
+def _RightInHandIndex_rule(joint,markers):
+	pass
+
+def _RightHandIndex1_rule(joint,markers):
+	pass
+
+def _RightHandIndex2_rule(joint,markers):
+	pass
+
+def _RightHandIndex3_rule(joint,markers):
+	pass
+
+def _RightInHandMiddle_rule(joint,markers):
+	pass
+
+def _RightHandMiddle1_rule(joint,markers):
+	pass
+
+def _RightHandMiddle2_rule(joint,markers):
+	pass
+
+def _RightHandMiddle3_rule(joint,markers):
+	pass
+
+def _RightInHandRing_rule(joint,markers):
+	pass
+
+def _RightHandRing1_rule(joint,markers):
+	pass
+
+def _RightHandRing2_rule(joint,markers):
+	pass
+
+def _RightHandRing3_rule(joint,markers):
+	pass
+
+def _RightInHandPinky_rule(joint,markers):
+	pass
+
+def _RightHandPinky1_rule(joint,markers):
+	pass
+
+def _RightHandPinky2_rule(joint,markers):
+	pass
+
+def _RightHandPinky3_rule(joint,markers):
+	pass
+
+
+def _LeftInHandThumb_rule(joint,markers):
+	pass
+
+def _LeftHandThumb1_rule(joint,markers):
+	pass
+
+def _LeftHandThumb2_rule(joint,markers):
+	pass
+
+def _LeftHandThumb3_rule(joint,markers):
+	pass
+
+def _LeftInHandIndex_rule(joint,markers):
+	pass
+
+def _LeftHandIndex1_rule(joint,markers):
+	pass
+
+def _LeftHandIndex2_rule(joint,markers):
+	pass
+
+def _LeftHandIndex3_rule(joint,markers):
+	pass
+
+def _LeftInHandMiddle_rule(joint,markers):
+	pass
+
+def _LeftHandMiddle1_rule(joint,markers):
+	pass
+
+def _LeftHandMiddle2_rule(joint,markers):
+	pass
+
+def _LeftHandMiddle3_rule(joint,markers):
+	pass
+
+def _LeftInHandRing_rule(joint,markers):
+	pass
+
+def _LeftHandRing1_rule(joint,markers):
+	pass
+
+def _LeftHandRing2_rule(joint,markers):
+	pass
+
+def _LeftHandRing3_rule(joint,markers):
+	pass
+
+def _LeftInHandPinky_rule(joint,markers):
+	pass
+
+def _LeftHandPinky1_rule(joint,markers):
+	pass
+
+def _LeftHandPinky2_rule(joint,markers):
+	pass
+
+def _LeftHandPinky3_rule(joint,markers):
+	pass
+
+
 AnimRules = {
 "Hips":(_Hips_rule,["WaistRFront","WaistLBack","WaistLFront","WaistRBack"]),
 "Spine":(_Spine_rule,["WaistLBack","WaistRBack","BackL","BackR"]),
@@ -440,10 +650,12 @@ AnimRules = {
 "LeftShoulder":(_LeftShoulder_rule,["LShoulderTop","LShoulderBack"]),
 "LeftArm":(_LeftArm_rule,["LElbowOut","LArm"]),
 "LeftForeArm":(_LeftForeArm_rule,["LElbowOut","LWristOut","LWristIn"]),
+"LeftForeArmRoll":(_LeftForeArmRoll_rule,["LElbowOut","LWristOut","LWristIn"]),
 "LeftHand":(_LeftHand_rule,["LWristOut","LWristIn","LHandOut","LeftHandExtra"]),
 "RightShoulder":(_RightShoulder_rule,["RShoulderTop","RShoulderBack"]),
 "RightArm":(_RightArm_rule,["RElbowOut","RArm"]),
 "RightForeArm":(_RightForeArm_rule,["RElbowOut","RWristOut","RWristIn"]),
+"RightForeArmRoll":(_RightForeArmRoll_rule,["RElbowOut","RWristOut","RWristIn"]),
 "RightHand":(_RightHand_rule,["RWristOut","RWristIn","RHandOut","RightHandExtra"]),
 "Neck":(_Neck_rule,["SpineTop","HeadR","HeadL"]),
 "Head":(_Head_rule,["HeadR","HeadL","HeadFront","HeadTop"]),
@@ -454,7 +666,47 @@ AnimRules = {
 "RightUpLeg":(_RightUpLeg_rule,["RThigh","RKneeOut"]),
 "RightLeg":(_RightLeg_rule,["RKneeOut","RShin","RAnkleOut"]),
 "RightFoot":(_RightFoot_rule,["RHeelBack","RForefootIn","RForefootOut"]),
-"RightToeBase":(_RightToeBase_rule,["RForefootIn","RForefootOut","RToeTip"])
+"RightToeBase":(_RightToeBase_rule,["RForefootIn","RForefootOut","RToeTip"]),
+"RightInHandThumb":(_RightInHandThumb_rule,[]),
+"RightHandThumb1":(_RightHandThumb1_rule,["RWristIn","RThumbTip"]),
+"RightHandThumb2":(_RightHandThumb2_rule,[]),
+"RightHandThumb3":(_RightHandThumb3_rule,["RThumbTip"]),
+"RightInHandIndex":(_RightInHandIndex_rule,[]),
+"RightHandIndex1":(_RightHandIndex1_rule,[]),
+"RightHandIndex2":(_RightHandIndex2_rule,[]),
+"RightHandIndex3":(_RightHandIndex3_rule,["RIndexTip"]),
+"RightInHandMiddle":(_RightInHandMiddle_rule,[]),
+"RightHandMiddle1":(_RightHandMiddle1_rule,[]),
+"RightHandMiddle2":(_RightHandMiddle2_rule,[]),
+"RightHandMiddle3":(_RightHandMiddle3_rule,[]),
+"RightInHandRing":(_RightInHandRing_rule,[]),
+"RightHandRing1":(_RightHandRing1_rule,[]),
+"RightHandRing2":(_RightHandRing2_rule,[]),
+"RightHandRing3":(_RightHandRing3_rule,[]),
+"RightInHandPinky":(_RightInHandPinky_rule,[]),
+"RightHandPinky1":(_RightHandPinky1_rule,[]),
+"RightHandPinky2":(_RightHandPinky2_rule,[]),
+"RightHandPinky3":(_RightHandPinky3_rule,["RPinkyTip"]),
+"LeftInHandThumb":(_LeftInHandThumb_rule,[]),
+"LeftHandThumb1":(_LeftHandThumb1_rule,["LWristIn","LThumbTip"]),
+"LeftHandThumb2":(_LeftHandThumb2_rule,[]),
+"LeftHandThumb3":(_LeftHandThumb3_rule,["LThumbTip"]),
+"LeftInHandIndex":(_LeftInHandIndex_rule,[]),
+"LeftHandIndex1":(_LeftHandIndex1_rule,[]),
+"LeftHandIndex2":(_LeftHandIndex2_rule,[]),
+"LeftHandIndex3":(_LeftHandIndex3_rule,["LIndexTip"]),
+"LeftInHandMiddle":(_LeftInHandMiddle_rule,[]),
+"LeftHandMiddle1":(_LeftHandMiddle1_rule,[]),
+"LeftHandMiddle2":(_LeftHandMiddle2_rule,[]),
+"LeftHandMiddle3":(_LeftHandMiddle3_rule,[]),
+"LeftInHandRing":(_LeftInHandRing_rule,[]),
+"LeftHandRing1":(_LeftHandRing1_rule,[]),
+"LeftHandRing2":(_LeftHandRing2_rule,[]),
+"LeftHandRing3":(_LeftHandRing3_rule,[]),
+"LeftInHandPinky":(_LeftInHandPinky_rule,[]),
+"LeftHandPinky1":(_LeftHandPinky1_rule,[]),
+"LeftHandPinky2":(_LeftHandPinky2_rule,[]),
+"LeftHandPinky3":(_LeftHandPinky3_rule,["LPinkyTip"])
 }
 
 def VerifyUnitScale(node):
@@ -602,14 +854,15 @@ def PrintJointRule(node):
 
 def _ApplyRules(joint,markerset):
     nodeName = str(joint).rpartition(":")[-1]
-    (RuleFunc, Markers) = AnimRules[nodeName]
-    if RuleFunc:
-        RuleFunc(joint, Markers, markerset)
-    children = cmds.listRelatives(joint,c=True)
-    if children:
-        for c in children:
-            if not IsLeaf(c):
-                _ApplyRules(c,markerset)
+    if nodeName in AnimRules:
+        (RuleFunc, Markers) = AnimRules[nodeName]
+        if RuleFunc:
+            RuleFunc(joint, Markers, markerset)
+        children = cmds.listRelatives(joint,c=True)
+        if children:
+            for c in children:
+                if not IsLeaf(c):
+                    _ApplyRules(c,markerset)
 
 def _DoFitAnimationSkeleton():
     """
@@ -633,3 +886,7 @@ def FitSkeleton():
 #print(f"__name__ is {__name__}")
 if __name__ == "__main__":
     FitSkeleton()
+    # sel = cmds.ls(selection=True)
+    # rootJoint = sel[0]
+    #PrintJointRule(rootJoint)
+    #PrintJointDict(rootJoint)

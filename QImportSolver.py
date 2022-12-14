@@ -1,7 +1,6 @@
 import xml.etree.ElementTree as ET
 import maya.cmds as cmds
 import math
-from pymel.all import *
 #import qqtmrt
 
 #
@@ -306,8 +305,8 @@ class QImportSolver:
                                     c_segment = coupling.attrib["Segment"]
                                     c_coefname = "XRot_CP"+str(i)+"_Coeff"
                                     c_segmentname = "XRot_CP"+str(i)+"_Segment"
-                                    print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
-                                    print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
+                                    #print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
+                                    #print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
                                     cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
                                     cmds.addAttr(n,ln=c_segmentname,dt="string")
                                     cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
@@ -346,8 +345,8 @@ class QImportSolver:
                                     c_segment = coupling.attrib["Segment"]
                                     c_coefname = "YRot_CP"+str(i)+"_Coeff"
                                     c_segmentname = "YRot_CP"+str(i)+"_Segment"
-                                    print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
-                                    print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
+                                    #print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
+                                    #print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
                                     cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
                                     cmds.addAttr(n,ln=c_segmentname,dt="string")
                                     cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
@@ -386,8 +385,8 @@ class QImportSolver:
                                     c_segment = coupling.attrib["Segment"]
                                     c_coefname = "ZRot_CP"+str(i)+"_Coeff"
                                     c_segmentname = "ZRot_CP"+str(i)+"_Segment"
-                                    print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
-                                    print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
+                                    #print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
+                                    #print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
                                     cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
                                     cmds.addAttr(n,ln=c_segmentname,dt="string")
                                     cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")

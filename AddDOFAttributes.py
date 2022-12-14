@@ -2,7 +2,6 @@ import xml.etree.ElementTree as ET
 import maya.cmds as cmds
 import math
 import os
-from pymel.all import *
 
 def AddDOFAttributes():
 

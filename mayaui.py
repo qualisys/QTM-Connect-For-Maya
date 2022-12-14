@@ -4,7 +4,6 @@ from PySide2 import QtCore
 from PySide2 import QtGui
 
 import maya.cmds as cmds
-import pymel.core as pmc
 import maya.OpenMayaUI as OpenMayaUI
 import maya.mel as mel
 
@@ -35,7 +34,7 @@ class QtmConnectShelf:
 
 
     def install(self):
-        shelf_layout = pmc.shelfLayout(self.shelf_name, parent=self.top_level_shelf_layout)
+        shelf_layout = cmds.shelfLayout(self.shelf_name, parent=self.top_level_shelf_layout)
 
         cmds.shelfButton(
             label=self.connect_label,
