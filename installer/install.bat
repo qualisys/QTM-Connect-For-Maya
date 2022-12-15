@@ -56,6 +56,7 @@ if "%MAYA_VERSION_FOLDER%"=="" (
 set "MAYA_ROOT_PATH=%MAYA_ROOT_PATH%\%MAYA_VERSION_FOLDER%"
 
 set "MAYA_EXE_PATH=%MAYA_ROOT_PATH%\bin\maya.exe"
+set "MAYAPY_EXE_PATH=%MAYA_ROOT_PATH%\bin\mayapy.exe"
 
 if exist "%MAYA_EXE_PATH%" (
     echo "Maya.exe found: %MAYA_EXE_PATH%"
@@ -94,6 +95,10 @@ set "MAYA_PROJECT_PATH=%MY_DOCS_PATH%\maya\projects\qualisys-example"
 rem Copy example project to 'My Documents'\maya\projects\.
 xcopy  "%MAYA_PLUGIN_SOURCE_PATH%\example" "%MAYA_PROJECT_PATH%\"  /e /i /h /Y
 set "QUALISYS_EXAMPLE_SCENE=%MAYA_PROJECT_PATH%\QAvatar.mb"
+
+rem Run mayapy from command line to ensure required packages are installed
+echo "Installing mayapy packages"
+start "Install packages" "%MAYAPY_EXE_PATH%" -m pip install numpy pandas requests
 
 rem Run maya from command line and execute install script
 
