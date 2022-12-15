@@ -129,7 +129,7 @@ class QImportSolver:
                     cmds.parent(loc)
                     cmds.select(loc)
                     cmds.move(0,0,0)
-                    cmds.scale(3,3,3)
+                    cmds.scale(2,2,2)
                     cmds.rotate(0,0,0)
                     bSkip = False
                 else:

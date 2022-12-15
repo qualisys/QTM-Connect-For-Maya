@@ -1,8 +1,7 @@
 import xml.etree.ElementTree as ET
 import maya.cmds as cmds
 import math
-import os
-from pymel.all import *
+import numpy as np
 import pymel.core.datatypes as dt
 import tempfile
 
@@ -45,6 +44,26 @@ def EtoQ(yaw, pitch, roll):
 
     return [qx, qy, qz, qw]
 
+# multiply two row-major 4x4 matrices.
+def matmul(m1,m2):
+    R = np.array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
+    R[0][0] = m1[0][0]*m2[0][0] + m1[0][1]*m2[1][0] + m1[0][2]*m2[2][0] + m1[0][3]*m2[3][0]
+    R[0][1] = m1[0][0]*m2[0][1] + m1[0][1]*m2[1][1] + m1[0][2]*m2[2][1] + m1[0][3]*m2[3][1]
+    R[0][2] = m1[0][0]*m2[0][2] + m1[0][1]*m2[1][2] + m1[0][2]*m2[2][2] + m1[0][3]*m2[3][2]
+    R[0][3] = m1[0][0]*m2[0][3] + m1[0][1]*m2[1][3] + m1[0][2]*m2[2][3] + m1[0][3]*m2[3][3]
+    R[1][0] = m1[1][0]*m2[0][0] + m1[1][1]*m2[1][0] + m1[1][2]*m2[2][0] + m1[1][3]*m2[3][0]
+    R[1][1] = m1[1][0]*m2[0][1] + m1[1][1]*m2[1][1] + m1[1][2]*m2[2][1] + m1[1][3]*m2[3][1]
+    R[1][2] = m1[1][0]*m2[0][2] + m1[1][1]*m2[1][2] + m1[1][2]*m2[2][2] + m1[1][3]*m2[3][2]
+    R[1][3] = m1[1][0]*m2[0][3] + m1[1][1]*m2[1][3] + m1[1][2]*m2[2][3] + m1[1][3]*m2[3][3]
+    R[2][0] = m1[2][0]*m2[0][0] + m1[2][1]*m2[1][0] + m1[2][2]*m2[2][0] + m1[2][3]*m2[3][0]
+    R[2][1] = m1[2][0]*m2[0][1] + m1[2][1]*m2[1][1] + m1[2][2]*m2[2][1] + m1[2][3]*m2[3][1]
+    R[2][2] = m1[2][0]*m2[0][2] + m1[2][1]*m2[1][2] + m1[2][2]*m2[2][2] + m1[2][3]*m2[3][2]
+    R[2][3] = m1[2][0]*m2[0][3] + m1[2][1]*m2[1][3] + m1[2][2]*m2[2][3] + m1[2][3]*m2[3][3]
+    R[3][0] = m1[3][0]*m2[0][0] + m1[3][1]*m2[1][0] + m1[3][2]*m2[2][0] + m1[3][3]*m2[3][0]
+    R[3][1] = m1[3][0]*m2[0][1] + m1[3][1]*m2[1][1] + m1[3][2]*m2[2][1] + m1[3][3]*m2[3][1]
+    R[3][2] = m1[3][0]*m2[0][2] + m1[3][1]*m2[1][2] + m1[3][2]*m2[2][2] + m1[3][3]*m2[3][2]
+    R[3][3] = m1[3][0]*m2[0][3] + m1[3][1]*m2[1][3] + m1[3][2]*m2[2][3] + m1[3][3]*m2[3][3]
+    return R
        
 # For indenting to make the printout pretty
 # four spaces per level.
@@ -135,8 +154,8 @@ class QExportSolver:
     def _ExportMarkers(self, node, level):
         bHasMarkers = False
         nodeName = str(node)
-        markersNode =  general.PyNode(self._NS+'Markers')
-        markers = listRelatives(markersNode,c=True)
+        markersNode =  f"{self._NS}Markers"
+        markers = cmds.listRelatives(markersNode,c=True)
         for m in markers:
             #remove namespaces and leave just the marker name
             markerName = str(m).split(":")[-1]
@@ -149,14 +168,15 @@ class QExportSolver:
                     self._Write( Spaces(level)+"<Markers>")
             
                 # Get marker position relative to the segment
-                cn = xform( self._NS+markerName, q=True, matrix=True, ws=True)
-                pn = xform( nodeName, q=True, matrix=True, ws=True)
+                cn = cmds.xform( self._NS+markerName, q=True, matrix=True, ws=True)
+                pn = cmds.xform( nodeName, q=True, matrix=True, ws=True)
 
                 cm = dt.Matrix(cn)
                 pm = dt.Matrix(pn)
 
                 om = cm * pm.inverse()
 
+                #print(f"{nodeName.split(':')[-1]}")
                 px = str(om[3][0] * self._sceneScale)
                 py = str(om[3][1] * self._sceneScale)
                 pz = str(om[3][2] * self._sceneScale)
@@ -199,9 +219,9 @@ class QExportSolver:
         qw = str(Q[3])
     
         # Get the default transform from the Preferred Angle of the joint
-        pax = math.radians(getAttr("%s.preferredAngleX" % item))
-        pay = math.radians(getAttr("%s.preferredAngleY" % item))
-        paz = math.radians(getAttr("%s.preferredAngleZ" % item))
+        pax = math.radians(cmds.getAttr("%s.preferredAngleX" % item))
+        pay = math.radians(cmds.getAttr("%s.preferredAngleY" % item))
+        paz = math.radians(cmds.getAttr("%s.preferredAngleZ" % item))
 
         Q = EtoQ(paz,pay,pax)   
         paqx = str(Q[0])
