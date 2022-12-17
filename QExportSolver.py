@@ -2,7 +2,6 @@ import xml.etree.ElementTree as ET
 import maya.cmds as cmds
 import math
 import numpy as np
-import pymel.core.datatypes as dt
 import tempfile
 
 #
@@ -46,7 +45,7 @@ def EtoQ(yaw, pitch, roll):
 
 # multiply two row-major 4x4 matrices.
 def matmul(m1,m2):
-    R = np.array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
+    R = np.array([[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0]])
     R[0][0] = m1[0][0]*m2[0][0] + m1[0][1]*m2[1][0] + m1[0][2]*m2[2][0] + m1[0][3]*m2[3][0]
     R[0][1] = m1[0][0]*m2[0][1] + m1[0][1]*m2[1][1] + m1[0][2]*m2[2][1] + m1[0][3]*m2[3][1]
     R[0][2] = m1[0][0]*m2[0][2] + m1[0][1]*m2[1][2] + m1[0][2]*m2[2][2] + m1[0][3]*m2[3][2]
@@ -171,10 +170,29 @@ class QExportSolver:
                 cn = cmds.xform( self._NS+markerName, q=True, matrix=True, ws=True)
                 pn = cmds.xform( nodeName, q=True, matrix=True, ws=True)
 
-                cm = dt.Matrix(cn)
-                pm = dt.Matrix(pn)
+                cm = np.array([cn[0:4],cn[4:8],cn[8:12],cn[12:16]])
+                pm = np.array([pn[0:4],pn[4:8],pn[8:12],pn[12:16]])
+                pminv = np.linalg.inv(pm)
+                om = matmul(cm,pminv)
 
-                om = cm * pm.inverse()
+                # dtcm = dt.Matrix(cn)
+                # dtpm = dt.Matrix(pn)
+                # dtom = dtcm * dtpm.inverse()
+
+                px = str(om[3][0] * self._sceneScale)
+                py = str(om[3][1] * self._sceneScale)
+                pz = str(om[3][2] * self._sceneScale)
+               
+                # if markerName == "WaistRFront":
+                #     print(f"NEW 1")
+                #     print(f"cm \n{cm}")
+                #     print(f"pm \n{pm}")
+                #     print(f"om \n{om}")
+                #     print(f"P is [{px},{py},{pz}] Scene Scale is {self._sceneScale}")
+                #     print(f"DT VERSION")
+                #     print(f"DT cm \n[{dtcm[0]},\n {dtcm[1]},\n {dtcm[2]},\n {dtcm[3]}")
+                #     print(f"DT pm \n[{dtpm[0]},\n {dtpm[1]},\n {dtpm[2]},\n {dtpm[3]}")
+                #     print(f"DT om \n[{dtom[0]},\n {dtom[1]},\n {dtom[2]},\n {dtom[3]}")
 
                 #print(f"{nodeName.split(':')[-1]}")
                 px = str(om[3][0] * self._sceneScale)
