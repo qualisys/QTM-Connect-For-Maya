@@ -73,6 +73,8 @@ def Spaces(level):
         r = r + "    "
     return r
 
+
+
 ################################################################
 #
 # Class QExportSolver
@@ -90,6 +92,8 @@ class QExportSolver:
         self._sXML = u""
         self._NS = u":"
         self._MPNS = self._NS+u"ModelPose:"
+        self._root_is_reference = False
+        self._reference_child = None
 
     def _SetNamespace(self, namespace):
         self._NS = namespace+u":"
@@ -122,16 +126,44 @@ class QExportSolver:
         else:
             self._sceneScale = 1.0
         
-        # Sanity check passed, so this will work
-        rootNode = cmds.ls(selection=True)
-        rootNodeName = str(rootNode[0])
-        self._rootScale = cmds.getAttr("%s.scaleX" % rootNodeName)
+        if self._root_is_reference:
+            scaleNode = self._reference_child
+        else:
+            # Sanity check passed, so this will work
+            scaleNode = cmds.ls(selection=True)[0]
+        scaleNodeName = str(scaleNode)
+        self._rootScale = cmds.getAttr("%s.scaleX" % scaleNodeName)
     
-        print ("Scene Scale before" , self._sceneScale)
-        print ("Root Scale        " , self._rootScale)
         self._sceneScale = self._sceneScale * self._rootScale
-        print ("Scene Scale after" , self._sceneScale)
+        print (f"Scale node is {scaleNodeName}")
+        print(f"Scale is {self._sceneScale}")
  
+    def CheckRootIsReference(self):
+        """
+        Check to see if selected root node is actually the reference node.
+        True if there is only one child and it has all the DOFs turned on,
+        which means it's the hips/pelvis node.
+        """
+        self._root_is_reference = False
+        rootNode = cmds.ls(selection=True)[0]
+        children = cmds.listRelatives(rootNode,c=True)
+        if len(children) != 1:
+            return
+
+        child = children[0]
+        if not cmds.attributeQuery("XRotDoF",node=child, exists=True):
+            return
+        
+        # Assume one attribute means they're all there.
+        bRX = cmds.getAttr("%s.XRotDoF" % child)
+        bRY = cmds.getAttr("%s.YRotDoF" % child)
+        bRZ = cmds.getAttr("%s.ZRotDoF" % child)
+        bTX = cmds.getAttr("%s.XTransDoF" % child)
+        bTY = cmds.getAttr("%s.YTransDoF" % child)
+        bTZ = cmds.getAttr("%s.ZTransDoF" % child)
+        if bRX and bRY and bRZ and bTX and bTY and bTZ:
+            self._root_is_reference = True
+            self._reference_child = child
 
     def _Write(self, s):
         if self._fd is not None:
@@ -474,15 +506,20 @@ class QExportSolver:
         
         #close section and return
         self._Write( Spaces(level)+"</Segment>")
-            
+
+    def _ExportReferenceJoint(self, rootNode, level):
+        segmentName = str(rootNode).split(":")[-1]
+        children = cmds.listRelatives(rootNode,c=True)
+        child = children[0]    
+
+        self._Write( Spaces(level)+"<Segment Name=\"" + segmentName + "\">")
+        self._ExportRootJoint(child,level+1)
+        self._Write( Spaces(level)+"</Segment>")        
+
     #
     # ExportSkeleton
     #
-    # Use the topmost group node for the name of the skeleton.  This name MUST match the markerset prefix for 
-    # trajectory labels in QTM. For example, "MG" to match "MG_FrontLWaist" in QTM.  The matching marker name in 
-    # this scene would be "FrontLWaist".
-    #
-    # Then export the joint hierarchy
+    # Start the export of the joint hierarchy
     #
     def _ExportSkeleton(self):
         # Get root joint, it's been previously verified that it is the currently selected node
@@ -501,9 +538,16 @@ class QExportSolver:
  
         self._Write( Spaces(2)+"<Solver>Global Optimization</Solver>")
         self._Write( Spaces(2)+"<Scale>" + str(self._rootScale)+"</Scale>")
+
         self._Write( Spaces(2)+"<Segments>")
     
-        self._ExportRootJoint(rootNode, 3)
+        # Check for special case: the root is really the root with 
+        # one child as the translational root (hips/pelvis)
+        if self._root_is_reference:
+            print(f"Exporting as Reference node.")
+            self._ExportReferenceJoint(rootNode,3)
+        else:    
+            self._ExportRootJoint(rootNode, 3)
         
         self._Write( Spaces(2)+"</Segments>")
           
@@ -544,28 +588,7 @@ class QExportSolver:
 #
 ################################################################
 
-#
-# FindNotJointParent
-#
-# Finds the first non-joint parent in the hierarchy of the given joint
-# This is meant to find the "Name" group node at the top of the hierarchy that must match
-# the parent of the "Markers" node that holds all the markers
-#
-# NO LONGER USED - Not required for use with namespaces
-def FindNotJointParent(me):
-    t = cmds.nodeType(str(me))
-    #print me, "is", t
-    if t != "joint":
-        return me
-    else:
-        myParent = listRelatives(me, parent=True)
 
-        if len(myParent) > 0 :
-            mp = myParent[0]
-            #print "Parent is", mp
-            return FindNotJointParent(mp)
-        else:
-            return me
 #
 # Series of sanity checks to make sure the user picks one and only one
 # root joint
@@ -574,50 +597,42 @@ def FindNotJointParent(me):
 #
 def SanityCheck():
     
-    bPassedTests = True
     namespace = u""
     
     sel = cmds.ls(selection=True)
     if len(sel) == 0:
         #print "Nothing was selected"
         cmds.confirmDialog(title="No Root",message="Please select the root joint to export",button=["OK"], defaultButton="OK")
-        bPassedTests = False
-    else:
-        if len(sel) > 1:
-            cmds.confirmDialog(title="Only One", message="Please select only one joint",button=["OK"], defaultButton="OK")
-            bPassedTests = False
-        else:
-            # now the number of selections == 1, this is what we require
-            rootJoint = sel[0]
-            t = cmds.nodeType(str(rootJoint))
-            if t != "joint":
-                cmds.confirmDialog(title="Not a Joint", message="Please select a joint",button=["OK"], defaultButton="OK")
-                bPassedTests = False
-            else:
-                namespace = str(rootJoint).rpartition(":")[0]
-                namespace_base = cmds.namespaceInfo(namespace,baseName=True)
-                if namespace_base != "ModelPose":
-                    cmds.confirmDialog(title="Namespace ModelPose Error", message="Selected joint must have ModelPose namespace",button=["OK"], defaultButton="OK")
-                    bPassedTests = False
-                else:
-                    namespace_parent = cmds.namespaceInfo(namespace,parent=True)
-                    namespace_grandparent = cmds.namespaceInfo(namespace_parent,parent=True)
-                    if namespace_grandparent != ":":
-                        cmds.confirmDialog(title="Namespace Parent Name Error", message="Selected joint must have a parent namespace",button=["OK"], defaultButton="OK")
-                        bPassedTests = False
-                    else:
-                        #print "Markers Node is", namespace_parent+":Markers"
-                        m = cmds.ls(namespace_parent+":Markers")
-                        if len(m) == 0:
-                            cmds.confirmDialog(title="No Markers", message="Markers node was not found in same namespace",button=["OK"], defaultButton="OK")
-                            bPassedTests = False           
-                        else:
-                            markers = m[0]
-                            print ("Found", markers, cmds.nodeType(markers))
-                            parents = cmds.listRelatives(markers,parent=True)
+        return False
+    if len(sel) > 1:
+        cmds.confirmDialog(title="Only One", message="Please select only one joint",button=["OK"], defaultButton="OK")
+        return False
+    # now the number of selections == 1, this is what we require
+    rootJoint = sel[0]
+    t = cmds.nodeType(str(rootJoint))
+    if t != "joint":
+        cmds.confirmDialog(title="Not a Joint", message="Please select a joint",button=["OK"], defaultButton="OK")
+        return False
+    namespace = str(rootJoint).rpartition(":")[0]
+    namespace_base = cmds.namespaceInfo(namespace,baseName=True)
+    if namespace_base != "ModelPose":
+        cmds.confirmDialog(title="Namespace ModelPose Error", message="Selected joint must have ModelPose namespace",button=["OK"], defaultButton="OK")
+        return False
+    namespace_parent = cmds.namespaceInfo(namespace,parent=True)
+    namespace_grandparent = cmds.namespaceInfo(namespace_parent,parent=True)
+    if namespace_grandparent != ":":
+        cmds.confirmDialog(title="Namespace Parent Name Error", message="Selected joint must have a parent namespace",button=["OK"], defaultButton="OK")
+        return False
+    #print "Markers Node is", namespace_parent+":Markers"
+    m = cmds.ls(namespace_parent+":Markers")
+    if len(m) == 0:
+        cmds.confirmDialog(title="No Markers", message="Markers node was not found in same namespace",button=["OK"], defaultButton="OK")
+        return False           
+    markers = m[0]
+    print ("Found", markers, cmds.nodeType(markers))
+    parents = cmds.listRelatives(markers,parent=True)
                 
-        
-    return bPassedTests
+    return True
     
 #
 # Drag this function to the tool bar for easy access, it should look like this:
@@ -633,6 +648,7 @@ def ExportQTMSkeleton():
         if fPath is not None:
             fName = fPath[0]
             QES = QExportSolver()
+            QES.CheckRootIsReference()
             QES.SetSceneScale()
 
             #fd = os.open(fName , os.O_RDWR|os.O_CREAT )
