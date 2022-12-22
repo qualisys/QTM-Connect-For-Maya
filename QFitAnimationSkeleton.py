@@ -15,6 +15,8 @@ if not here in sys.path:
 import qscipy
 importlib.reload(qscipy)
 
+MARKER_SIZE = 1.0
+
 def normalize(n):
     l = np.linalg.norm(n)
     return n/l
@@ -316,9 +318,11 @@ def _LeftHand_rule(joint,markers,markerset):
 
     UpVec = normalize(np.cross(HandVec,WristVec))
     FrontVec = normalize(np.subtract(WristIn,WristOut))
-
-    XOffsetVec = normalize(JointPosLocal("LeftHand_end",markerset))
-    ROffset = QRotationBetweenVectors(XOffsetVec,np.array([-1.0,0.0,0.0]))
+    if cmds.objExists(f"{markerset}:ModelPose:LeftHand_end"):
+        XOffsetVec = normalize(JointPosLocal("LeftHand_end",markerset))
+        ROffset = QRotationBetweenVectors(XOffsetVec,np.array([-1.0,0.0,0.0]))
+    else:
+        ROffset = qscipy.QRotation()
 
     R = QRotationFromReference(UpVec,FrontVec)
     RTotal = R * ROffset
@@ -422,17 +426,18 @@ def _RightHand_rule(joint,markers,markerset):
     UpVec = normalize(np.cross(WristVec,HandVec))
     FrontVec = normalize(np.subtract(WristIn,WristOut))
 
-    XOffsetVec = normalize(JointPosLocal("RightHand_end",markerset))
-    ROffset = QRotationBetweenVectors(XOffsetVec,np.array([1.0,0.0,0.0]))
-    #eOffset = ROffset.as_euler("xyz", degrees = True)
-    #print(f"Right Hand offset is {eOffset}")
+    if cmds.objExists(f"{markerset}:ModelPose:RightHand_end"):
+        XOffsetVec = normalize(JointPosLocal("RightHand_end",markerset))
+        ROffset = QRotationBetweenVectors(XOffsetVec,np.array([1.0,0.0,0.0]))
+    else:
+        ROffset = qscipy.QRotation()
 
     R = QRotationFromReference(UpVec,FrontVec)
     RTotal = R * ROffset
 
     e = RTotal.as_euler("xyz")
-    print(f"RH name {str(joint).split(':')[-1]}")
-    SetJointGlobal("RightHand", markerset, None,e)
+    #print(f"RH name {str(joint).split(':')[-1]}")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
 
 def _Neck_rule(joint,markers,markerset):
     HeadTop = MarkerPos("HeadTop",markerset)
@@ -520,126 +525,629 @@ def _RightToeBase_rule(joint,markers,markerset):
 
 
 
-def _RightInHandThumb_rule(joint,markers):
-	pass
+def _RightInHandThumb_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RThumbTip"):
+        return
+    my_name = str(joint).split(':')[-1]
 
-def _RightHandThumb1_rule(joint,markers):
-	pass
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    ThumbTip = MarkerPos("RThumbTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
 
-def _RightHandThumb2_rule(joint,markers):
-	pass
+    ThumbTip[1] -= MARKER_SIZE
+    MidLine = np.add(ThumbTip*0.3333,WristIn*0.6666)
 
-def _RightHandThumb3_rule(joint,markers):
-	pass
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(MidLine,MyJoint))
 
-def _RightInHandIndex_rule(joint,markers):
-	pass
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec))
 
-def _RightHandIndex1_rule(joint,markers):
-	pass
+    R = QRotationFromReference(UpVec,FrontVec)
 
-def _RightHandIndex2_rule(joint,markers):
-	pass
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
 
-def _RightHandIndex3_rule(joint,markers):
-	pass
+def _RightHandThumb1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RThumbTip"):
+        return
+    my_name = str(joint).split(':')[-1]
 
-def _RightInHandMiddle_rule(joint,markers):
-	pass
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    ThumbTip = MarkerPos("RThumbTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
 
-def _RightHandMiddle1_rule(joint,markers):
-	pass
+    ThumbTip[1] -= MARKER_SIZE
+    MidLine = np.add(ThumbTip*0.5,WristIn*0.5)
 
-def _RightHandMiddle2_rule(joint,markers):
-	pass
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(MidLine,MyJoint))
 
-def _RightHandMiddle3_rule(joint,markers):
-	pass
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec))
 
-def _RightInHandRing_rule(joint,markers):
-	pass
+    R = QRotationFromReference(UpVec,FrontVec)
 
-def _RightHandRing1_rule(joint,markers):
-	pass
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
 
-def _RightHandRing2_rule(joint,markers):
-	pass
+def _RightHandThumb2_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RThumbTip"):
+        return
+    my_name = str(joint).split(':')[-1]
 
-def _RightHandRing3_rule(joint,markers):
-	pass
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    ThumbTip = MarkerPos("RThumbTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
 
-def _RightInHandPinky_rule(joint,markers):
-	pass
+    #RThumbTip[1] += MARKER_SIZE
 
-def _RightHandPinky1_rule(joint,markers):
-	pass
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(ThumbTip,MyJoint))
 
-def _RightHandPinky2_rule(joint,markers):
-	pass
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec))
 
-def _RightHandPinky3_rule(joint,markers):
-	pass
+    if cmds.objExists(f"{markerset}:ModelPose:RightHandThumb3"):
+        XOffsetVec = normalize(JointPosLocal("RightHandThumb3",markerset))
+        ROffset = QRotationBetweenVectors(np.array([1.0,0.0,0.0]),XOffsetVec)
+    else:
+        ROffset = qscipy.QRotation()
+
+    R = QRotationFromReference(UpVec,FrontVec)
+    RTotal = R * ROffset
+
+    e = RTotal.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _RightHandThumb3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _RightInHandIndex_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RHandIn"):
+        return
+
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    HandIn = MarkerPos("RHandIn",markerset)
+    RHIndex = JointPos("RightInHandIndex",markerset)
+    HandIn[2] -= MARKER_SIZE
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    IndexVec = normalize(np.subtract(HandIn,RHIndex))
+
+    UpVec = normalize(np.cross(WristVec,IndexVec))
+    FrontVec = normalize(np.cross(UpVec,IndexVec))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
+
+def _RightHandIndex1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RHandIn"):
+        return
+    if not cmds.objExists(f"{markerset}:RIndexTip"):
+        return
+    my_name = str(joint).split(':')[-1]
+
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    HandIn = MarkerPos("RHandIn",markerset)
+    IndexTip = MarkerPos("RIndexTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
+
+    HandIn[2] -= MARKER_SIZE
+    IndexTip[2] -= MARKER_SIZE
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    IndexVec = normalize(np.subtract(IndexTip,MyJoint))
+
+    UpVec = normalize(np.cross(WristVec,IndexVec))
+    FrontVec = normalize(np.cross(UpVec,IndexVec))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _RightHandIndex2_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _RightHandIndex3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _RightInHandMiddle_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RHandIn"):
+        return   
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    HandOut = MarkerPos("RHandOut",markerset)
+    HandIn = MarkerPos("RHandIn",markerset)
+    RHMiddle = JointPos("RightInHandMiddle",markerset)
+
+    HandOut[2] -= MARKER_SIZE
+    HandIn[2] -= MARKER_SIZE
+    HandMid = np.add(HandOut*0.3333,HandIn*0.6666)
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(HandMid,RHMiddle))
+
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
+
+def _RightHandMiddle1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RPinkyTip"):
+        return
+    if not cmds.objExists(f"{markerset}:RIndexTip"):
+        return
+    my_name = str(joint).split(':')[-1]
+
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    HandOut = MarkerPos("RHandOut",markerset)
+    PinkyTip = MarkerPos("RPinkyTip",markerset)
+    IndexTip = MarkerPos("RIndexTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
+
+    IndexTip[2] -= MARKER_SIZE
+    PinkyTip[2] -= MARKER_SIZE
+    MidTip = np.add(PinkyTip*0.3333,IndexTip*0.6666)
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(MidTip,MyJoint))
+
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _RightHandMiddle2_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _RightHandMiddle3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _RightInHandRing_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RHandIn"):
+        return   
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    HandOut = MarkerPos("RHandOut",markerset)
+    HandIn = MarkerPos("RHandIn",markerset)
+    RHRing = JointPos("RightInHandRing",markerset)
+
+    HandOut[2] -= MARKER_SIZE
+    HandIn[2] -= MARKER_SIZE
+    HandMid = np.add(HandIn*0.3333,HandOut*0.6666)
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(HandMid,RHRing))
+
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
+
+def _RightHandRing1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RPinkyTip"):
+        return
+    if not cmds.objExists(f"{markerset}:RIndexTip"):
+        return
+    my_name = str(joint).split(':')[-1]
+
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    HandOut = MarkerPos("RHandOut",markerset)
+    PinkyTip = MarkerPos("RPinkyTip",markerset)
+    IndexTip = MarkerPos("RIndexTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
+
+    IndexTip[2] -= MARKER_SIZE
+    PinkyTip[2] -= MARKER_SIZE
+    MidTip = np.add(IndexTip*0.3333,PinkyTip*0.6666)
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(MidTip,MyJoint))
+
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _RightHandRing2_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _RightHandRing3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _RightInHandPinky_rule(joint,markers,markerset):
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    HandOut = MarkerPos("RHandOut",markerset)
+    RHPinky = JointPos("RightInHandPinky",markerset)
+    HandOut[2] -= MARKER_SIZE
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    PinkyVec = normalize(np.subtract(HandOut,RHPinky))
+
+    UpVec = normalize(np.cross(WristVec,PinkyVec))
+    FrontVec = normalize(np.cross(UpVec,PinkyVec))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
+
+def _RightHandPinky1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RPinkyTip"):
+        return
+    my_name = str(joint).split(':')[-1]
+
+    WristOut = MarkerPos("RWristOut",markerset)
+    WristIn = MarkerPos("RWristIn",markerset)
+    HandOut = MarkerPos("RHandOut",markerset)
+    PinkyTip = MarkerPos("RPinkyTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
+
+    HandOut[2] -= MARKER_SIZE
+    PinkyTip[2] -= MARKER_SIZE
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    PinkyVec = normalize(np.subtract(PinkyTip,MyJoint))
+
+    UpVec = normalize(np.cross(WristVec,PinkyVec))
+    FrontVec = normalize(np.cross(UpVec,PinkyVec))
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _RightHandPinky2_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _RightHandPinky3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
 
 
-def _LeftInHandThumb_rule(joint,markers):
-	pass
+def _LeftInHandThumb_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:LThumbTip"):
+        return
+    my_name = str(joint).split(':')[-1]
 
-def _LeftHandThumb1_rule(joint,markers):
-	pass
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    ThumbTip = MarkerPos("LThumbTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
 
-def _LeftHandThumb2_rule(joint,markers):
-	pass
+    ThumbTip[1] -= MARKER_SIZE
+    MidLine = np.add(ThumbTip*0.3333,WristIn*0.6666)
 
-def _LeftHandThumb3_rule(joint,markers):
-	pass
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(MidLine,MyJoint))
 
-def _LeftInHandIndex_rule(joint,markers):
-	pass
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec)) * -1.0
 
-def _LeftHandIndex1_rule(joint,markers):
-	pass
+    R = QRotationFromReference(UpVec,FrontVec)
 
-def _LeftHandIndex2_rule(joint,markers):
-	pass
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
 
-def _LeftHandIndex3_rule(joint,markers):
-	pass
+def _LeftHandThumb1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:LThumbTip"):
+        return
+    my_name = str(joint).split(':')[-1]
 
-def _LeftInHandMiddle_rule(joint,markers):
-	pass
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    ThumbTip = MarkerPos("LThumbTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
 
-def _LeftHandMiddle1_rule(joint,markers):
-	pass
+    ThumbTip[1] -= MARKER_SIZE
+    MidLine = np.add(ThumbTip*0.5,WristIn*0.5)
 
-def _LeftHandMiddle2_rule(joint,markers):
-	pass
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(MidLine,MyJoint))
 
-def _LeftHandMiddle3_rule(joint,markers):
-	pass
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec)) * -1.0
 
-def _LeftInHandRing_rule(joint,markers):
-	pass
+    R = QRotationFromReference(UpVec,FrontVec)
 
-def _LeftHandRing1_rule(joint,markers):
-	pass
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
 
-def _LeftHandRing2_rule(joint,markers):
-	pass
+def _LeftHandThumb2_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:LThumbTip"):
+        return
+    my_name = str(joint).split(':')[-1]
 
-def _LeftHandRing3_rule(joint,markers):
-	pass
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    ThumbTip = MarkerPos("LThumbTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
 
-def _LeftInHandPinky_rule(joint,markers):
-	pass
+    #RThumbTip[1] += MARKER_SIZE
 
-def _LeftHandPinky1_rule(joint,markers):
-	pass
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(ThumbTip,MyJoint))
 
-def _LeftHandPinky2_rule(joint,markers):
-	pass
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec)) * -1.0
 
-def _LeftHandPinky3_rule(joint,markers):
-	pass
+    if cmds.objExists(f"{markerset}:ModelPose:LeftHandThumb3"):
+        XOffsetVec = normalize(JointPosLocal("LeftHandThumb3",markerset))
+        ROffset = QRotationBetweenVectors(np.array([-1.0,0.0,0.0]),XOffsetVec)
+    else:
+        ROffset = qscipy.QRotation()
+
+    R = QRotationFromReference(UpVec,FrontVec)
+    RTotal = R * ROffset
+
+    e = RTotal.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _LeftHandThumb3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _LeftInHandIndex_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RHandIn"):
+        return
+
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    HandIn = MarkerPos("LHandIn",markerset)
+    RHIndex = JointPos("LeftInHandIndex",markerset)
+    HandIn[2] -= MARKER_SIZE
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    IndexVec = normalize(np.subtract(HandIn,RHIndex))
+
+    UpVec = normalize(np.cross(WristVec,IndexVec))
+    FrontVec = normalize(np.cross(UpVec,IndexVec)) * -1.0
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
+
+
+def _LeftHandIndex1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RHandIn"):
+        return
+    if not cmds.objExists(f"{markerset}:RIndexTip"):
+        return
+    my_name = str(joint).split(':')[-1]
+
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    HandIn = MarkerPos("LHandIn",markerset)
+    IndexTip = MarkerPos("LIndexTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
+
+    HandIn[2] -= MARKER_SIZE
+    IndexTip[2] -= MARKER_SIZE
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    IndexVec = normalize(np.subtract(IndexTip,MyJoint))
+
+    UpVec = normalize(np.cross(WristVec,IndexVec))
+    FrontVec = normalize(np.cross(UpVec,IndexVec)) * -1.0
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _LeftHandIndex2_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _LeftHandIndex3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _LeftInHandMiddle_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RHandIn"):
+        return   
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    HandOut = MarkerPos("LHandOut",markerset)
+    HandIn = MarkerPos("LHandIn",markerset)
+    RHMiddle = JointPos("LeftInHandMiddle",markerset)
+
+    HandOut[2] -= MARKER_SIZE
+    HandIn[2] -= MARKER_SIZE
+    HandMid = np.add(HandOut*0.3333,HandIn*0.6666)
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(HandMid,RHMiddle))
+
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec)) * -1.0
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
+
+def _LeftHandMiddle1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RPinkyTip"):
+        return
+    if not cmds.objExists(f"{markerset}:RIndexTip"):
+        return
+    my_name = str(joint).split(':')[-1]
+
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    HandOut = MarkerPos("LHandOut",markerset)
+    PinkyTip = MarkerPos("LPinkyTip",markerset)
+    IndexTip = MarkerPos("LIndexTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
+
+    IndexTip[2] -= MARKER_SIZE
+    PinkyTip[2] -= MARKER_SIZE
+    MidTip = np.add(PinkyTip*0.3333,IndexTip*0.6666)
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(MidTip,MyJoint))
+
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec)) * -1.0
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _LeftHandMiddle2_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _LeftHandMiddle3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _LeftInHandRing_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RHandIn"):
+        return   
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    HandOut = MarkerPos("LHandOut",markerset)
+    HandIn = MarkerPos("LHandIn",markerset)
+    RHRing = JointPos("LeftInHandRing",markerset)
+
+    HandOut[2] -= MARKER_SIZE
+    HandIn[2] -= MARKER_SIZE
+    HandMid = np.add(HandIn*0.3333,HandOut*0.6666)
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(HandMid,RHRing))
+
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec)) * -1.0
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
+
+def _LeftHandRing1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RPinkyTip"):
+        return
+    if not cmds.objExists(f"{markerset}:RIndexTip"):
+        return
+    my_name = str(joint).split(':')[-1]
+
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    HandOut = MarkerPos("LHandOut",markerset)
+    PinkyTip = MarkerPos("LPinkyTip",markerset)
+    IndexTip = MarkerPos("LIndexTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
+
+    IndexTip[2] -= MARKER_SIZE
+    PinkyTip[2] -= MARKER_SIZE
+    MidTip = np.add(IndexTip*0.3333,PinkyTip*0.6666)
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    FingerVec = normalize(np.subtract(MidTip,MyJoint))
+
+    UpVec = normalize(np.cross(WristVec,FingerVec))
+    FrontVec = normalize(np.cross(UpVec,FingerVec)) * -1.0
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _LeftHandRing2_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _LeftHandRing3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _LeftInHandPinky_rule(joint,markers,markerset):
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    HandOut = MarkerPos("LHandOut",markerset)
+    RHPinky = JointPos("LeftInHandPinky",markerset)
+    HandOut[2] -= MARKER_SIZE
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    PinkyVec = normalize(np.subtract(HandOut,RHPinky))
+
+    UpVec = normalize(np.cross(WristVec,PinkyVec))
+    FrontVec = normalize(np.cross(UpVec,PinkyVec)) * -1.0
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(str(joint).split(':')[-1], markerset, None,e)
+
+def _LeftHandPinky1_rule(joint,markers,markerset):
+    if not cmds.objExists(f"{markerset}:RPinkyTip"):
+        return
+    my_name = str(joint).split(':')[-1]
+
+    WristOut = MarkerPos("LWristOut",markerset)
+    WristIn = MarkerPos("LWristIn",markerset)
+    HandOut = MarkerPos("LHandOut",markerset)
+    PinkyTip = MarkerPos("LPinkyTip",markerset)
+    MyJoint = JointPos(my_name,markerset)
+
+    HandOut[2] -= MARKER_SIZE
+    PinkyTip[2] -= MARKER_SIZE
+
+    WristVec = normalize(np.subtract(WristOut,WristIn))
+    PinkyVec = normalize(np.subtract(PinkyTip,MyJoint))
+
+    UpVec = normalize(np.cross(WristVec,PinkyVec))
+    FrontVec = normalize(np.cross(UpVec,PinkyVec)) * -1.0
+
+    R = QRotationFromReference(UpVec,FrontVec)
+
+    e = R.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
+
+def _LeftHandPinky2_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
+
+def _LeftHandPinky3_rule(joint,markers,markerset):
+    my_name = str(joint).split(':')[-1]
+    SetJointLocal(my_name, markerset, None, np.array([0.0,0.0,0.0]))
 
 
 AnimRules = {
@@ -754,6 +1262,11 @@ def SanityCheck():
     
     namespace = u""
     
+    # Only works when Z is the up axis, matching QTM.
+    if cmds.upAxis( q=True, axis=True ) == 'y':
+        cmds.confirmDialog(title="Wrong World Up Axis",message="Maya Up axis must be Z",button=["OK"], defaultButton="OK")
+        return False       
+
     sel = cmds.ls(selection=True)
     if len(sel) == 0:
         #print "Nothing was selected"
