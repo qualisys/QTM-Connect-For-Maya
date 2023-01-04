@@ -1,5 +1,5 @@
 """
-Fit the selected Metahuman skeleton to the animation markerset cloud.
+Fit the selected Metahuman skeleton to the QTM animation markerset cloud.
 """
 
 import maya.cmds as cmds
@@ -15,15 +15,33 @@ if not here in sys.path:
 import qscipy
 importlib.reload(qscipy)
 
+# Constants, global variables and pre-computed values
+# 
+# Assumes world up axis is Z
+#
+# FACING_VECTOR is the direction the markerset is facing.  Needs to
+# be level (orthogonal to world up Z axis).  Is to be computed before calling
+# the rules functions.
+#
 MARKER_SIZE = 1.0
+WORLD_UP = np.array([0.0,0.0,1.0])
+FACING_VECTOR = np.array([0.0,1.0,0.0])
+RIGHT_FOOT = np.array([0.0,0.0,0.0])
+LEFT_FOOT = np.array([0.0,0.0,0.0])
+
 
 def normalize(n):
     l = np.linalg.norm(n)
     return n/l
+
 def OrthogonalizeV2(v1,v2):
+    """
+    Return v2 made orthogonal to v1
+    """
     c = np.cross(v1,v2)
     o = normalize(np.cross(c,v1))
     return o
+
 def closest_line_seg_line_seg(p1, p2, p3, p4):
     """
     Return the line segment whose endpoints are the closest
@@ -89,8 +107,17 @@ def JointPosLocal(jointname, markerset):
     p[1] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.translateY")
     p[2] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.translateZ")
     return p
-    
+
 def JointRot(jointname,markerset):
+    """
+    Global joint orientation
+    """
+    fullname = f"{markerset}:ModelPose:{jointname}"
+    world_rot = cmds.xform(fullname, q=True, rotation=True, ws=True)
+
+    return world_rot
+
+def JointRotLocal(jointname,markerset):
     fullname = f"{markerset}:ModelPose:{jointname}"
     e = np.array([0.0,0.0,0.0])
     e[0] =  cmds.getAttr(f"{markerset}:ModelPose:{jointname}.rotateX")
@@ -116,9 +143,12 @@ def QRotationFromReference(XVec, YVec):
 
 def QRotationBetweenVectors(v1,v2):
     axis = np.cross(v1,v2)
+    print(f"V1 {v1}")
+    print(f"V2 {v2}")
     l = np.linalg.norm(axis)
     if not math.isclose(l+1.0,1.0):
         theta = np.arcsin(l)
+        print(f"Theta is {math.degrees(theta)}")
         R = qscipy.QRotation.from_axis_angle(normalize(axis), theta)
     else:
         R = qscipy.QRotation()
@@ -140,6 +170,36 @@ def SetJointGlobal(jointname,markerset,pos,rot):
         cmds.xform(fullname, ws=True, ro=(rot[0],rot[1],rot[2]), t=(pos[0],pos[1],pos[2]))
     else:
         cmds.xform(fullname, ws=True, ro=(rot[0],rot[1],rot[2]))
+
+def QFitBooleanAttribute(joint, attr, default : bool = False) -> bool:
+    """
+    Retrives the given attribute, if it doesn't exist then
+    create it for the node and return a default value
+    """
+    retval = default
+    fullAttr = f"QFit_{attr}"
+    jointAttr = f"{str(joint)}.{fullAttr}"
+    if cmds.attributeQuery(fullAttr,node=str(joint), exists=True):
+        retval = cmds.getAttr(jointAttr)
+    else:
+        cmds.addAttr(str(joint),ln=fullAttr,at="bool")
+        cmds.setAttr(jointAttr,retval)
+    return retval
+
+def QFitFloatAttribute(joint, attr, default : float = 0.0) -> float:
+    """
+    Retrives the given attribute, if it doesn't exist then
+    create it for the node and return a default value
+    """
+    retval = default
+    fullAttr = f"QFit_{attr}"
+    jointAttr = f"{str(joint)}.{fullAttr}"
+    if cmds.attributeQuery(fullAttr,node=str(joint), exists=True):
+        retval = cmds.getAttr(jointAttr)
+    else:
+        cmds.addAttr(str(joint),ln=fullAttr,defaultValue = default)
+        cmds.setAttr(jointAttr,retval)
+    return retval
 
 #
 # The aim of each rule is to find the X (up) axis and the
@@ -164,6 +224,12 @@ def _NOOP_rule(joint,markerset):
     pass
 
 def _pelvis_rule(joint,markerset):
+    """
+    Rule for fitting the position and orientation of the pelvis.
+    Also, as a side effect, pre-computes some global values to be
+    used by other rules.  Assumes this is the first rule to be 
+    invoked.
+    """
     my_name = str(joint).split(':')[-1]
     LShoulderTop = MarkerPos("LShoulderTop",markerset)
     RShoulderTop = MarkerPos("RShoulderTop",markerset)
@@ -174,15 +240,18 @@ def _pelvis_rule(joint,markerset):
     CenterBack = np.add(WRB,WLB) * 0.5
     WRF = MarkerPos("WaistRFront",markerset)
     WLF = MarkerPos("WaistLFront",markerset)
+    forwardOffset =  QFitFloatAttribute(joint,"ForwardOffset", 10.0)
+    verticalOffset =  QFitFloatAttribute(joint,"VerticalOffset", 5.0)
+
     CenterFront = np.add(WRF,WLF) * 0.5
     CenterVec = normalize(np.subtract(CenterFront, CenterBack))
-    HipsEnd = np.add(CenterBack,CenterVec * 10)
+    HipsEnd = np.add(CenterBack,CenterVec * forwardOffset)
 
     BackL = MarkerPos("BackL",markerset)
     BackR = MarkerPos("BackR",markerset)
     MidBack = np.add(BackL,BackR)*0.5
     DownVec = np.array([0.0,0.0,-1.0])
-    HipsStart = np.add(HipsEnd, DownVec * 5)
+    HipsStart = np.add(HipsEnd, DownVec * verticalOffset)
     
     HipsUp = normalize(np.subtract(MidShoulder,HipsStart))
     HipsForward = OrthogonalizeV2(HipsUp,CenterVec) * -1
@@ -254,6 +323,7 @@ def _clavicle_l_rule(joint,markerset):
 
 def _upperarm_l_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
+    my_joint = JointPos(my_name,markerset)
     ElbowOut = MarkerPos("LElbowOut",markerset)
     ElbowFloor = np.array([ElbowOut[0],ElbowOut[1],0.0])
 
@@ -262,12 +332,14 @@ def _upperarm_l_rule(joint,markerset):
     WristIn = MarkerPos("LWristIn",markerset)
     WristMid = np.add(WristIn, WristOut)* 0.5
     WristVec = normalize(np.subtract(WristOut,WristIn))
-    p1,p2 = closest_line_seg_line_seg(ElbowOut,ElbowFloor,Arm, WristMid)
-
-    ArmToElbowVec = normalize(np.subtract(p1,Arm))
-
-    YVec = WristVec
-    XVec = ArmToElbowVec
+    if QFitBooleanAttribute(joint,"StraightArm", False):
+        YVec = FACING_VECTOR * -1.0
+        XVec = normalize(np.subtract(WristMid,my_joint))
+    else:
+        p1,p2 = closest_line_seg_line_seg(ElbowOut,ElbowFloor,Arm, WristMid)
+        ArmToElbowVec = normalize(np.subtract(p1,Arm))
+        YVec = WristVec
+        XVec = ArmToElbowVec
 
     RTotal = QRotationFromReference(XVec,YVec)
     e = RTotal.as_euler("xyz")
@@ -281,10 +353,11 @@ def _lowerarm_l_rule(joint,markerset):
     WristVec = normalize(np.subtract(WristOut,WristIn))
     MidWrist = np.add(WristIn,WristOut) * 0.5
 
-    ElbowToWristVec = normalize(np.subtract(MidWrist, my_joint))
-
-    YVec = WristVec
-    XVec = ElbowToWristVec
+    if QFitBooleanAttribute(joint,"StraightArm", False):
+        YVec = FACING_VECTOR * -1.0
+    else:
+        YVec = WristVec
+    XVec = normalize(np.subtract(MidWrist, my_joint))
 
     RTotal = QRotationFromReference(XVec,YVec)
     e = RTotal.as_euler("xyz")
@@ -298,17 +371,20 @@ def _hand_l_rule(joint,markerset):
     WristIn = MarkerPos("LWristIn",markerset)
     HandOut = MarkerPos("LHandOut",markerset)
     WristVec = normalize(np.subtract(WristOut,WristIn))
-
-    if cmds.objExists(f"{markerset}:LHandIn"):
-        HandIn = MarkerPos("LHandIn",markerset)
-        HandMid = np.add(HandIn, HandOut) * 0.5
-        HandMid[2] -= MARKER_SIZE
-        XVec = normalize(np.subtract(HandMid,my_joint))
+    if QFitBooleanAttribute(joint,"PalmDown", False):
+        YVec = WORLD_UP * -1.0
+        XVec = normalize(np.cross(FACING_VECTOR,YVec))
     else:
-        HandOut[2] -= MARKER_SIZE
-        XVec = normalize(np.subtract(HandOut,WristOut))
+        if cmds.objExists(f"{markerset}:LHandIn"):
+            HandIn = MarkerPos("LHandIn",markerset)
+            HandMid = np.add(HandIn, HandOut) * 0.5
+            HandMid[2] -= MARKER_SIZE
+            XVec = normalize(np.subtract(HandMid,my_joint))
+        else:
+            HandOut[2] -= MARKER_SIZE
+            XVec = normalize(np.subtract(HandOut,WristOut))
 
-    YVec = normalize(np.cross(WristVec,XVec))
+        YVec = normalize(np.cross(WristVec,XVec))
 
     RTotal = QRotationFromReference(XVec,YVec)
 
@@ -339,6 +415,7 @@ def _clavicle_r_rule(joint,markerset):
 
 def _upperarm_r_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
+    my_joint = JointPos(my_name,markerset)
     ElbowOut = MarkerPos("RElbowOut",markerset)
     ElbowFloor = np.array([ElbowOut[0],ElbowOut[1],0.0])
 
@@ -347,12 +424,15 @@ def _upperarm_r_rule(joint,markerset):
     WristIn = MarkerPos("RWristIn",markerset)
     WristMid = np.add(WristIn, WristOut)* 0.5
     WristVec = normalize(np.subtract(WristOut,WristIn))
-    p1,p2 = closest_line_seg_line_seg(ElbowOut,ElbowFloor,Arm, WristMid)
 
-    ArmToElbowVec = normalize(np.subtract(p1,Arm))
-
-    YVec = WristVec * -1.0
-    XVec = ArmToElbowVec * -1.0
+    if QFitBooleanAttribute(joint,"StraightArm", False):
+        YVec = FACING_VECTOR
+        XVec = normalize(np.subtract(my_joint,WristMid))
+    else:
+        p1,p2 = closest_line_seg_line_seg(ElbowOut,ElbowFloor,Arm, WristMid)
+        ArmToElbowVec = normalize(np.subtract(p1,Arm))
+        YVec = WristVec * -1.0
+        XVec = ArmToElbowVec * -1.0
 
     RTotal = QRotationFromReference(XVec,YVec)
     e = RTotal.as_euler("xyz")
@@ -366,10 +446,12 @@ def _lowerarm_r_rule(joint,markerset):
     WristVec = normalize(np.subtract(WristOut,WristIn))
     MidWrist = np.add(WristIn,WristOut) * 0.5
 
-    ElbowToWristVec = normalize(np.subtract(MidWrist, my_joint))
-
-    YVec = WristVec * -1.0
-    XVec = ElbowToWristVec * -1.0
+    if QFitBooleanAttribute(joint,"StraightArm", False):
+        YVec = FACING_VECTOR
+    else:
+        YVec = WristVec * -1.0
+    
+    XVec = normalize(np.subtract(my_joint,MidWrist))
 
     RTotal = QRotationFromReference(XVec,YVec)
     e = RTotal.as_euler("xyz")
@@ -383,17 +465,20 @@ def _hand_r_rule(joint,markerset):
     WristIn = MarkerPos("RWristIn",markerset)
     HandOut = MarkerPos("RHandOut",markerset)
     WristVec = normalize(np.subtract(WristOut,WristIn))
-
-    if cmds.objExists(f"{markerset}:RHandIn"):
-        HandIn = MarkerPos("RHandIn",markerset)
-        HandMid = np.add(HandIn, HandOut) * 0.5
-        HandMid[2] -= MARKER_SIZE
-        XVec = normalize(np.subtract(HandMid,my_joint)) * -1.0
+    if QFitBooleanAttribute(joint,"PalmDown", False):
+        YVec = WORLD_UP
+        XVec = normalize(np.cross(YVec,FACING_VECTOR))
     else:
-        HandOut[2] -= MARKER_SIZE
-        XVec = normalize(np.subtract(HandOut,WristOut)) * -1.0
+        if cmds.objExists(f"{markerset}:RHandIn"):
+            HandIn = MarkerPos("RHandIn",markerset)
+            HandMid = np.add(HandIn, HandOut) * 0.5
+            HandMid[2] -= MARKER_SIZE
+            XVec = normalize(np.subtract(HandMid,my_joint)) * -1.0
+        else:
+            HandOut[2] -= MARKER_SIZE
+            XVec = normalize(np.subtract(HandOut,WristOut)) * -1.0
 
-    YVec = normalize(np.cross(WristVec,XVec)) * -1.0
+        YVec = normalize(np.cross(WristVec,XVec)) * -1.0
 
     RTotal = QRotationFromReference(XVec,YVec)
 
@@ -432,10 +517,17 @@ def _thigh_l_rule(joint,markerset):
     HeelBack = MarkerPos("LHeelBack",markerset)
     ToeTip = MarkerPos("LToeTip",markerset)
 
-    p1,p2 = closest_line_seg_line_seg(HeelBack,ToeTip,my_joint, KneeOut)
+    if QFitBooleanAttribute(joint,"StraightLeg", False):
+        AnkleOut = MarkerPos("LAnkleOut",markerset)
+        MidHeel = np.add(AnkleOut * 0.5, HeelBack * 0.5)
+        p1,p2 = closest_line_seg_line_seg(HeelBack,ToeTip,my_joint, MidHeel)
 
-    XVec = normalize(np.subtract(my_joint,p1))
-    YVec = normalize(np.subtract(HeelBack,ToeTip))
+        XVec = normalize(np.subtract(my_joint,p1))
+        YVec = normalize(np.subtract(HeelBack,ToeTip))
+    else:
+        p1,p2 = closest_line_seg_line_seg(HeelBack,ToeTip,my_joint, KneeOut)
+        XVec = normalize(np.subtract(my_joint,p1))
+        YVec = normalize(np.subtract(HeelBack,ToeTip))
 
     RTotal = QRotationFromReference(XVec,YVec)
     e = RTotal.as_euler("xyz")
@@ -461,8 +553,32 @@ def _calf_l_rule(joint,markerset):
 
 def _foot_l_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
-    e = np.array([0.0,0.0,0.0])
-    SetJointLocal(my_name, markerset, None,e)
+    my_joint = JointPos(my_name,markerset)
+    if QFitBooleanAttribute(joint,"KeepFlat", False):
+        SetJointGlobal(my_name,markerset,None,LEFT_FOOT)
+        return
+
+    HeelBack = MarkerPos("LHeelBack",markerset)
+    ToeTip = MarkerPos("LToeTip",markerset)
+    
+    ForefootIn = MarkerPos("LForefootIn",markerset)
+    ForefootOut = MarkerPos("LForefootOut",markerset)
+    ForefootMid = np.add(ForefootIn, ForefootOut) * 0.5
+    XVec = normalize(np.subtract(my_joint,ForefootMid))
+    YVec = normalize(np.subtract(HeelBack,ToeTip))
+    R = QRotationFromReference(XVec,YVec)
+    ball_joint = JointPos("ball_l",markerset)
+
+    SegVec = normalize(np.subtract(ball_joint, my_joint))
+    ROrig = qscipy.QRotation.from_euler("xyz", JointRot(my_name,markerset))
+    axis = np.cross(SegVec, ROrig.M[0])
+    theta = math.degrees(np.arcsin( np.linalg.norm(axis)))
+
+    ROffset = qscipy.QRotation.from_z_rot(-theta)
+
+    RTotal = ROffset * R
+    e = RTotal.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
 
 def _ball_l_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
@@ -477,10 +593,17 @@ def _thigh_r_rule(joint,markerset):
     HeelBack = MarkerPos("RHeelBack",markerset)
     ToeTip = MarkerPos("RToeTip",markerset)
 
-    p1,p2 = closest_line_seg_line_seg(HeelBack,ToeTip,my_joint, KneeOut)
+    if QFitBooleanAttribute(joint,"StraightLeg", False):
+        AnkleOut = MarkerPos("RAnkleOut",markerset)
+        MidHeel = np.add(AnkleOut * 0.5, HeelBack * 0.5)
+        p1,p2 = closest_line_seg_line_seg(HeelBack,ToeTip,my_joint, MidHeel)
 
-    XVec = normalize(np.subtract(p1,my_joint))
-    YVec = normalize(np.subtract(ToeTip,HeelBack))
+        XVec = normalize(np.subtract(p1,my_joint))
+        YVec = normalize(np.subtract(ToeTip,HeelBack))
+    else:
+        p1,p2 = closest_line_seg_line_seg(HeelBack,ToeTip,my_joint, KneeOut)
+        XVec = normalize(np.subtract(p1,my_joint))
+        YVec = normalize(np.subtract(ToeTip,HeelBack))
 
     RTotal = QRotationFromReference(XVec,YVec)
     e = RTotal.as_euler("xyz")
@@ -506,8 +629,32 @@ def _calf_r_rule(joint,markerset):
 
 def _foot_r_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
-    e = np.array([0.0,0.0,0.0])
-    SetJointLocal(my_name, markerset, None,e)
+    my_joint = JointPos(my_name,markerset)
+    if QFitBooleanAttribute(joint,"KeepFlat", False):
+        SetJointGlobal(my_name,markerset,None,RIGHT_FOOT)
+        return
+
+    HeelBack = MarkerPos("RHeelBack",markerset)
+    ToeTip = MarkerPos("RToeTip",markerset)
+    
+    ForefootIn = MarkerPos("RForefootIn",markerset)
+    ForefootOut = MarkerPos("RForefootOut",markerset)
+    ForefootMid = np.add(ForefootIn, ForefootOut) * 0.5
+    XVec = normalize(np.subtract(ForefootMid, my_joint))
+    YVec = normalize(np.subtract(ToeTip,HeelBack))
+    R = QRotationFromReference(XVec,YVec)
+    ball_joint = JointPos("ball_r",markerset)
+
+    SegVec = normalize(np.subtract(ball_joint, my_joint))
+    ROrig = qscipy.QRotation.from_euler("xyz", JointRot(my_name,markerset))
+    axis = np.cross(SegVec, ROrig.M[0])
+    theta = math.degrees(np.arcsin( np.linalg.norm(axis)))
+
+    ROffset = qscipy.QRotation.from_z_rot(-theta)
+
+    RTotal = ROffset * R
+    e = RTotal.as_euler("xyz")
+    SetJointGlobal(my_name, markerset, None,e)
 
 def _ball_r_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
@@ -970,8 +1117,29 @@ def PrintJointRule(node):
             if not IsLeaf(c):
                 PrintJointRule(c)
 
+def _PreCompute(markerset):
+
+    WRB = MarkerPos("WaistRBack",markerset)
+    WLB = MarkerPos("WaistLBack",markerset)
+    CenterBack = np.add(WRB,WLB) * 0.5
+    WRF = MarkerPos("WaistRFront",markerset)
+    WLF = MarkerPos("WaistLFront",markerset)
+    CenterFront = np.add(WRF,WLF) * 0.5
+    CenterVec = normalize(np.subtract(CenterFront, CenterBack))
+
+    # Set global facing for other rules to use
+    global FACING_VECTOR
+    FACING_VECTOR = OrthogonalizeV2(WORLD_UP,CenterVec)
+    print(f"Set Facing to {FACING_VECTOR}")
+
+    global RIGHT_FOOT
+    RIGHT_FOOT = JointRot("foot_r", markerset)
+    global LEFT_FOOT
+    LEFT_FOOT = JointRot("foot_l", markerset)
+
 def _ApplyRules(joint,markerset):
     nodeName = str(joint).rpartition(":")[-1]
+    cmds.setAttr(f"{str(joint)}.segmentScaleCompensate", 0)
     if nodeName in MetahumanRules:
         RuleFunc = MetahumanRules[nodeName]
         if RuleFunc:
@@ -983,17 +1151,20 @@ def _ApplyRules(joint,markerset):
             if not IsLeaf(c):
                 _ApplyRules(c,markerset)
 
+
 def _DoFitMetahumanSkeleton():
     """
     Do the actual work of fitting the selected skeleton to the matching
-    marker cloud.  Hardcoded to work with a particular skeleton,
-    the QTM Animation skeleton in this case.
+    marker cloud.  Hardcoded to work with a particular skeleton-markerset
+    combrination.  In this case the Metahuman skeleton with the QTM 
+    animation markerset.
     """
     sel = cmds.ls(selection=True)
     rootJoint = sel[0]
     markerset = str(rootJoint).split(":")[0]
     #PrintJointDict(rootJoint)
     #PrintJointRule(rootJoint)
+    _PreCompute(markerset)
     _ApplyRules(rootJoint,markerset)
 
 

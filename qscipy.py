@@ -148,7 +148,7 @@ class QRotation:
     def inv(self):
         self.M = np.linalg.inv(self.M)
         return self
-    def inv(self):
+    def det(self):
         return np.linalg.det(self.M)
 
     def as_euler_xyz(self):
@@ -156,7 +156,14 @@ class QRotation:
         Return the euler angles in degrees.  No error checking.
         P 322,602 of Graphics Gems II
         """
-        b = math.asin(-self.M[0][2])
+        sb = -self.M[0][2]
+        if sb > 1.0:
+            b = 0
+        elif sb < -1.0:
+            b = math.pi
+        else:
+            b = math.asin(-self.M[0][2])
+
         Cb = math.cos(b)
         nz = math.isclose(Cb,0.0, abs_tol = 1e-09)
         nz12 = math.isclose(self.M[1][2],0.0, abs_tol = 1e-09)
