@@ -22,10 +22,11 @@ Manual
 Maya2022 uses Python3.7, earlier versions use Python2.7.  The main branch of the plugin has been updated to Python3.7.
 For earlier vesions of Maya you must use the Python2.7 branch.
 ### Note on Maya python install
-To use the "Get Marker in current frame" tool you need to install "numpy" and "pandas" in your Maya python.  
+To use the "Get Marker in current frame" tool you need to have "numpy", "pandas" and "requests" installed in your Maya python.  These are now installed as part of the "Install.bat" installation process, however, if they aren't installed, this is the process:
 1. In a command shell go to the "bin" folder of your Maya installation
 2. Execute './mayapy -m pip install numpy'
 3. Execute './mayapy -m pip install pandas'
+3. Execute './mayapy -m pip install requests'
 ## Streaming skeleton data
 To stream skeleton data you must first define a skeleton in QTM. Do this by clicking the `Calibrate skeleton` button in QTM.
 

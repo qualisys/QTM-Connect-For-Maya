@@ -40,18 +40,18 @@ def Spaces(level):
 #
 # Class QImportSolver
 #
-# Handles the traversal of an ElementTree made from a QTM Solver
-# XML file and converts it to a Maya scene
-#
-# sceneScale  - For scene conversion between units
-# rootScale   - For scaling the skeleton
-# NS          - The main namespace (equals the markerset name in QTM
-# MPNS        - The model pose name space which is a child of the
-#               namespace
-#
 ################################################################
 class QImportSolver:
+    """
+    Handles the traversal of an ElementTree made from a QTM Solver
+    XML file and converts it to a Maya scene
 
+    sceneScale  - For scene conversion between units
+    rootScale   - For scaling the skeleton
+    NS          - The main namespace (equals the markerset name in QTM
+    MPNS        - The model pose name space which is a child of the
+                namespace
+    """
     def __init__(self):
         self._sceneScale = 1.0
         self._rootScale = 1.0
@@ -188,7 +188,10 @@ class QImportSolver:
             cmds.select(ParentNode)
         else:
             cmds.select(clear=True)
-        jMe = cmds.joint(name = name)
+        if cmds.objExists(name):
+            jMe = name
+        else:
+            jMe = cmds.joint(name = name)
         cmds.select(jMe)
         jMeRadius = jMe+".radius"
         cmds.setAttr(jMeRadius, 1)
@@ -418,7 +421,10 @@ class QImportSolver:
                     #print Spaces(level+1), "Endpoint", "X", px, "Y", py, "Z", pz
                     EPName = name + "_end"
                     cmds.select(jMe)
-                    jEP = cmds.joint(name=EPName)
+                    if cmds.objExists(EPName):
+                        jEP = name
+                    else:
+                        jEP = cmds.joint(name=EPName)
                     cmds.select(jEP)
                     cmds.move(px,py,pz,ls=True)
                 else:

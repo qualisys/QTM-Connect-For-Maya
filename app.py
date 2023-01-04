@@ -136,35 +136,36 @@ def show_gui(restore=False):
 def UpdateMarkers(markerdata):
     #print(f"Update Markers with{markerdata}")
     for marker in markerdata:
-        namespace,shortname = marker.split("_",1)
-        groupnodename = f"{namespace}:Markers"
-        groupnodes = cmds.ls(groupnodename)
-        if not groupnodes:
-            groupnode = cmds.group(em=True,name=groupnodename)
-            print(f"New Namespace is {namespace}")
+        if '_' in marker:
+            namespace,shortname = marker.split("_",1)
+            groupnodename = f"{namespace}:Markers"
+            groupnodes = cmds.ls(groupnodename)
+            if not groupnodes:
+                groupnode = cmds.group(em=True,name=groupnodename)
+                print(f"New Namespace is {namespace}")
 
-        else:
-            groupnode = groupnodes[0]
+            else:
+                groupnode = groupnodes[0]
 
-        # hardcode mm to cm for now
-        px = markerdata[marker]["x"].values[0] / 10.0
-        py = markerdata[marker]["y"].values[0] / 10.0
-        pz = markerdata[marker]["z"].values[0] / 10.0
+            # hardcode mm to cm for now
+            px = markerdata[marker]["x"].values[0] / 10.0
+            py = markerdata[marker]["y"].values[0] / 10.0
+            pz = markerdata[marker]["z"].values[0] / 10.0
 
-        fullname = f"{namespace}:{shortname}"
-        if not cmds.objExists(fullname):
-            print(f"Adding Marker {shortname} to {namespace}")
-            cmds.spaceLocator(name=fullname)
-            cmds.setAttr("%s.overrideEnabled" % fullname, 1)
-            cmds.setAttr("%s.overrideColor" % fullname, 22)
-            cmds.select(fullname)
-            cmds.move(px,py,pz, ls=True)
-            cmds.scale(3,3,3)
-            cmds.select(groupnodename)
-            cmds.parent(fullname)
-        else:
-            cmds.select(fullname)
-            cmds.move(px,py,pz)
+            fullname = f"{namespace}:{shortname}"
+            if not cmds.objExists(fullname):
+                print(f"Adding Marker {shortname} to {namespace}")
+                cmds.spaceLocator(name=fullname)
+                cmds.setAttr("%s.overrideEnabled" % fullname, 1)
+                cmds.setAttr("%s.overrideColor" % fullname, 22)
+                cmds.select(fullname)
+                cmds.move(px,py,pz, ls=True)
+                cmds.scale(3,3,3)
+                cmds.select(groupnodename)
+                cmds.parent(fullname)
+            else:
+                cmds.select(fullname)
+                cmds.move(px,py,pz)
 
 
 class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):

@@ -182,8 +182,7 @@ def _pelvis_rule(joint,markerset):
     BackR = MarkerPos("BackR",markerset)
     MidBack = np.add(BackL,BackR)*0.5
     DownVec = np.array([0.0,0.0,-1.0])
-    #HipsStart = np.add(HipsEnd, DownVec * 5)
-    HipsStart = HipsEnd
+    HipsStart = np.add(HipsEnd, DownVec * 5)
     
     HipsUp = normalize(np.subtract(MidShoulder,HipsStart))
     HipsForward = OrthogonalizeV2(HipsUp,CenterVec) * -1
@@ -207,8 +206,19 @@ def _spine_02_rule(joint,markerset):
 
 def _spine_03_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
-    e = np.array([0.0,0.0,9.5])
-    SetJointLocal(my_name, markerset, None,e)
+    my_joint = JointPos(my_name,markerset)
+    LShoulderTop = MarkerPos("LShoulderTop",markerset)
+    RShoulderTop = MarkerPos("RShoulderTop",markerset)
+    MidShoulder = np.add(LShoulderTop,RShoulderTop) * 0.5
+    SpineTop = MarkerPos("SpineTop",markerset)
+
+    XVec = normalize(np.subtract(MidShoulder,my_joint))
+    YVec = normalize(np.subtract(SpineTop,MidShoulder))
+    RTotal = QRotationFromReference(XVec,YVec)
+    print(f"XVec = {XVec}")
+    print(f"YVec = {YVec}")
+    e = RTotal.as_euler("xyz")   
+    SetJointGlobal(my_name, markerset, None,e)
 
 def _spine_04_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
@@ -228,10 +238,12 @@ def _clavicle_l_rule(joint,markerset):
     LShoulderBack = MarkerPos("LShoulderBack", markerset)
     RShoulderBack = MarkerPos("RShoulderBack", markerset)
     Chest = MarkerPos("Chest", markerset)
+    ElbowOut = MarkerPos("LElbowOut", markerset)
     MidShoulderBack = np.add(LShoulderBack,RShoulderBack) * 0.5
     ForwardVec = normalize(np.subtract(Chest,MidShoulderBack))
 
-    p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,LShoulderBack, np.add(LShoulderBack,ForwardVec * 20.0))
+    #p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,LShoulderBack, np.add(LShoulderBack,ForwardVec * 20.0))
+    p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,my_joint, ElbowOut)
 
     XVec = normalize(np.subtract(p1,my_joint))
     YVec = ForwardVec * -1.0
@@ -310,11 +322,13 @@ def _clavicle_r_rule(joint,markerset):
     ShoulderFloor = np.array([ShoulderTop[0],ShoulderTop[1],0.0])
     LShoulderBack = MarkerPos("LShoulderBack", markerset)
     RShoulderBack = MarkerPos("RShoulderBack", markerset)
-    Chest = MarkerPos("Chest", markerset)
+    SpineTop = MarkerPos("SpineTop", markerset)
+    ElbowOut = MarkerPos("RElbowOut", markerset)
     MidShoulderBack = np.add(LShoulderBack,RShoulderBack) * 0.5
-    ForwardVec = normalize(np.subtract(Chest,MidShoulderBack))
+    ForwardVec = normalize(np.subtract(MidShoulderBack,SpineTop))
 
-    p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,LShoulderBack, np.add(LShoulderBack,ForwardVec * 20.0))
+    #p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,RShoulderBack, np.add(RShoulderBack,ForwardVec))
+    p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,my_joint, ElbowOut)
 
     XVec = normalize(np.subtract(my_joint,p1))
     YVec = ForwardVec
@@ -775,11 +789,11 @@ MetahumanRules = {
 "thigh_l":_thigh_l_rule,
 "calf_l":_calf_l_rule,
 "foot_l":_foot_l_rule,
-"ball_l":_ball_l_rule,
+"ball_l":_NOOP_rule,
 "thigh_r":_thigh_r_rule,
 "calf_r":_calf_r_rule,
 "foot_r":_foot_r_rule,
-"ball_r":_ball_r_rule,
+"ball_r":_NOOP_rule,
 "pinky_01_r":_pinky_01_r_rule,
 "pinky_02_r":_ZERO_rule,
 "pinky_03_r":_ZERO_rule,
