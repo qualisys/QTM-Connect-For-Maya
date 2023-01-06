@@ -180,6 +180,7 @@ class QImportSolver:
         tag       = segment.tag
         attrib    = segment.attrib
         name      = self._MPNS+attrib["Name"]
+        existed = False
 
         #print Spaces(level), tag,  name
 
@@ -190,6 +191,7 @@ class QImportSolver:
             cmds.select(clear=True)
         if cmds.objExists(name):
             jMe = name
+            existed = True
         else:
             jMe = cmds.joint(name = name)
         cmds.select(jMe)
@@ -199,10 +201,11 @@ class QImportSolver:
 
         # stash the root scale in the root joint
         if bIsRoot:
-            cmds.setAttr("%s.scaleX" % str(jMe), self._rootScale)
-            cmds.setAttr("%s.scaleY" % str(jMe), self._rootScale)
-            cmds.setAttr("%s.scaleZ" % str(jMe), self._rootScale)
-            #print "Set Root Scale", str(self._rootScale), str(jMe)
+            if not existed:
+                cmds.setAttr("%s.scaleX" % str(jMe), self._rootScale)
+                cmds.setAttr("%s.scaleY" % str(jMe), self._rootScale)
+                cmds.setAttr("%s.scaleZ" % str(jMe), self._rootScale)
+                #print "Set Root Scale", str(self._rootScale), str(jMe)
 
         for cs in segment:
             if cs.tag == "Segment":
@@ -223,7 +226,8 @@ class QImportSolver:
                         #print Spaces(level+1),"Transform Position" , px, py, pz
                         #cmds.joint(edit=True, position=[px,py,pz])
                         cmds.select(jMe)
-                        cmds.move(px,py,pz,ls=True)
+                        if not existed:
+                            cmds.move(px,py,pz,ls=True)
                     elif ccs.tag == "Rotation":
                         qx = ccs.attrib["X"]
                         qy = ccs.attrib["Y"]
@@ -233,7 +237,8 @@ class QImportSolver:
                         #print Spaces(level+1),"Transform Rotation E" , ER[0], ER[1], ER[2]
                         #print Spaces(level+1),"Transform Rotation" , qx, qy, qz, qw
                         cmds.select(jMe)
-                        cmds.rotate(ER[0], ER[1],ER[2])
+                        if not existed:
+                            cmds.rotate(ER[0], ER[1],ER[2])
 
             elif cs.tag == "DefaultTransform":
                 for ccs in cs:
@@ -425,8 +430,8 @@ class QImportSolver:
                         jEP = name
                     else:
                         jEP = cmds.joint(name=EPName)
-                    cmds.select(jEP)
-                    cmds.move(px,py,pz,ls=True)
+                        cmds.select(jEP)
+                        cmds.move(px,py,pz,ls=True)
                 else:
                     #print Spaces(level+1), "Endpoint"
                     cmds.select(ParentNode)
@@ -535,7 +540,34 @@ class QImportSolver:
 # End of QImportSolver Class definition
 #
 ################################################################
+def _SetModelPoseNamespaceHierarchy(joint,newNamespace):
+    plainName = str(joint).split(':')[-1]
+    newName = f"{newNamespace}:ModelPose:{plainName}"
+    cmds.rename(str(joint),newName)
+    children = cmds.listRelatives(newName,c=True)
+    if children:
+        for c in children:
+            _SetModelPoseNamespaceHierarchy(c,newNamespace)
 
+def _PrepareExistingSkeleton(xmlroot):
+    sel = cmds.ls(selection=True)
+    if len(sel) == 0:
+        return
+
+    if len(sel) > 1:
+        cmds.confirmDialog(title="Only One", message="Please select only one joint",button=["OK"], defaultButton="OK")
+        return False
+    oldRoot = sel[0]
+    attrib = xmlroot.attrib
+    newNamespace = attrib["Name"]
+    if not cmds.namespace( exists=newNamespace ):
+        cmds.namespace(add=newNamespace)
+    if not cmds.namespace( exists="ModelPose", parent=newNamespace ):
+        cmds.namespace(add="ModelPose", parent=newNamespace)
+
+    _SetModelPoseNamespaceHierarchy(oldRoot, newNamespace)
+
+        
 #
 # ImportQTMSkeleton
 #
@@ -548,7 +580,6 @@ class QImportSolver:
 #    importlib.reload(QImportSolver)
 #    QImportSolver.ImportQTMSkeleton()
 #
-# NOTE:  This routine completely NUKES the current Maya scene, use with caution.
 #
 def ImportQTMSkeleton():
 
@@ -563,8 +594,7 @@ def ImportQTMSkeleton():
             QIS = QImportSolver()
             QIS.SetSceneScale()
 
-            # Start a new scene in Maya
-            #cmds.file(new=True,f=True)
+            _PrepareExistingSkeleton(list(root)[0])
             cmds.currentUnit( linear='cm' )
 
             QIS.ImportQTMSkeletonFile(root)

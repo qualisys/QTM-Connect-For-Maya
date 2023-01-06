@@ -143,12 +143,9 @@ def QRotationFromReference(XVec, YVec):
 
 def QRotationBetweenVectors(v1,v2):
     axis = np.cross(v1,v2)
-    print(f"V1 {v1}")
-    print(f"V2 {v2}")
     l = np.linalg.norm(axis)
     if not math.isclose(l+1.0,1.0):
         theta = np.arcsin(l)
-        print(f"Theta is {math.degrees(theta)}")
         R = qscipy.QRotation.from_axis_angle(normalize(axis), theta)
     else:
         R = qscipy.QRotation()
@@ -1151,6 +1148,29 @@ def _ApplyRules(joint,markerset):
             if not IsLeaf(c):
                 _ApplyRules(c,markerset)
 
+def _ConditionHierarchy(node):
+    """
+    Force joints to have no preferred angle and
+    no joint orient values.
+    """
+    n = str(node)
+    rot = cmds.xform(n, q=True, rotation=True, ws=True)
+    cmds.setAttr("%s.jointOrientX" % n, 0)
+    cmds.setAttr("%s.jointOrientY" % n, 0)
+    cmds.setAttr("%s.jointOrientZ" % n, 0) 
+       
+    cmds.setAttr("%s.segmentScaleCompensate" %n, 0)
+    
+    cmds.xform(n, ws=True, ro=(rot[0],rot[1],rot[2]))
+
+    cmds.setAttr("%s.preferredAngleX" % n, 0)
+    cmds.setAttr("%s.preferredAngleY" % n, 0)
+    cmds.setAttr("%s.preferredAngleZ" % n, 0)
+    children = cmds.listRelatives(node,c=True)
+    if children:
+        for c in children:
+            if not IsLeaf(c):
+                _ConditionHierarchy(c)
 
 def _DoFitMetahumanSkeleton():
     """
@@ -1164,6 +1184,7 @@ def _DoFitMetahumanSkeleton():
     markerset = str(rootJoint).split(":")[0]
     #PrintJointDict(rootJoint)
     #PrintJointRule(rootJoint)
+    _ConditionHierarchy(rootJoint)
     _PreCompute(markerset)
     _ApplyRules(rootJoint,markerset)
 
