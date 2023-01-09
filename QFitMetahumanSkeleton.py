@@ -281,15 +281,22 @@ def _spine_03_rule(joint,markerset):
     XVec = normalize(np.subtract(MidShoulder,my_joint))
     YVec = normalize(np.subtract(SpineTop,MidShoulder))
     RTotal = QRotationFromReference(XVec,YVec)
-    print(f"XVec = {XVec}")
-    print(f"YVec = {YVec}")
     e = RTotal.as_euler("xyz")   
     SetJointGlobal(my_name, markerset, None,e)
 
 def _spine_04_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
-    e = np.array([0.0,0.0,-9.57])
-    SetJointLocal(my_name, markerset, None,e)
+    my_joint = JointPos(my_name,markerset)
+    LShoulderTop = MarkerPos("LShoulderTop",markerset)
+    RShoulderTop = MarkerPos("RShoulderTop",markerset)
+    MidShoulder = np.add(LShoulderTop,RShoulderTop) * 0.5
+    SpineTop = MarkerPos("SpineTop",markerset)
+
+    XVec = normalize(np.subtract(MidShoulder,my_joint))
+    YVec = normalize(np.subtract(SpineTop,MidShoulder))
+    RTotal = QRotationFromReference(XVec,YVec)
+    e = RTotal.as_euler("xyz")   
+    SetJointGlobal(my_name, markerset, None,e)
 
 def _spine_05_rule(joint,markerset):
     my_name = str(joint).split(':')[-1]
@@ -969,6 +976,60 @@ MetahumanRules = {
 "thumb_02_l":_thumb_02_l_rule,
 "thumb_03_l":_ZERO_rule,}
 
+AnimMarkers = [
+    "HeadL",
+    "HeadTop",
+    "HeadR",
+    "HeadFront",
+    "LShoulderTop",
+    "LShoulderBack",
+    "LArm",
+    "LElbowOut",
+    "LElbowIn",
+    "LeftForeArm",
+    "LWristOut",
+    "LWristIn",
+    "LHandOut",
+    "LHandIn",
+    "RShoulderTop",
+    "RShoulderBack",
+    "RArm",
+    "RElbowIn",
+    "RElbowOut",
+    "RightForeArm",
+    "RWristOut",
+    "RWristIn",
+    "RHandOut",
+    "RHandIn",
+    "Clavicle",
+    "Chest",
+    "SpineTop",
+    "BackL",
+    "BackR",
+    "WaistLFront",
+    "WaistRFront",
+    "Hips_LMid",
+    "WaistLBack",
+    "WaistRBack",
+    "Hips_RMid",
+    "LThigh",
+    "LKneeOut",
+    "LKneeIn",
+    "LShin",
+    "LAnkleOut",
+    "LHeelBack",
+    "LForefootOut",
+    "LToeTip",
+    "LForefootIn",
+    "RThigh",
+    "RKneeOut",
+    "RKneeIn",
+    "RShin",
+    "RAnkleOut",
+    "RHeelBack",
+    "RForefootOut",
+    "RToeTip",
+    "RForefootIn"]
 def VerifyUnitScale(node):
     tolerance = 0.0001
     nodeName = str(node)
@@ -1002,7 +1063,12 @@ def SanityCheckSkeletonScale(rootJoint):
         if not VerifyJointChildren(child):
             return False
     return True
-
+def AllMarkersPresent(markerset):
+    for m in AnimMarkers:
+        if not cmds.objExists(f"{markerset}:{m}"):
+            print(f"Marker {m} is missing")
+            return False
+    return True
     
 #
 # Series of sanity checks to make sure the user picks one and only one
@@ -1051,6 +1117,9 @@ def SanityCheck():
         return False  
     
     markers = m[0]
+    if not AllMarkersPresent(namespace_parent):
+        cmds.confirmDialog(title="Missing Markers", message="Not all required markers are present",button=["OK"], defaultButton="OK")
+        return False
 
     if not VerifyUnitScale(markers):
         print(f"non unit scale factor on markers node.")
