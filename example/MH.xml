@@ -1,0 +1,2076 @@
+<QTM_Skeleton_File>
+    <Skeleton Name="MH">
+        <Solver>Global Optimization</Solver>
+        <Scale>1.087481</Scale>
+        <Segments>
+            <Segment Name="pelvis">
+                <Transform>
+                    <Position X="238.18450725288102" Y="490.4468782454554" Z="840.7903957357706"/>
+                    <Rotation X="-0.05621436199954649" Y="-0.7130063691640607" Z="-0.0356615736212153" W="0.6979900537997126"/>
+                </Transform>
+                <DefaultTransform>
+                    <Position X="238.18450725288102" Y="490.4468782454554" Z="840.7903957357706"/>
+                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                </DefaultTransform>
+                <DegreesOfFreedom>
+                    <RotationX/>
+                    <RotationY/>
+                    <RotationZ/>
+                    <TranslationX/>
+                    <TranslationY/>
+                    <TranslationZ/>
+                </DegreesOfFreedom>
+                <Endpoint/>
+                <Markers>
+                    <Marker Name="WaistRFront">
+                        <Position X="40.66581386355362" Y="-138.79417496270392" Z="99.49714641589732"/>
+                        <Weight>1.0</Weight>
+                    </Marker>
+                    <Marker Name="WaistLFront">
+                        <Position X="29.633829016766544" Y="-119.93035372638673" Z="-101.80477380860407"/>
+                        <Weight>1.0</Weight>
+                    </Marker>
+                    <Marker Name="WaistRBack">
+                        <Position X="60.01633511355782" Y="92.68006141127864" Z="81.80450814229313"/>
+                        <Weight>1.0</Weight>
+                    </Marker>
+                    <Marker Name="WaistLBack">
+                        <Position X="62.92138880779441" Y="103.23071850551901" Z="-84.11213553499945"/>
+                        <Weight>1.0</Weight>
+                    </Marker>
+                </Markers>
+                <RigidBodies/>
+                <Segment Name="spine_01">
+                    <Transform>
+                        <Position X="22.088605000000015" Y="1.1353620000000004" Z="-1.0000000000000006e-06"/>
+                        <Rotation X="0.0" Y="0.0" Z="-0.09541141988458277" W="0.9954379242100473"/>
+                    </Transform>
+                    <DefaultTransform>
+                        <Position X="22.088605000000015" Y="1.1353620000000004" Z="-1.0000000000000006e-06"/>
+                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                    </DefaultTransform>
+                    <DegreesOfFreedom>
+                        <RotationX>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationX>
+                        <RotationY>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationY>
+                        <RotationZ>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationZ>
+                    </DegreesOfFreedom>
+                    <Markers>
+                        <Marker Name="WaistRFront">
+                            <Position X="44.8189157982214" Y="-133.85310153458815" Z="99.49714741589733"/>
+                            <Weight>1.0</Weight>
+                        </Marker>
+                        <Marker Name="WaistLFront">
+                            <Position X="30.404560677714972" Y="-117.42827862061438" Z="-101.80477280860399"/>
+                            <Weight>1.0</Weight>
+                        </Marker>
+                        <Marker Name="WaistRBack">
+                            <Position X="19.848066711821307" Y="97.08243378527008" Z="81.80450914229317"/>
+                            <Weight>1.0</Weight>
+                        </Marker>
+                        <Marker Name="WaistLBack">
+                            <Position X="20.696107536611365" Y="107.99282006835502" Z="-84.11213453499941"/>
+                            <Weight>1.0</Weight>
+                        </Marker>
+                    </Markers>
+                    <RigidBodies/>
+                    <Segment Name="spine_02">
+                        <Transform>
+                            <Position X="46.409295000000014" Y="-7.000000000000001e-06" Z="1.0000000000000006e-06"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.06384432490077967" W="0.997959870023822"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="46.409295000000014" Y="-7.000000000000001e-06" Z="1.0000000000000006e-06"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Markers>
+                            <Marker Name="WaistRBack">
+                                <Position X="-13.973660291140853" Y="99.67565387330043" Z="81.80450814229316"/>
+                                <Weight>1.0</Weight>
+                            </Marker>
+                            <Marker Name="WaistLBack">
+                                <Position X="-11.742242539128336" Y="110.38903228081706" Z="-84.11213553499945"/>
+                                <Weight>1.0</Weight>
+                            </Marker>
+                            <Marker Name="BackR">
+                                <Position X="257.86555546090597" Y="137.7767336193209" Z="123.58637020662732"/>
+                                <Weight>1.0</Weight>
+                            </Marker>
+                            <Marker Name="BackL">
+                                <Position X="268.81682949459145" Y="167.98606368651693" Z="-68.09405756400636"/>
+                                <Weight>1.0</Weight>
+                            </Marker>
+                        </Markers>
+                        <RigidBodies/>
+                        <Segment Name="spine_03">
+                            <Transform>
+                                <Position X="73.453372" Y="0.0" Z="2.000000000000001e-06"/>
+                                <Rotation X="0.06501731647690419" Y="0.0031033792820191453" Z="0.047576151163042625" W="0.9967445146253304"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="73.453372" Y="0.0" Z="2.000000000000001e-06"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Markers>
+                                <Marker Name="BackR">
+                                    <Position X="196.69649509523876" Y="134.62717203748966" Z="107.0041378105032"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                                <Marker Name="BackL">
+                                    <Position X="210.475302318561" Y="138.50956013081603" Z="-86.82308409240215"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                            </Markers>
+                            <RigidBodies/>
+                            <Segment Name="spine_04">
+                                <Transform>
+                                    <Position X="85.88735500000004" Y="-5.000000000000002e-06" Z="-1.700000000000001e-05"/>
+                                    <Rotation X="0.0" Y="0.0" Z="-0.08341695924720337" W="0.9965147319081391"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="85.88735500000004" Y="-5.000000000000002e-06" Z="-1.700000000000001e-05"/>
+                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Markers>
+                                    <Marker Name="BackR">
+                                        <Position X="86.8849348351374" Y="151.17589233877132" Z="107.00415481050322"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                    <Marker Name="BackL">
+                                        <Position X="99.82652889302281" Y="157.2950106613392" Z="-86.82306709240211"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                    <Marker Name="Chest">
+                                        <Position X="118.41632263222482" Y="-132.86128636787072" Z="-3.5432661855905825"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                </Markers>
+                                <RigidBodies/>
+                                <Segment Name="spine_05">
+                                    <Transform>
+                                        <Position X="163.54010100000008" Y="2.000000000000001e-06" Z="-3.300000000000002e-05"/>
+                                        <Rotation X="0.0" Y="0.0" Z="-0.013377549679282074" W="0.9999105165786478"/>
+                                    </Transform>
+                                    <DefaultTransform>
+                                        <Position X="163.54010100000008" Y="2.000000000000001e-06" Z="-3.300000000000002e-05"/>
+                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                    </DefaultTransform>
+                                    <DegreesOfFreedom>
+                                        <RotationX>
+                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                        </RotationX>
+                                        <RotationY>
+                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                        </RotationY>
+                                        <RotationZ>
+                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                        </RotationZ>
+                                    </DegreesOfFreedom>
+                                    <Markers>
+                                        <Marker Name="Chest">
+                                            <Position X="-41.55322888716957" Y="-134.0209181061117" Z="-3.5432331855906525"/>
+                                            <Weight>1.0</Weight>
+                                        </Marker>
+                                        <Marker Name="SpineTop">
+                                            <Position X="85.669583809012" Y="160.43837106736058" Z="4.813351554855913e-05"/>
+                                            <Weight>1.0</Weight>
+                                        </Marker>
+                                        <Marker Name="LShoulderBack">
+                                            <Position X="73.55869079403051" Y="139.7382417925233" Z="-129.78976486869146"/>
+                                            <Weight>1.0</Weight>
+                                        </Marker>
+                                        <Marker Name="RShoulderBack">
+                                            <Position X="72.85843623394159" Y="134.96441469086884" Z="130.36659658061023"/>
+                                            <Weight>1.0</Weight>
+                                        </Marker>
+                                    </Markers>
+                                    <RigidBodies/>
+                                    <Segment Name="neck_01">
+                                        <Transform>
+                                            <Position X="115.53795800000003" Y="-0.00016400000000000003" Z="-2.300000000000001e-05"/>
+                                            <Rotation X="0.04323216696481271" Y="-4.361369503982004e-05" Z="0.03227328472941521" W="0.9985436459815596"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="115.53795800000003" Y="-0.00016400000000000003" Z="-2.300000000000001e-05"/>
+                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                            <RotationX>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationX>
+                                            <RotationY>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationY>
+                                            <RotationZ>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationZ>
+                                        </DegreesOfFreedom>
+                                        <Markers>
+                                            <Marker Name="SpineTop">
+                                                <Position X="-19.46608379105514" Y="161.4298071850764" Z="-13.933134801877632"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                            <Marker Name="LShoulderBack">
+                                                <Position X="-33.25932826521603" Y="130.42531982253166" Z="-141.48325362199083"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                            <Marker Name="RShoulderBack">
+                                                <Position X="-33.51716857529527" Y="148.18517238013473" Z="118.1109168435491"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                            <Marker Name="HeadR">
+                                                <Position X="183.4878850633059" Y="36.16478592963941" Z="94.64092158309026"/>
+                                                <Weight>0.2</Weight>
+                                            </Marker>
+                                            <Marker Name="HeadL">
+                                                <Position X="185.28367988369476" Y="47.01425331163429" Z="-88.9150480258886"/>
+                                                <Weight>0.2</Weight>
+                                            </Marker>
+                                        </Markers>
+                                        <RigidBodies/>
+                                        <Segment Name="neck_02">
+                                            <Transform>
+                                                <Position X="57.81644100000001" Y="0.00011500000000000002" Z="-1.1000000000000006e-05"/>
+                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="57.81644100000001" Y="0.00011500000000000002" Z="-1.1000000000000006e-05"/>
+                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                                <RotationX>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationX>
+                                                <RotationY>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationY>
+                                                <RotationZ>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationZ>
+                                            </DegreesOfFreedom>
+                                            <Markers>
+                                                <Marker Name="SpineTop">
+                                                    <Position X="-77.28252479105502" Y="161.4296921850764" Z="-13.933123801877656"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                                <Marker Name="HeadR">
+                                                    <Position X="125.67144406330586" Y="36.16467092963946" Z="94.64093258309032"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                                <Marker Name="HeadL">
+                                                    <Position X="127.46723888369502" Y="47.014138311634504" Z="-88.91503702588862"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                                <Marker Name="HeadFront">
+                                                    <Position X="192.98961632624574" Y="-71.39583529190463" Z="1.1000001135610838e-05"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                                <Marker Name="HeadTop">
+                                                    <Position X="223.3287720291802" Y="71.39560529190899" Z="1.1000001135610838e-05"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                            </Markers>
+                                            <RigidBodies/>
+                                            <Segment Name="head">
+                                                <Transform>
+                                                    <Position X="57.41380200000002" Y="0.0002230000000000001" Z="-1.1000000000000006e-05"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="57.41380200000002" Y="0.0002230000000000001" Z="-1.1000000000000006e-05"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Endpoint X="54.374061000000005" Y="0.0" Z="0.0"/>
+                                                <Markers>
+                                                    <Marker Name="HeadR">
+                                                        <Position X="68.25764206330604" Y="36.16444792963955" Z="94.64094358309029"/>
+                                                        <Weight>1.0</Weight>
+                                                    </Marker>
+                                                    <Marker Name="HeadL">
+                                                        <Position X="70.0534368836949" Y="47.01391531163459" Z="-88.91502602588865"/>
+                                                        <Weight>1.0</Weight>
+                                                    </Marker>
+                                                    <Marker Name="HeadFront">
+                                                        <Position X="135.57581432624562" Y="-71.39605829190454" Z="2.2000001150804173e-05"/>
+                                                        <Weight>1.0</Weight>
+                                                    </Marker>
+                                                    <Marker Name="HeadTop">
+                                                        <Position X="165.91497002918007" Y="71.39538229190916" Z="2.200000111216909e-05"/>
+                                                        <Weight>1.0</Weight>
+                                                    </Marker>
+                                                </Markers>
+                                                <RigidBodies/>
+                                            </Segment>
+                                        </Segment>
+                                    </Segment>
+                                    <Segment Name="clavicle_l">
+                                        <Transform>
+                                            <Position X="55.92696300000003" Y="9.604712000000003" Z="-8.879816000000005"/>
+                                            <Rotation X="0.2786862001101563" Y="0.7019580874470883" Z="-0.01330934675021711" W="0.6552951294072544"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="55.92696300000003" Y="9.604712000000003" Z="-8.879816000000005"/>
+                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                            <RotationX>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationX>
+                                            <RotationY>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationY>
+                                            <RotationZ>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationZ>
+                                        </DegreesOfFreedom>
+                                        <Markers>
+                                            <Marker Name="SpineTop">
+                                                <Position X="48.568827266714166" Y="142.58398387424373" Z="-32.01788168746678"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                            <Marker Name="LShoulderBack">
+                                                <Position X="161.02627202981125" Y="75.17719165752975" Z="-16.845138983166812"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                            <Marker Name="LShoulderTop">
+                                                <Position X="129.9385321654615" Y="36.97927687277286" Z="62.010299443648776"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                        </Markers>
+                                        <RigidBodies/>
+                                        <Segment Name="upperarm_l">
+                                            <Transform>
+                                                <Position X="145.0702200000001" Y="-0.000849" Z="-0.0029930000000000004"/>
+                                                <Rotation X="-0.5724485703773196" Y="0.02840320113865062" Z="-0.1573042592873742" W="0.8042084695202427"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="145.0702200000001" Y="-0.000849" Z="-0.0029930000000000004"/>
+                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                                <RotationX>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationX>
+                                                <RotationY>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationY>
+                                                <RotationZ>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationZ>
+                                            </DegreesOfFreedom>
+                                            <Markers>
+                                                <Marker Name="LElbowOut">
+                                                    <Position X="272.0282176128932" Y="-6.153671631055219" Z="7.606443236844877"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                                <Marker Name="LArm">
+                                                    <Position X="159.71090855160475" Y="66.32614652899842" Z="-34.88613554287273"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                                <Marker Name="LElbowIn">
+                                                    <Position X="268.01593490527875" Y="-5.694531950606313" Z="-122.1759370680061"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                            </Markers>
+                                            <RigidBodies/>
+                                            <Segment Name="upperarm_correctiveRoot_l">
+                                                <Transform>
+                                                    <Position X="0.0" Y="0.0" Z="-0.0"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="0.0" Y="0.0" Z="-0.0"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Endpoint X="14.722792000000007" Y="61.39624900000003" Z="6.794846000000003"/>
+                                                <RigidBodies/>
+                                            </Segment>
+                                            <Segment Name="lowerarm_l">
+                                                <Transform>
+                                                    <Position X="259.233374" Y="-0.009218000000000004" Z="-0.0056860000000000036"/>
+                                                    <Rotation X="0.008082445121149431" Y="0.09396210999917623" Z="-0.1197690498027089" W="0.9883122839845322"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="259.233374" Y="-0.009218000000000004" Z="-0.0056860000000000036"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Markers>
+                                                    <Marker Name="LeftForeArm">
+                                                        <Position X="157.97384647880912" Y="8.093668714475378" Z="22.792075092670384"/>
+                                                        <Weight>1.0</Weight>
+                                                    </Marker>
+                                                </Markers>
+                                                <RigidBodies/>
+                                                <Segment Name="hand_l">
+                                                    <Transform>
+                                                        <Position X="249.75060300000013" Y="0.00044200000000000017" Z="0.0"/>
+                                                        <Rotation X="-0.6990016763709682" Y="-0.16137929101410503" Z="-0.07521589499025881" W="0.6926008590834807"/>
+                                                    </Transform>
+                                                    <DefaultTransform>
+                                                        <Position X="249.75060300000013" Y="0.00044200000000000017" Z="0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </DefaultTransform>
+                                                    <DegreesOfFreedom>
+                                                        <RotationX>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationX>
+                                                        <RotationY>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationY>
+                                                        <RotationZ>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationZ>
+                                                    </DegreesOfFreedom>
+                                                    <Markers>
+                                                        <Marker Name="LWristIn">
+                                                            <Position X="24.54831941537279" Y="10.132716965068242" Z="-51.07633932856365"/>
+                                                            <Weight>1.0</Weight>
+                                                        </Marker>
+                                                        <Marker Name="LWristOut">
+                                                            <Position X="33.003734334290655" Y="10.132716965068706" Z="43.800577724159936"/>
+                                                            <Weight>1.0</Weight>
+                                                        </Marker>
+                                                        <Marker Name="LHandOut">
+                                                            <Position X="80.53629764624836" Y="-7.318153314370776" Z="20.22245139832912"/>
+                                                            <Weight>1.0</Weight>
+                                                        </Marker>
+                                                    </Markers>
+                                                    <RigidBodies/>
+                                                    <Segment Name="pinky_metacarpal_l">
+                                                        <Transform>
+                                                            <Position X="28.842869000000015" Y="4.695833" Z="17.471283"/>
+                                                            <Rotation X="-0.20686903003237422" Y="-0.1992110456709403" Z="0.055718992822461795" W="0.9562507817173305"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="28.842869000000015" Y="4.695833" Z="17.471283"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="pinky_01_l">
+                                                            <Transform>
+                                                                <Position X="45.138563" Y="4.100000000000001e-05" Z="2.1e-05"/>
+                                                                <Rotation X="0.20686904112792845" Y="0.1992110373758415" Z="-0.055719029034215196" W="0.9562507789350746"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="45.138563" Y="4.100000000000001e-05" Z="2.1e-05"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                            </DegreesOfFreedom>
+                                                            <RigidBodies/>
+                                                            <Segment Name="pinky_02_l">
+                                                                <Transform>
+                                                                    <Position X="27.741673000000006" Y="-0.0" Z="0.0"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </Transform>
+                                                                <DefaultTransform>
+                                                                    <Position X="27.741673000000006" Y="-0.0" Z="0.0"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </DefaultTransform>
+                                                                <DegreesOfFreedom>
+                                                                </DegreesOfFreedom>
+                                                                <Endpoint X="17.149617000000003" Y="-0.0" Z="0.0"/>
+                                                                <RigidBodies/>
+                                                            </Segment>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="ring_metacarpal_l">
+                                                        <Transform>
+                                                            <Position X="29.979617000000015" Y="2.9837850000000006" Z="6.852552000000003"/>
+                                                            <Rotation X="-0.09985404662632605" Y="-0.11461805259066112" Z="-0.01577401820596792" W="0.9882525242782381"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="29.979617000000015" Y="2.9837850000000006" Z="6.852552000000003"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="ring_01_l">
+                                                            <Transform>
+                                                                <Position X="47.77220500000003" Y="-3.1000000000000015e-05" Z="-1.2000000000000007e-05"/>
+                                                                <Rotation X="0.09985404303223964" Y="0.11461805544173347" Z="0.01577399628647705" W="0.9882525246605878"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="47.77220500000003" Y="-3.1000000000000015e-05" Z="-1.2000000000000007e-05"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                            </DegreesOfFreedom>
+                                                            <RigidBodies/>
+                                                            <Segment Name="ring_02_l">
+                                                                <Transform>
+                                                                    <Position X="40.704381" Y="-0.0" Z="0.0"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </Transform>
+                                                                <DefaultTransform>
+                                                                    <Position X="40.704381" Y="-0.0" Z="0.0"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </DefaultTransform>
+                                                                <DegreesOfFreedom>
+                                                                </DegreesOfFreedom>
+                                                                <Endpoint X="30.917117000000015" Y="-0.0" Z="0.0"/>
+                                                                <RigidBodies/>
+                                                            </Segment>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="thumb_01_l">
+                                                        <Transform>
+                                                            <Position X="21.77165300000001" Y="14.625230000000007" Z="-24.706496000000005"/>
+                                                            <Rotation X="0.0" Y="0.7071067811865476" Z="0.0" W="0.7071067811865476"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="21.77165300000001" Y="14.625230000000007" Z="-24.706496000000005"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="thumb_02_l">
+                                                            <Transform>
+                                                                <Position X="44.32513100000003" Y="0.0" Z="-8.000000000000005e-06"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="44.32513100000003" Y="0.0" Z="-8.000000000000005e-06"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                            </DegreesOfFreedom>
+                                                            <Endpoint X="25.977115000000015" Y="0.0" Z="-5.000000000000002e-06"/>
+                                                            <RigidBodies/>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="middle_metacarpal_l">
+                                                        <Transform>
+                                                            <Position X="30.014713000000018" Y="1.541302" Z="-4.040835000000001"/>
+                                                            <Rotation X="-0.011453997783026701" Y="-0.013965997735769653" Z="-0.04427299223814571" W="0.9988561753327212"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="30.014713000000018" Y="1.541302" Z="-4.040835000000001"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                            <RotationX>
+                                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                            </RotationX>
+                                                            <RotationY>
+                                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                            </RotationY>
+                                                            <RotationZ>
+                                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                            </RotationZ>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="middle_01_l">
+                                                            <Transform>
+                                                                <Position X="53.221706000000026" Y="3.300000000000002e-05" Z="3.0000000000000018e-06"/>
+                                                                <Rotation X="0.011453998215253383" Y="0.013965997381748" Z="0.044272992350782574" W="0.9988561753277224"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="53.221706000000026" Y="3.300000000000002e-05" Z="3.0000000000000018e-06"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                                <RotationX>
+                                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                </RotationX>
+                                                                <RotationY>
+                                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                </RotationY>
+                                                                <RotationZ>
+                                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                </RotationZ>
+                                                            </DegreesOfFreedom>
+                                                            <RigidBodies/>
+                                                            <Segment Name="middle_02_l">
+                                                                <Transform>
+                                                                    <Position X="47.06621900000002" Y="-0.0" Z="0.0"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </Transform>
+                                                                <DefaultTransform>
+                                                                    <Position X="47.06621900000002" Y="-0.0" Z="0.0"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </DefaultTransform>
+                                                                <DegreesOfFreedom>
+                                                                    <RotationX>
+                                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                    </RotationX>
+                                                                    <RotationY>
+                                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                    </RotationY>
+                                                                    <RotationZ>
+                                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                    </RotationZ>
+                                                                </DegreesOfFreedom>
+                                                                <Endpoint X="27.817755000000016" Y="-0.0" Z="0.0"/>
+                                                                <RigidBodies/>
+                                                            </Segment>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="index_metacarpal_l">
+                                                        <Transform>
+                                                            <Position X="33.08337600000002" Y="2.776618" Z="-19.985196"/>
+                                                            <Rotation X="0.14090601391095964" Y="0.05115300454533028" Z="-0.022963003774815763" W="0.9884338955273376"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="33.08337600000002" Y="2.776618" Z="-19.985196"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                            <RotationX>
+                                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                            </RotationX>
+                                                            <RotationY>
+                                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                            </RotationY>
+                                                            <RotationZ>
+                                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                            </RotationZ>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="index_01_l">
+                                                            <Transform>
+                                                                <Position X="51.40962100000002" Y="-5.500000000000003e-05" Z="1.3000000000000003e-05"/>
+                                                                <Rotation X="-0.14090601340098716" Y="-0.051153005836884737" Z="0.022963000861000678" W="0.9884338956008895"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="51.40962100000002" Y="-5.500000000000003e-05" Z="1.3000000000000003e-05"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                                <RotationX>
+                                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                </RotationX>
+                                                                <RotationY>
+                                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                </RotationY>
+                                                                <RotationZ>
+                                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                </RotationZ>
+                                                            </DegreesOfFreedom>
+                                                            <RigidBodies/>
+                                                            <Segment Name="index_02_l">
+                                                                <Transform>
+                                                                    <Position X="43.651413000000005" Y="-0.0" Z="-0.0"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </Transform>
+                                                                <DefaultTransform>
+                                                                    <Position X="43.651413000000005" Y="-0.0" Z="-0.0"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </DefaultTransform>
+                                                                <DegreesOfFreedom>
+                                                                    <RotationX>
+                                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                    </RotationX>
+                                                                    <RotationY>
+                                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                    </RotationY>
+                                                                    <RotationZ>
+                                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                                    </RotationZ>
+                                                                </DegreesOfFreedom>
+                                                                <Endpoint X="23.800102000000006" Y="-0.0" Z="-0.0"/>
+                                                                <RigidBodies/>
+                                                            </Segment>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="wrist_inner_l">
+                                                        <Transform>
+                                                            <Position X="-2.1862320000000004" Y="15.915118000000009" Z="-3.2559530000000003"/>
+                                                            <Rotation X="-0.70079192536353" Y="-0.22557408211217297" Z="-0.09799921364918271" W="0.6696291249256331"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="-2.1862320000000004" Y="15.915118000000009" Z="-3.2559530000000003"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                                        <RigidBodies/>
+                                                    </Segment>
+                                                    <Segment Name="wrist_outer_l">
+                                                        <Transform>
+                                                            <Position X="0.12891800000000003" Y="-15.974378000000005" Z="-2.896876"/>
+                                                            <Rotation X="0.6696300551853576" Y="-0.09799891421268883" Z="0.22557421220020157" W="0.7007910364693938"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="0.12891800000000003" Y="-15.974378000000005" Z="-2.896876"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                                        <RigidBodies/>
+                                                    </Segment>
+                                                </Segment>
+                                                <Segment Name="lowerarm_twist_02_l">
+                                                    <Transform>
+                                                        <Position X="83.25031000000001" Y="0.0" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </Transform>
+                                                    <DefaultTransform>
+                                                        <Position X="83.25031000000001" Y="0.0" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </DefaultTransform>
+                                                    <DegreesOfFreedom>
+                                                    </DegreesOfFreedom>
+                                                    <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                                    <RigidBodies/>
+                                                </Segment>
+                                                <Segment Name="lowerarm_twist_01_l">
+                                                    <Transform>
+                                                        <Position X="166.50062000000003" Y="0.0" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </Transform>
+                                                    <DefaultTransform>
+                                                        <Position X="166.50062000000003" Y="0.0" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </DefaultTransform>
+                                                    <DegreesOfFreedom>
+                                                    </DegreesOfFreedom>
+                                                    <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                                    <RigidBodies/>
+                                                </Segment>
+                                                <Segment Name="lowerarm_correctiveRoot_l">
+                                                    <Transform>
+                                                        <Position X="-2.000000000000001e-06" Y="2.000000000000001e-06" Z="-7.000000000000001e-06"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </Transform>
+                                                    <DefaultTransform>
+                                                        <Position X="-2.000000000000001e-06" Y="2.000000000000001e-06" Z="-7.000000000000001e-06"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </DefaultTransform>
+                                                    <DegreesOfFreedom>
+                                                    </DegreesOfFreedom>
+                                                    <Endpoint X="14.023837000000007" Y="2.4557170000000013" Z="-26.570172000000003"/>
+                                                    <RigidBodies/>
+                                                </Segment>
+                                            </Segment>
+                                            <Segment Name="upperarm_twist_01_l">
+                                                <Transform>
+                                                    <Position X="86.41126" Y="1.0000000000000006e-06" Z="-3.0000000000000018e-06"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="86.41126" Y="1.0000000000000006e-06" Z="-3.0000000000000018e-06"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Endpoint X="0.0" Y="-0.0" Z="0.0"/>
+                                                <RigidBodies/>
+                                            </Segment>
+                                            <Segment Name="upperarm_twist_02_l">
+                                                <Transform>
+                                                    <Position X="172.82251900000003" Y="2.000000000000001e-06" Z="-5.000000000000002e-06"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="172.82251900000003" Y="2.000000000000001e-06" Z="-5.000000000000002e-06"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Endpoint X="1.3926220000000007" Y="45.818170000000016" Z="-0.5982490000000001"/>
+                                                <RigidBodies/>
+                                            </Segment>
+                                        </Segment>
+                                        <Segment Name="clavicle_out_l">
+                                            <Transform>
+                                                <Position X="104.151123" Y="0.689742" Z="53.376804"/>
+                                                <Rotation X="-0.002590000533463875" Y="-0.0270610031056503" Z="-0.03747100432910771" W="0.9989278842052217"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="104.151123" Y="0.689742" Z="53.376804"/>
+                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                            </DegreesOfFreedom>
+                                            <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                            <RigidBodies/>
+                                        </Segment>
+                                        <Segment Name="clavicle_scap_l">
+                                            <Transform>
+                                                <Position X="83.85824900000001" Y="57.46049000000003" Z="-21.40041000000001"/>
+                                                <Rotation X="-0.027061003150457508" Y="0.002590000065306395" Z="0.9989278848534728" W="0.037470987047576856"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="83.85824900000001" Y="57.46049000000003" Z="-21.40041000000001"/>
+                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                            </DegreesOfFreedom>
+                                            <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                            <RigidBodies/>
+                                        </Segment>
+                                    </Segment>
+                                    <Segment Name="clavicle_r">
+                                        <Transform>
+                                            <Position X="55.92660900000003" Y="9.604666000000002" Z="8.876372000000003"/>
+                                            <Rotation X="0.6817036508994199" Y="-0.241487215082251" Z="-0.6824549171586125" W="-0.10592140174795611"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="55.92660900000003" Y="9.604666000000002" Z="8.876372000000003"/>
+                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                            <RotationX>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationX>
+                                            <RotationY>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationY>
+                                            <RotationZ>
+                                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                            </RotationZ>
+                                        </DegreesOfFreedom>
+                                        <Markers>
+                                            <Marker Name="SpineTop">
+                                                <Position X="-20.572892522680256" Y="-145.5937542786928" Z="45.75429016502839"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                            <Marker Name="RShoulderBack">
+                                                <Position X="-143.22265329105372" Y="-93.44918563340215" Z="38.93776216848578"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                            <Marker Name="RShoulderTop">
+                                                <Position X="-123.60589113765812" Y="-40.38585071909227" Z="-55.78767223185953"/>
+                                                <Weight>1.0</Weight>
+                                            </Marker>
+                                        </Markers>
+                                        <RigidBodies/>
+                                        <Segment Name="upperarm_r">
+                                            <Transform>
+                                                <Position X="-145.08038900000008" Y="-0.0008450000000000006" Z="-0.00291"/>
+                                                <Rotation X="-0.5772782185879395" Y="0.03461169721314278" Z="-0.043990608766600735" W="0.8146267336027616"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="-145.08038900000008" Y="-0.0008450000000000006" Z="-0.00291"/>
+                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                                <RotationX>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationX>
+                                                <RotationY>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationY>
+                                                <RotationZ>
+                                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                </RotationZ>
+                                            </DegreesOfFreedom>
+                                            <Markers>
+                                                <Marker Name="RArm">
+                                                    <Position X="-189.42926358273363" Y="-43.619536860920526" Z="6.430866866969455"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                                <Marker Name="RElbowIn">
+                                                    <Position X="-250.52030934934996" Y="15.799909016377843" Z="114.05913167056904"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                                <Marker Name="RElbowOut">
+                                                    <Position X="-265.8617249446096" Y="10.643883194309765" Z="-15.409385225061714"/>
+                                                    <Weight>1.0</Weight>
+                                                </Marker>
+                                            </Markers>
+                                            <RigidBodies/>
+                                            <Segment Name="upperarm_correctiveRoot_r">
+                                                <Transform>
+                                                    <Position X="-0.0" Y="-0.0" Z="-0.0"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="-0.0" Y="-0.0" Z="-0.0"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Endpoint X="-14.999084000000007" Y="-61.62404300000002" Z="-8.196927"/>
+                                                <RigidBodies/>
+                                            </Segment>
+                                            <Segment Name="lowerarm_r">
+                                                <Transform>
+                                                    <Position X="-259.23654700000003" Y="0.009253" Z="0.0056860000000000036"/>
+                                                    <Rotation X="-0.009320408488969468" Y="0.10298156743217549" Z="-0.14534695700007527" W="0.9839624936173276"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="-259.23654700000003" Y="0.009253" Z="0.0056860000000000036"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Markers>
+                                                    <Marker Name="RightForeArm">
+                                                        <Position X="-162.20238233459625" Y="-1.092076342714536" Z="-27.68886596851618"/>
+                                                        <Weight>1.0</Weight>
+                                                    </Marker>
+                                                </Markers>
+                                                <RigidBodies/>
+                                                <Segment Name="hand_r">
+                                                    <Transform>
+                                                        <Position X="-249.74794800000012" Y="-0.00044200000000000017" Z="-0.0"/>
+                                                        <Rotation X="-0.6797996620476587" Y="-0.1868516168883751" Z="-0.03496748002254893" W="0.7083333735515798"/>
+                                                    </Transform>
+                                                    <DefaultTransform>
+                                                        <Position X="-249.74794800000012" Y="-0.00044200000000000017" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </DefaultTransform>
+                                                    <DegreesOfFreedom>
+                                                        <RotationX>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationX>
+                                                        <RotationY>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationY>
+                                                        <RotationZ>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationZ>
+                                                    </DegreesOfFreedom>
+                                                    <Markers>
+                                                        <Marker Name="RWristIn">
+                                                            <Position X="-25.085302746728004" Y="-7.910469771409635" Z="53.742516744149626"/>
+                                                            <Weight>1.0</Weight>
+                                                        </Marker>
+                                                        <Marker Name="RWristOut">
+                                                            <Position X="-23.262733866024632" Y="-7.910469771409944" Z="-42.42418547783684"/>
+                                                            <Weight>1.0</Weight>
+                                                        </Marker>
+                                                        <Marker Name="RHandOut">
+                                                            <Position X="-73.83203787547691" Y="8.860641443725635" Z="-22.38570459916449"/>
+                                                            <Weight>1.0</Weight>
+                                                        </Marker>
+                                                    </Markers>
+                                                    <RigidBodies/>
+                                                    <Segment Name="pinky_metacarpal_r">
+                                                        <Transform>
+                                                            <Position X="-28.84284600000001" Y="-4.695602000000001" Z="-17.469645"/>
+                                                            <Rotation X="-0.20686903003237422" Y="-0.1992110456709403" Z="0.055718992822461795" W="0.9562507817173305"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="-28.84284600000001" Y="-4.695602000000001" Z="-17.469645"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="pinky_01_r">
+                                                            <Transform>
+                                                                <Position X="-45.138299" Y="0.00018100000000000004" Z="-0.0002030000000000001"/>
+                                                                <Rotation X="0.20686904112792845" Y="0.1992110373758415" Z="-0.055719029034215196" W="0.9562507789350746"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="-45.138299" Y="0.00018100000000000004" Z="-0.0002030000000000001"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                            </DegreesOfFreedom>
+                                                            <RigidBodies/>
+                                                            <Segment Name="pinky_02_r">
+                                                                <Transform>
+                                                                    <Position X="-27.74175600000001" Y="0.000498" Z="-8.800000000000005e-05"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </Transform>
+                                                                <DefaultTransform>
+                                                                    <Position X="-27.74175600000001" Y="0.000498" Z="-8.800000000000005e-05"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </DefaultTransform>
+                                                                <DegreesOfFreedom>
+                                                                </DegreesOfFreedom>
+                                                                <Endpoint X="-17.149949" Y="-0.0" Z="5.000000000000002e-06"/>
+                                                                <RigidBodies/>
+                                                            </Segment>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="ring_metacarpal_r">
+                                                        <Transform>
+                                                            <Position X="-29.97892700000001" Y="-2.983216" Z="-6.851030000000003"/>
+                                                            <Rotation X="-0.09985404662632605" Y="-0.11461805259066112" Z="-0.01577401820596792" W="0.9882525242782381"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="-29.97892700000001" Y="-2.983216" Z="-6.851030000000003"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="ring_01_r">
+                                                            <Transform>
+                                                                <Position X="-47.772795000000016" Y="-0.0003860000000000002" Z="0.0004280000000000002"/>
+                                                                <Rotation X="0.09985404303223964" Y="0.11461805544173347" Z="0.01577399628647705" W="0.9882525246605878"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="-47.772795000000016" Y="-0.0003860000000000002" Z="0.0004280000000000002"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                            </DegreesOfFreedom>
+                                                            <RigidBodies/>
+                                                            <Segment Name="ring_02_r">
+                                                                <Transform>
+                                                                    <Position X="-40.70371800000002" Y="0.0004150000000000003" Z="9.300000000000002e-05"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </Transform>
+                                                                <DefaultTransform>
+                                                                    <Position X="-40.70371800000002" Y="0.0004150000000000003" Z="9.300000000000002e-05"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </DefaultTransform>
+                                                                <DegreesOfFreedom>
+                                                                </DegreesOfFreedom>
+                                                                <Endpoint X="-30.91720000000001" Y="-0.00016600000000000002" Z="-0.0006610000000000002"/>
+                                                                <RigidBodies/>
+                                                            </Segment>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="thumb_01_r">
+                                                        <Transform>
+                                                            <Position X="-21.771902000000004" Y="-14.625062000000007" Z="24.70868500000001"/>
+                                                            <Rotation X="0.0" Y="0.7071067811865476" Z="0.0" W="0.7071067811865476"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="-21.771902000000004" Y="-14.625062000000007" Z="24.70868500000001"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="thumb_02_r">
+                                                            <Transform>
+                                                                <Position X="-44.324537" Y="-0.000249" Z="-0.0005750000000000003"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="2.000000000004e-06" W="0.999999999998"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="-44.324537" Y="-0.000249" Z="-0.0005750000000000003"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                            </DegreesOfFreedom>
+                                                            <Endpoint X="-25.97714100000001" Y="-6.7e-05" Z="0.000501"/>
+                                                            <RigidBodies/>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="middle_metacarpal_r">
+                                                        <Transform>
+                                                            <Position X="-30.014342000000013" Y="-1.5408070000000007" Z="4.042007000000001"/>
+                                                            <Rotation X="-0.011453997783026701" Y="-0.013965997735769653" Z="-0.04427299223814571" W="0.9988561753327212"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="-30.014342000000013" Y="-1.5408070000000007" Z="4.042007000000001"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="middle_01_r">
+                                                            <Transform>
+                                                                <Position X="-53.22265900000003" Y="0.00012400000000000006" Z="0.0005760000000000003"/>
+                                                                <Rotation X="0.011453998215253383" Y="0.013965997381748" Z="0.044272992350782574" W="0.9988561753277224"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="-53.22265900000003" Y="0.00012400000000000006" Z="0.0005760000000000003"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                            </DegreesOfFreedom>
+                                                            <RigidBodies/>
+                                                            <Segment Name="middle_02_r">
+                                                                <Transform>
+                                                                    <Position X="-47.06572200000002" Y="-0.0008300000000000006" Z="-0.000314"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </Transform>
+                                                                <DefaultTransform>
+                                                                    <Position X="-47.06572200000002" Y="-0.0008300000000000006" Z="-0.000314"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </DefaultTransform>
+                                                                <DegreesOfFreedom>
+                                                                </DegreesOfFreedom>
+                                                                <Endpoint X="-27.817423000000012" Y="0.0005730000000000004" Z="0.0001320000000000001"/>
+                                                                <RigidBodies/>
+                                                            </Segment>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="index_metacarpal_r">
+                                                        <Transform>
+                                                            <Position X="-33.083192" Y="-2.7761600000000017" Z="19.98637800000001"/>
+                                                            <Rotation X="0.14090601391095964" Y="0.05115300454533028" Z="-0.022963003774815763" W="0.9884338955273376"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="-33.083192" Y="-2.7761600000000017" Z="19.98637800000001"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <RigidBodies/>
+                                                        <Segment Name="index_01_r">
+                                                            <Transform>
+                                                                <Position X="-51.409965" Y="0.0009350000000000003" Z="0.00022800000000000012"/>
+                                                                <Rotation X="-0.14090601340098716" Y="-0.051153005836884737" Z="0.022963000861000678" W="0.9884338956008895"/>
+                                                            </Transform>
+                                                            <DefaultTransform>
+                                                                <Position X="-51.409965" Y="0.0009350000000000003" Z="0.00022800000000000012"/>
+                                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                            </DefaultTransform>
+                                                            <DegreesOfFreedom>
+                                                            </DegreesOfFreedom>
+                                                            <RigidBodies/>
+                                                            <Segment Name="index_02_r">
+                                                                <Transform>
+                                                                    <Position X="-43.65108100000002" Y="-0.000996" Z="0.00024300000000000008"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </Transform>
+                                                                <DefaultTransform>
+                                                                    <Position X="-43.65108100000002" Y="-0.000996" Z="0.00024300000000000008"/>
+                                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                                </DefaultTransform>
+                                                                <DegreesOfFreedom>
+                                                                </DegreesOfFreedom>
+                                                                <Endpoint X="-23.800019000000013" Y="0.00046000000000000007" Z="-0.0004940000000000001"/>
+                                                                <RigidBodies/>
+                                                            </Segment>
+                                                        </Segment>
+                                                    </Segment>
+                                                    <Segment Name="wrist_inner_r">
+                                                        <Transform>
+                                                            <Position X="1.6238010000000012" Y="-14.024113000000007" Z="2.9762590000000007"/>
+                                                            <Rotation X="-0.70079192536353" Y="-0.22557408211217297" Z="-0.09799921364918271" W="0.6696291249256331"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="1.6238010000000012" Y="-14.024113000000007" Z="2.9762590000000007"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                                        <RigidBodies/>
+                                                    </Segment>
+                                                    <Segment Name="wrist_outer_r">
+                                                        <Transform>
+                                                            <Position X="-1.1473650000000006" Y="17.78480700000001" Z="1.4735990000000008"/>
+                                                            <Rotation X="0.6696300551853576" Y="-0.09799891421268883" Z="0.22557421220020157" W="0.7007910364693938"/>
+                                                        </Transform>
+                                                        <DefaultTransform>
+                                                            <Position X="-1.1473650000000006" Y="17.78480700000001" Z="1.4735990000000008"/>
+                                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                        </DefaultTransform>
+                                                        <DegreesOfFreedom>
+                                                        </DegreesOfFreedom>
+                                                        <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                                        <RigidBodies/>
+                                                    </Segment>
+                                                </Segment>
+                                                <Segment Name="lowerarm_twist_02_r">
+                                                    <Transform>
+                                                        <Position X="-83.249262" Y="-0.0" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </Transform>
+                                                    <DefaultTransform>
+                                                        <Position X="-83.249262" Y="-0.0" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </DefaultTransform>
+                                                    <DegreesOfFreedom>
+                                                    </DegreesOfFreedom>
+                                                    <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                                    <RigidBodies/>
+                                                </Segment>
+                                                <Segment Name="lowerarm_twist_01_r">
+                                                    <Transform>
+                                                        <Position X="-166.49877400000005" Y="-0.0" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </Transform>
+                                                    <DefaultTransform>
+                                                        <Position X="-166.49877400000005" Y="-0.0" Z="-0.0"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </DefaultTransform>
+                                                    <DegreesOfFreedom>
+                                                    </DegreesOfFreedom>
+                                                    <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                                    <RigidBodies/>
+                                                </Segment>
+                                                <Segment Name="lowerarm_correctiveRoot_r">
+                                                    <Transform>
+                                                        <Position X="0.000246" Y="-0.00033000000000000016" Z="0.001958"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </Transform>
+                                                    <DefaultTransform>
+                                                        <Position X="0.000246" Y="-0.00033000000000000016" Z="0.001958"/>
+                                                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                    </DefaultTransform>
+                                                    <DegreesOfFreedom>
+                                                        <RotationX>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationX>
+                                                        <RotationY>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationY>
+                                                        <RotationZ>
+                                                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                        </RotationZ>
+                                                    </DegreesOfFreedom>
+                                                    <Endpoint X="-6.372647" Y="-13.329049000000007" Z="-21.654577000000007"/>
+                                                    <RigidBodies/>
+                                                </Segment>
+                                            </Segment>
+                                            <Segment Name="upperarm_twist_01_r">
+                                                <Transform>
+                                                    <Position X="-86.41102600000002" Y="-0.00014400000000000008" Z="-0.0003180000000000001"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="-86.41102600000002" Y="-0.00014400000000000008" Z="-0.0003180000000000001"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Endpoint X="-0.0" Y="0.0" Z="-0.0"/>
+                                                <RigidBodies/>
+                                            </Segment>
+                                            <Segment Name="upperarm_twist_02_r">
+                                                <Transform>
+                                                    <Position X="-172.823992" Y="-0.00027800000000000014" Z="0.00082"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </Transform>
+                                                <DefaultTransform>
+                                                    <Position X="-172.823992" Y="-0.00027800000000000014" Z="0.00082"/>
+                                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                                </DefaultTransform>
+                                                <DegreesOfFreedom>
+                                                    <RotationX>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationX>
+                                                    <RotationY>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationY>
+                                                    <RotationZ>
+                                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                                    </RotationZ>
+                                                </DegreesOfFreedom>
+                                                <Endpoint X="-3.097274000000002" Y="-45.741191000000015" Z="-1.5096120000000004"/>
+                                                <RigidBodies/>
+                                            </Segment>
+                                        </Segment>
+                                        <Segment Name="clavicle_out_r">
+                                            <Transform>
+                                                <Position X="-105.25818900000006" Y="-1.096833" Z="-53.67964800000002"/>
+                                                <Rotation X="-0.002590000533463875" Y="-0.0270610031056503" Z="-0.03747100432910771" W="0.9989278842052217"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="-105.25818900000006" Y="-1.096833" Z="-53.67964800000002"/>
+                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                            </DegreesOfFreedom>
+                                            <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                            <RigidBodies/>
+                                        </Segment>
+                                        <Segment Name="clavicle_scap_r">
+                                            <Transform>
+                                                <Position X="-84.919029" Y="-57.59543800000002" Z="21.057917000000007"/>
+                                                <Rotation X="-0.027061003150457508" Y="0.002590000065306395" Z="0.9989278848534728" W="0.037470987047576856"/>
+                                            </Transform>
+                                            <DefaultTransform>
+                                                <Position X="-84.919029" Y="-57.59543800000002" Z="21.057917000000007"/>
+                                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                            </DefaultTransform>
+                                            <DegreesOfFreedom>
+                                            </DegreesOfFreedom>
+                                            <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                            <RigidBodies/>
+                                        </Segment>
+                                    </Segment>
+                                    <Segment Name="clavicle_pec_r">
+                                        <Transform>
+                                            <Position X="-73.91592200000002" Y="-95.35909300000006" Z="93.66746400000005"/>
+                                            <Rotation X="0.7254823523514484" Y="-0.10850579400585925" Z="-0.6792962223866729" W="-0.021412411003032317"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="-73.91592200000002" Y="-95.35909300000006" Z="93.66746400000005"/>
+                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                        </DegreesOfFreedom>
+                                        <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                        <RigidBodies/>
+                                    </Segment>
+                                    <Segment Name="spine_04_latissimus_l">
+                                        <Transform>
+                                            <Position X="-76.148302" Y="25.349850000000014" Z="-120.29552800000006"/>
+                                            <Rotation X="0.16731164308688973" Y="0.757724284618867" Z="0.019260485774200586" W="0.6304678867905432"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="-76.148302" Y="25.349850000000014" Z="-120.29552800000006"/>
+                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                        </DegreesOfFreedom>
+                                        <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                        <RigidBodies/>
+                                    </Segment>
+                                    <Segment Name="spine_04_latissimus_r">
+                                        <Transform>
+                                            <Position X="-76.15057300000004" Y="25.350394000000016" Z="120.29965500000006"/>
+                                            <Rotation X="-0.7320422780714083" Y="0.04704615835257278" Z="0.675081695358544" W="0.07852048581180349"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="-76.15057300000004" Y="25.350394000000016" Z="120.29965500000006"/>
+                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                        </DegreesOfFreedom>
+                                        <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                        <RigidBodies/>
+                                    </Segment>
+                                    <Segment Name="clavicle_pec_l">
+                                        <Transform>
+                                            <Position X="-73.96904800000003" Y="-92.881122" Z="-90.23147"/>
+                                            <Rotation X="0.10850971884068772" Y="0.7254661079935355" Z="-0.021403766781381228" W="0.6793132162981926"/>
+                                        </Transform>
+                                        <DefaultTransform>
+                                            <Position X="-73.96904800000003" Y="-92.881122" Z="-90.23147"/>
+                                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                        </DefaultTransform>
+                                        <DegreesOfFreedom>
+                                        </DegreesOfFreedom>
+                                        <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                        <RigidBodies/>
+                                    </Segment>
+                                </Segment>
+                            </Segment>
+                        </Segment>
+                    </Segment>
+                </Segment>
+                <Segment Name="thigh_r">
+                    <Transform>
+                        <Position X="-33.01866800000002" Y="-3.543153000000002" Z="104.09438100000006"/>
+                        <Rotation X="-0.06708329625991528" Y="0.10608409151654956" Z="-0.9919066231502391" W="0.01916371155863391"/>
+                    </Transform>
+                    <DefaultTransform>
+                        <Position X="-33.01866800000002" Y="-3.543153000000002" Z="104.09438100000006"/>
+                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                    </DefaultTransform>
+                    <DegreesOfFreedom>
+                        <RotationX>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationX>
+                        <RotationY>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationY>
+                        <RotationZ>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationZ>
+                    </DegreesOfFreedom>
+                    <Markers>
+                        <Marker Name="RThigh">
+                            <Position X="252.90082885807502" Y="100.44428556386046" Z="39.60613347702319"/>
+                            <Weight>1.0</Weight>
+                        </Marker>
+                        <Marker Name="RKneeOut">
+                            <Position X="411.7718856644898" Y="2.5399883803672574" Z="75.81381710222168"/>
+                            <Weight>1.0</Weight>
+                        </Marker>
+                    </Markers>
+                    <RigidBodies/>
+                    <Segment Name="calf_r">
+                        <Transform>
+                            <Position X="437.63012300000025" Y="-0.008481000000000006" Z="0.0026120000000000006"/>
+                            <Rotation X="-1.041385565975219e-07" Y="3.05558442897924e-06" Z="-0.21224124125389304" W="0.9772173020887726"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="437.63012300000025" Y="-0.008481000000000006" Z="0.0026120000000000006"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Markers>
+                            <Marker Name="RShin">
+                                <Position X="217.79206770091014" Y="50.86697761094697" Z="26.973166135447883"/>
+                                <Weight>1.0</Weight>
+                            </Marker>
+                            <Marker Name="RAnkleOut">
+                                <Position X="376.9073276719204" Y="33.381486122209374" Z="41.98783587989563"/>
+                                <Weight>1.0</Weight>
+                            </Marker>
+                        </Markers>
+                        <RigidBodies/>
+                        <Segment Name="foot_r">
+                            <Transform>
+                                <Position X="399.5758310000002" Y="-0.002400000000000001" Z="0.0007080000000000001"/>
+                                <Rotation X="-0.002049662814613" Y="0.02626060435122439" Z="0.16916615049575776" W="0.9852355013233646"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="399.5758310000002" Y="-0.002400000000000001" Z="0.0007080000000000001"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Markers>
+                                <Marker Name="RAnkleOut">
+                                    <Position X="-12.417102534646284" Y="39.235060900832146" Z="41.20302615234226"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                                <Marker Name="RHeelBack">
+                                    <Position X="35.43860272767361" Y="-48.533868659562636" Z="2.0957686816730856"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                                <Marker Name="RForefootIn">
+                                    <Position X="54.12119478413467" Y="118.3658904355578" Z="-64.69669601627893"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                                <Marker Name="RForefootOut">
+                                    <Position X="59.72696835657097" Y="110.99833803279925" Z="64.69669601627643"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                            </Markers>
+                            <RigidBodies/>
+                            <Segment Name="ball_r">
+                                <Transform>
+                                    <Position X="64.54740900000004" Y="130.026934" Z="-1.875034000000001"/>
+                                    <Rotation X="0.0" Y="0.0" Z="-0.7071069999998645" W="0.7071065623731629"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="64.54740900000004" Y="130.026934" Z="-1.875034000000001"/>
+                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint X="-54.374061000000005" Y="-0.0" Z="-0.0"/>
+                                <Markers>
+                                    <Marker Name="RForefootIn">
+                                        <Position X="11.661050017199155" Y="-10.426206998871454" Z="-62.82166201627893"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                    <Marker Name="RForefootOut">
+                                        <Position X="19.02859895055641" Y="-4.820428866675332" Z="66.5717300162764"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                    <Marker Name="RToeTip">
+                                        <Position X="-115.28512371730072" Y="-1.954011561369383" Z="3.9708026816733666"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                </Markers>
+                                <RigidBodies/>
+                            </Segment>
+                            <Segment Name="ankle_bck_r">
+                                <Transform>
+                                    <Position X="-6.783562000000001" Y="-39.602216000000006" Z="5.567874000000003"/>
+                                    <Rotation X="-0.7021339976124121" Y="0.005506985868181047" Z="-0.05004898870496301" W="0.7102623608449705"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="-6.783562000000001" Y="-39.602216000000006" Z="5.567874000000003"/>
+                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                </DegreesOfFreedom>
+                                <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                <RigidBodies/>
+                            </Segment>
+                            <Segment Name="ankle_fwd_r">
+                                <Transform>
+                                    <Position X="-16.89823900000001" Y="42.571024" Z="-4.771610000000002"/>
+                                    <Rotation X="0.7102620035329459" Y="-0.05004898590248327" Z="-0.005507011337821378" W="0.7021343590607311"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="-16.89823900000001" Y="42.571024" Z="-4.771610000000002"/>
+                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                </DegreesOfFreedom>
+                                <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                <RigidBodies/>
+                            </Segment>
+                        </Segment>
+                        <Segment Name="calf_twist_02_r">
+                            <Transform>
+                                <Position X="133.192027" Y="0.0" Z="-0.0"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="133.192027" Y="0.0" Z="-0.0"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint X="0.0" Y="-0.0" Z="0.0"/>
+                            <RigidBodies/>
+                        </Segment>
+                        <Segment Name="calf_twist_01_r">
+                            <Transform>
+                                <Position X="266.384054" Y="0.0" Z="-0.0"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="266.384054" Y="0.0" Z="-0.0"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                            <RigidBodies/>
+                        </Segment>
+                        <Segment Name="calf_correctiveRoot_r">
+                            <Transform>
+                                <Position X="0.0" Y="0.0" Z="-0.0"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="0.0" Y="0.0" Z="-0.0"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint X="-2.6655650000000004" Y="-49.988283" Z="-2.675115000000001"/>
+                            <RigidBodies/>
+                        </Segment>
+                    </Segment>
+                    <Segment Name="thigh_twist_01_r">
+                        <Transform>
+                            <Position X="145.8769880000001" Y="0.0" Z="0.0"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="145.8769880000001" Y="0.0" Z="0.0"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Endpoint X="0.0" Y="0.0" Z="0.0"/>
+                        <RigidBodies/>
+                    </Segment>
+                    <Segment Name="thigh_twist_02_r">
+                        <Transform>
+                            <Position X="291.7539760000002" Y="0.0" Z="0.0"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="291.7539760000002" Y="0.0" Z="0.0"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                        </DegreesOfFreedom>
+                        <Endpoint X="-0.0" Y="-0.0" Z="0.0"/>
+                        <RigidBodies/>
+                    </Segment>
+                    <Segment Name="thigh_correctiveRoot_r">
+                        <Transform>
+                            <Position X="-0.0" Y="0.0" Z="0.0"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="-0.0" Y="0.0" Z="0.0"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Endpoint X="-60.96107000000002" Y="73.51399800000004" Z="-5.7477420000000015"/>
+                        <RigidBodies/>
+                    </Segment>
+                </Segment>
+                <Segment Name="thigh_l">
+                    <Transform>
+                        <Position X="-33.01850100000002" Y="-3.543178000000001" Z="-104.09434300000001"/>
+                        <Rotation X="0.18650966332262417" Y="-0.029817298679622323" Z="-0.02201093347796096" W="0.9817538352327229"/>
+                    </Transform>
+                    <DefaultTransform>
+                        <Position X="-33.01850100000002" Y="-3.543178000000001" Z="-104.09434300000001"/>
+                        <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                    </DefaultTransform>
+                    <DegreesOfFreedom>
+                        <RotationX>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationX>
+                        <RotationY>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationY>
+                        <RotationZ>
+                            <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                        </RotationZ>
+                    </DegreesOfFreedom>
+                    <Markers>
+                        <Marker Name="LThigh">
+                            <Position X="-226.7764119130768" Y="-88.69452497123721" Z="20.63399572332438"/>
+                            <Weight>1.0</Weight>
+                        </Marker>
+                        <Marker Name="LKneeOut">
+                            <Position X="-406.4402949322687" Y="-0.45241617462885697" Z="-47.347352021332206"/>
+                            <Weight>1.0</Weight>
+                        </Marker>
+                    </Markers>
+                    <RigidBodies/>
+                    <Segment Name="calf_l">
+                        <Transform>
+                            <Position X="-437.63027300000005" Y="0.006832000000000003" Z="-0.0023330000000000004"/>
+                            <Rotation X="-3.1718697221516603e-07" Y="2.7190230088526235e-06" Z="-0.19667321687190356" W="0.9804690947489185"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="-437.63027300000005" Y="0.006832000000000003" Z="-0.0023330000000000004"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Markers>
+                            <Marker Name="LShin">
+                                <Position X="-198.21626822554697" Y="-46.24808805284158" Z="-24.04090464685989"/>
+                                <Weight>1.0</Weight>
+                            </Marker>
+                            <Marker Name="LAnkleOut">
+                                <Position X="-385.57404421745787" Y="-30.09175085707006" Z="-40.92846297912593"/>
+                                <Weight>1.0</Weight>
+                            </Marker>
+                        </Markers>
+                        <RigidBodies/>
+                        <Segment Name="foot_l">
+                            <Transform>
+                                <Position X="-399.57598300000006" Y="0.0022610000000000013" Z="-0.0007720000000000004"/>
+                                <Rotation X="-0.007170532628885987" Y="0.058062426804014265" Z="0.18973008375616915" W="0.9800917474263946"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="-399.57598300000006" Y="0.0022610000000000013" Z="-0.0007720000000000004"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Markers>
+                                <Marker Name="LAnkleOut">
+                                    <Position X="6.501847980800176" Y="-33.46983233278059" Z="-40.17805401779033"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                                <Marker Name="LHeelBack">
+                                    <Position X="-42.44615936098403" Y="50.30661346853721" Z="-5.383786770610746"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                                <Marker Name="LForefootIn">
+                                    <Position X="-48.028171628718454" Y="-104.33720430695352" Z="61.828850664770435"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                                <Marker Name="LForefootOut">
+                                    <Position X="-55.284555348538724" Y="-103.80182146544776" Z="-61.828850664771444"/>
+                                    <Weight>1.0</Weight>
+                                </Marker>
+                            </Markers>
+                            <RigidBodies/>
+                            <Segment Name="ball_l">
+                                <Transform>
+                                    <Position X="-64.54741700000001" Y="-130.02696600000007" Z="1.8746360000000013"/>
+                                    <Rotation X="0.0" Y="0.0" Z="-0.7071069999998645" W="0.7071065623731629"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="-64.54741700000001" Y="-130.02696600000007" Z="1.8746360000000013"/>
+                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint X="54.374061000000005" Y="0.0" Z="0.0"/>
+                                <Markers>
+                                    <Marker Name="LForefootIn">
+                                        <Position X="-25.68977191676311" Y="16.51922947194609" Z="59.954214664770475"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                    <Marker Name="LForefootOut">
+                                        <Position X="-26.225150267310298" Y="9.26284542078006" Z="-63.703486664771404"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                    <Marker Name="LToeTip">
+                                        <Position X="85.9746886747368" Y="3.8723494229785262" Z="-7.258422770609779"/>
+                                        <Weight>1.0</Weight>
+                                    </Marker>
+                                </Markers>
+                                <RigidBodies/>
+                            </Segment>
+                            <Segment Name="ankle_bck_l">
+                                <Transform>
+                                    <Position X="7.511077000000003" Y="32.52869200000002" Z="-2.0319010000000004"/>
+                                    <Rotation X="-0.7501630126356864" Y="0.001975993064939577" Z="-0.05031199355325726" W="0.6593331883270063"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="7.511077000000003" Y="32.52869200000002" Z="-2.0319010000000004"/>
+                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                <RigidBodies/>
+                            </Segment>
+                            <Segment Name="ankle_fwd_l">
+                                <Transform>
+                                    <Position X="13.179440000000005" Y="-37.924595" Z="-0.8222120000000005"/>
+                                    <Rotation X="0.6593329893776837" Y="-0.05031199302920611" Z="-0.0019760064080871845" W="0.7501631874961552"/>
+                                </Transform>
+                                <DefaultTransform>
+                                    <Position X="13.179440000000005" Y="-37.924595" Z="-0.8222120000000005"/>
+                                    <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                                </DefaultTransform>
+                                <DegreesOfFreedom>
+                                    <RotationX>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationX>
+                                    <RotationY>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationY>
+                                    <RotationZ>
+                                        <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                    </RotationZ>
+                                </DegreesOfFreedom>
+                                <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                                <RigidBodies/>
+                            </Segment>
+                        </Segment>
+                        <Segment Name="calf_twist_02_l">
+                            <Transform>
+                                <Position X="-133.19204800000003" Y="-8.000000000000005e-06" Z="-0.00010000000000000005"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="-133.19204800000003" Y="-8.000000000000005e-06" Z="-0.00010000000000000005"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint X="0.0" Y="-0.0" Z="0.0"/>
+                            <RigidBodies/>
+                        </Segment>
+                        <Segment Name="calf_twist_01_l">
+                            <Transform>
+                                <Position X="-266.384095" Y="3.5000000000000004e-05" Z="0.000138"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="-266.384095" Y="3.5000000000000004e-05" Z="0.000138"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint X="0.0" Y="0.0" Z="10.874812000000004"/>
+                            <RigidBodies/>
+                        </Segment>
+                        <Segment Name="calf_correctiveRoot_l">
+                            <Transform>
+                                <Position X="1.0000000000000006e-06" Y="-5.200000000000001e-05" Z="-0.0003390000000000002"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </Transform>
+                            <DefaultTransform>
+                                <Position X="1.0000000000000006e-06" Y="-5.200000000000001e-05" Z="-0.0003390000000000002"/>
+                                <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                            </DefaultTransform>
+                            <DegreesOfFreedom>
+                                <RotationX>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationX>
+                                <RotationY>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationY>
+                                <RotationZ>
+                                    <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                                </RotationZ>
+                            </DegreesOfFreedom>
+                            <Endpoint X="2.629616000000001" Y="49.936832000000024" Z="2.4180780000000013"/>
+                            <RigidBodies/>
+                        </Segment>
+                    </Segment>
+                    <Segment Name="thigh_twist_01_l">
+                        <Transform>
+                            <Position X="-145.87705" Y="-1.700000000000001e-05" Z="-0.00011300000000000005"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="-145.87705" Y="-1.700000000000001e-05" Z="-0.00011300000000000005"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Endpoint X="-0.0" Y="-0.0" Z="0.0"/>
+                        <RigidBodies/>
+                    </Segment>
+                    <Segment Name="thigh_twist_02_l">
+                        <Transform>
+                            <Position X="-291.754101" Y="-3.400000000000002e-05" Z="-0.0002260000000000001"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="-291.754101" Y="-3.400000000000002e-05" Z="-0.0002260000000000001"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                        </DegreesOfFreedom>
+                        <Endpoint X="0.0" Y="0.0" Z="0.0"/>
+                        <RigidBodies/>
+                    </Segment>
+                    <Segment Name="thigh_correctiveRoot_l">
+                        <Transform>
+                            <Position X="-0.0" Y="-0.0" Z="-0.0"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </Transform>
+                        <DefaultTransform>
+                            <Position X="-0.0" Y="-0.0" Z="-0.0"/>
+                            <Rotation X="0.0" Y="0.0" Z="0.0" W="1.0"/>
+                        </DefaultTransform>
+                        <DegreesOfFreedom>
+                            <RotationX>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationX>
+                            <RotationY>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationY>
+                            <RotationZ>
+                                <Constraint LowerBound="-6.283185" UpperBound="6.283185"/>
+                            </RotationZ>
+                        </DegreesOfFreedom>
+                        <Endpoint X="37.097669" Y="104.96613000000004" Z="19.767154"/>
+                        <RigidBodies/>
+                    </Segment>
+                </Segment>
+            </Segment>
+        </Segments>
+    </Skeleton>
+</QTM_Skeleton_File>
