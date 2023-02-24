@@ -9,6 +9,7 @@ import sys
 class QRotation:
     """
     Rotation class.  Use numpy array type. Internally kept as a matrix.
+    Row major.
     """
     def __init__ (self):
         self.M = np.array([[1.0,0.0,0.0], [0.0,1.0,0.0], [0.0,0.0,1.0]])
@@ -168,9 +169,9 @@ class QRotation:
         nz = math.isclose(Cb,0.0, abs_tol = 1e-09)
         nz12 = math.isclose(self.M[1][2],0.0, abs_tol = 1e-09)
         nz22 = math.isclose(self.M[2][2],0.0, abs_tol = 1e-09)
-        if (Cb == 0.0) or (nz and nz12 and nz22):
-            a = math.atan2(-self.M[1][0], self.M[1][1])
-            c = 0.0
+        if nz or (nz and nz12 and nz22):
+            c = math.atan2(-self.M[1][0], self.M[1][1])
+            a = 0.0
         else:
             a = math.atan2(self.M[1][2], self.M[2][2])
             c = math.atan2(self.M[0][1], self.M[0][0])
@@ -227,7 +228,7 @@ class QRotation:
 
         return np.array([math.degrees(a), math.degrees(b), math.degrees(c)])
 
-    def as_euler(self, order:str):
+    def as_euler(self, order:str,debug=False):
         if order == "xyz":
             return self.as_euler_xyz()
         if order == "zyx":
@@ -281,6 +282,12 @@ class QRotation:
                     z = 1.0
         return np.array([x,y,z,w])
 
+    def xfm_vec(self, v):
+        result = np.array([0.0,0.0,0.0])
+        result[0] = self.M[0][0]*v[0] + self.M[1][0]*v[1] + self.M[2][0]*v[2]
+        result[1] = self.M[0][1]*v[0] + self.M[1][1]*v[1] + self.M[2][1]*v[2]
+        result[2] = self.M[0][2]*v[0] + self.M[1][2]*v[1] + self.M[2][2]*v[2]
+        return result
 
 def normalize(n):
     l = np.linalg.norm(n)
@@ -322,6 +329,18 @@ def run_tests():
     print(f"Quat is {q}")
     print(f"Rot from Quat is {N}")
 
+    X = np.array([0.0, -0.0, -1.0])
+    Y = np.array([0.99882746, -0.04841188,  0.0        ])
+    Z = np.array([-0.04841188, -0.99882746,  0.0        ])
+    QR = QRotation.from_matrix([X,Y,Z])
+    SR = scipy.spatial.transform.Rotation.from_matrix([X,Y,Z])
+    qe = QR.as_euler("xyz")
+    se = SR.as_euler("xyz")
+    se[0] = math.degrees(se[0])
+    se[1] = math.degrees(se[1])
+    se[2] = math.degrees(se[2])
+    print(f"qe: {qe}")
+    print(f"se: {se}")
 
 #print(f"__name__ is {__name__}")
 #print(f"__file__ is {__file__}")

@@ -11,22 +11,29 @@ import maya.cmds as cmds
 #
 # Also note in comments other useful items to set for joints.
 #
-
+def IsLeaf(node):
+    bIs = True
+    children = cmds.listRelatives(node,c=True)
+    if children:
+        bIs = False
+    return bIs
+    
 def ClearJointOrient():
 
     dags = cmds.ls(selection=True)
     #dags = cmds.ls(selection=True,ca=True) # Select just cameras
     for nodes in dags:
-        n = str(nodes)
-        #setAttr "Arqus_A12_SL_Shape78.farClipPlane" 100;
-        #cmds.setAttr("%s.farClipPlane" %n, 100)
+        if not IsLeaf(nodes):
+            n = str(nodes)
+            #setAttr "Arqus_A12_SL_Shape78.farClipPlane" 100;
+            #cmds.setAttr("%s.farClipPlane" %n, 100)
         
-        #cmds.setAttr("%s.XRotDoF_LowerBound" %n, -360)
-        #cmds.setAttr("%s.YRotDoF_LowerBound" %n, -360)
-        #cmds.setAttr("%s.ZRotDoF_LowerBound" %n, -360)
-        #cmds.setAttr("%s.XRotDoF_UpperBound" %n, 360)
-        #cmds.setAttr("%s.YRotDoF_UpperBound" %n, 360)
-        #cmds.setAttr("%s.ZRotDoF_UpperBound" %n, 360)
+            cmds.setAttr("%s.XRotDoF_LowerBound" %n, -360)
+            cmds.setAttr("%s.YRotDoF_LowerBound" %n, -360)
+            cmds.setAttr("%s.ZRotDoF_LowerBound" %n, -360)
+            cmds.setAttr("%s.XRotDoF_UpperBound" %n, 360)
+            cmds.setAttr("%s.YRotDoF_UpperBound" %n, 360)
+            cmds.setAttr("%s.ZRotDoF_UpperBound" %n, 360)
         #xrot = cmds.getAttr("%s.rotateX" % n)
         #yrot = cmds.getAttr("%s.rotateY" % n)
         #zrot = cmds.getAttr("%s.rotateZ" % n)
@@ -46,7 +53,7 @@ def ClearJointOrient():
         #cmds.setAttr("%s.preferredAngleY" % n, 0)
         #cmds.setAttr("%s.preferredAngleZ" % n, 0)         
         
-        cmds.setAttr("%s.segmentScaleCompensate" %n, 0)
+        #cmds.setAttr("%s.segmentScaleCompensate" %n, 0)
         
         #cmds.setAttr("%s.ZRotDoF" %n, 0)
         #cmds.setAttr("%s.YRotDoF" %n, 0)
