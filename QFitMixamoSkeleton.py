@@ -305,12 +305,14 @@ def _cc_base_l_clavicle_rule(joint,markerset):
     ElbowOut = MarkerPos("LElbowOut", markerset)
     MidShoulderBack = np.add(LShoulderBack,RShoulderBack) * 0.5
     ForwardVec = normalize(np.subtract(Chest,MidShoulderBack))
-
-    #p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,LShoulderBack, np.add(LShoulderBack,ForwardVec * 20.0))
-    p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,my_joint, ElbowOut)
-
-    YVec = normalize(np.subtract(p1,my_joint))
-    ZVec = ForwardVec
+    if QFitBooleanAttribute(joint,"StraightArm", False):
+        ZVec = WORLD_UP * -1.0
+        YVec = normalize(np.cross(FACING_VECTOR,ZVec))
+    else:
+        p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,my_joint, ElbowOut)
+        YVec = normalize(np.subtract(p1,my_joint))
+        ZVec = ForwardVec
+        ZVec = normalize(np.cross(YVec,ZVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")
@@ -336,6 +338,7 @@ def _cc_base_l_upperarm_rule(joint,markerset):
         ZVec = WristVec * -1.0
         YVec = ArmToElbowVec
 
+    ZVec = normalize(np.cross(YVec,ZVec))
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")
     SetJointGlobal(my_name, markerset, None,e)
@@ -353,6 +356,7 @@ def _cc_base_l_forearm_rule(joint,markerset):
     else:
         ZVec = WristVec * -1.0
     YVec = normalize(np.subtract(MidWrist, my_joint))
+    ZVec = normalize(np.cross(YVec,ZVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")
@@ -391,14 +395,18 @@ def _cc_base_l_hand_rule(joint,markerset):
     else:
         if cmds.objExists(f"{markerset}:LHandIn"):
             HandIn = MarkerPos("LHandIn",markerset)
-            HandMid = np.add(HandIn * 0.4, HandOut * 0.6)
+            HandVec = normalize(np.subtract(HandOut,HandIn))
+            ZVec = HandVec * -1.0
+            HandInRatio =  max(min(QFitFloatAttribute(joint,"HandInRatio", 0.5),1.0),0.0)
+            HandMid = np.add(HandIn * HandInRatio, HandOut * (1.0 - HandInRatio))
             HandMid[2] -= MARKER_SIZE
             YVec = normalize(np.subtract(HandMid,my_joint))
         else:
             HandOut[2] -= MARKER_SIZE
             YVec = normalize(np.subtract(HandOut,WristOut))
+            ZVec = WristVec * -1.0
+    ZVec = normalize(np.cross(YVec,ZVec))
 
-        ZVec = WristVec * -1.0
     RTotal = QRotationFromReference(YVec,ZVec)
 
     e = RTotal.as_euler("xyz")
@@ -416,12 +424,13 @@ def _cc_base_r_clavicle_rule(joint,markerset):
     ElbowOut = MarkerPos("RElbowOut", markerset)
     MidShoulderBack = np.add(LShoulderBack,RShoulderBack) * 0.5
     ForwardVec = normalize(np.subtract(MidShoulderBack,SpineTop))
-
-    #p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,RShoulderBack, np.add(RShoulderBack,ForwardVec))
-    p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,my_joint, ElbowOut)
-
-    YVec = normalize(np.subtract(p1, my_joint))
-    ZVec = ForwardVec
+    if QFitBooleanAttribute(joint,"StraightArm", False):
+        ZVec = WORLD_UP * -1.0
+        YVec = normalize(np.cross(ZVec,FACING_VECTOR))
+    else:
+        p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,my_joint, ElbowOut)
+        YVec = normalize(np.subtract(p1, my_joint))
+        ZVec = ForwardVec
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")
@@ -447,6 +456,7 @@ def _cc_base_r_upperarm_rule(joint,markerset):
         ArmToElbowVec = normalize(np.subtract(p1,Arm))
         ZVec = WristVec * -1.0
         YVec = ArmToElbowVec
+    ZVec = normalize(np.cross(ZVec,YVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")
@@ -467,6 +477,7 @@ def _cc_base_r_forearm_rule(joint,markerset):
     
     YVec = normalize(np.subtract(MidWrist,my_joint))
 
+    ZVec = normalize(np.cross(ZVec,YVec))
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")
     SetJointGlobal(my_name, markerset, None,e)
@@ -485,15 +496,18 @@ def _cc_base_r_hand_rule(joint,markerset):
     else:
         if cmds.objExists(f"{markerset}:RHandIn"):
             HandIn = MarkerPos("RHandIn",markerset)
-            HandMid = np.add(HandIn * 0.4, HandOut * 0.6)
+            HandVec = normalize(np.subtract(HandOut,HandIn))
+            ZVec = HandVec * -1.0
+            HandInRatio =  max(min(QFitFloatAttribute(joint,"HandInRatio", 0.5),1.0),0.0)
+            HandMid = np.add(HandIn * HandInRatio, HandOut * (1.0 - HandInRatio))
             HandMid[2] -= MARKER_SIZE
             YVec = normalize(np.subtract(HandMid,my_joint))
         else:
             HandOut[2] -= MARKER_SIZE
             YVec = normalize(np.subtract(HandOut,WristOut))
+            ZVec = WristVec * -1.0
 
-        ZVec = WristVec * -1.0
-
+    ZVec = normalize(np.cross(ZVec,YVec))
     RTotal = QRotationFromReference(YVec,ZVec)
 
     e = RTotal.as_euler("xyz")
@@ -504,7 +518,9 @@ def _cc_base_necktwist01_rule(joint,markerset):
     my_joint = JointPos(my_name,markerset)
     HeadTop = MarkerPos("HeadTop",markerset)
     HeadFront = MarkerPos("HeadFront",markerset)
-    HeadMid = np.add(HeadTop * 0.7, HeadFront * 0.3)
+    HeadTopRatio =  max(min(QFitFloatAttribute(joint,"HeadTopRatio", 0.7),1.0),0.0)
+
+    HeadMid = np.add(HeadTop * HeadTopRatio, HeadFront * (1.0 - HeadTopRatio))
 
     YVec = normalize(np.subtract(HeadMid,my_joint))
     ZVec = normalize(np.subtract(HeadFront,HeadTop))
@@ -554,7 +570,9 @@ def _cc_base_l_calf_rule(joint,markerset):
 
     HeelBack = MarkerPos("LHeelBack",markerset)
     ToeTip = MarkerPos("LToeTip",markerset)
-    MidHeel = np.add(AnkleOut * 0.5, HeelBack * 0.5)
+    AnkleRatio =  max(min(QFitFloatAttribute(joint,"AnkleRatio", 0.7),1.0),0.0)
+
+    MidHeel = np.add(AnkleOut * AnkleRatio, HeelBack * (1.0 - AnkleRatio))
 
     p1,p2 = closest_line_seg_line_seg(HeelBack,ToeTip,my_joint, MidHeel)
 
@@ -578,7 +596,10 @@ def _cc_base_l_foot_rule(joint,markerset):
     ForefootIn = MarkerPos("LForefootIn",markerset)
     ForefootOut = MarkerPos("LForefootOut",markerset)
     ForefootMid = np.add(ForefootIn, ForefootOut) * 0.5
-    YGoal = np.add(ForefootMid,WORLD_UP * 2)
+    VerticalOffset =  QFitFloatAttribute(joint,"VerticalOffset", 0.0)
+
+    YGoal = np.add(ForefootMid,WORLD_UP * -VerticalOffset)
+
     YVec = normalize(np.subtract(YGoal,my_joint))
     # ZVec = normalize(np.subtract(ToeTip,HeelBack))
     ZVec = WORLD_UP
@@ -633,7 +654,9 @@ def _cc_base_r_calf_rule(joint,markerset):
 
     HeelBack = MarkerPos("RHeelBack",markerset)
     ToeTip = MarkerPos("RToeTip",markerset)
-    MidHeel = np.add(AnkleOut * 0.5, HeelBack * 0.5)
+    AnkleRatio =  max(min(QFitFloatAttribute(joint,"AnkleRatio", 0.7),1.0),0.0)
+
+    MidHeel = np.add(AnkleOut * AnkleRatio, HeelBack * (1.0 - AnkleRatio))
 
     p1,p2 = closest_line_seg_line_seg(HeelBack,ToeTip,my_joint, MidHeel)
 
@@ -650,14 +673,13 @@ def _cc_base_r_foot_rule(joint,markerset):
     if QFitBooleanAttribute(joint,"KeepFlat", False):
         SetJointGlobal(my_name,markerset,None,RIGHT_FOOT)
         return
-
-    HeelBack = MarkerPos("RHeelBack",markerset)
-    ToeTip = MarkerPos("RToeTip",markerset)
     
     ForefootIn = MarkerPos("RForefootIn",markerset)
     ForefootOut = MarkerPos("RForefootOut",markerset)
     ForefootMid = np.add(ForefootIn, ForefootOut) * 0.5
-    YGoal = np.add(ForefootMid,WORLD_UP * 2.0)
+    VerticalOffset =  QFitFloatAttribute(joint,"VerticalOffset", 0.0)
+
+    YGoal = np.add(ForefootMid,WORLD_UP * -VerticalOffset)
     YVec = normalize(np.subtract(YGoal, my_joint))
     ZVec = WORLD_UP
 
@@ -684,9 +706,8 @@ def _cc_base_r_pinky1_rule(joint,markerset):
     HandIn  = MarkerPos("RHandIn",markerset)
     HandOut  = MarkerPos("RHandOut",markerset)
     WristOut  = MarkerPos("RWristOut",markerset)
-    V1 = normalize(np.subtract(HandIn,HandOut))
-    V2 = normalize(np.subtract(WristOut,HandOut))
-    ZVec = normalize(np.cross(V1,V2))
+    ZVec = normalize(np.subtract(HandIn,HandOut))
+    ZVec = normalize(np.cross(ZVec,YVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -706,9 +727,8 @@ def _cc_base_r_index1_rule(joint,markerset):
     HandIn  = MarkerPos("RHandIn",markerset)
     HandOut  = MarkerPos("RHandOut",markerset)
     WristOut  = MarkerPos("RWristOut",markerset)
-    V1 = normalize(np.subtract(HandIn,HandOut))
-    V2 = normalize(np.subtract(WristOut,HandOut))
-    ZVec = normalize(np.cross(V1,V2))
+    ZVec = normalize(np.subtract(HandIn,HandOut))
+    ZVec = normalize(np.cross(ZVec,YVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -732,9 +752,8 @@ def _cc_base_r_ring1_rule(joint,markerset):
     HandIn  = MarkerPos("RHandIn",markerset)
     HandOut  = MarkerPos("RHandOut",markerset)
     WristOut  = MarkerPos("RWristOut",markerset)
-    V1 = normalize(np.subtract(HandIn,HandOut))
-    V2 = normalize(np.subtract(WristOut,HandOut))
-    ZVec = normalize(np.cross(V1,V2))
+    ZVec = normalize(np.subtract(HandIn,HandOut))
+    ZVec = normalize(np.cross(ZVec,YVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -758,9 +777,8 @@ def _cc_base_r_mid1_rule(joint,markerset):
     HandIn  = MarkerPos("RHandIn",markerset)
     HandOut  = MarkerPos("RHandOut",markerset)
     WristOut  = MarkerPos("RWristOut",markerset)
-    V1 = normalize(np.subtract(HandIn,HandOut))
-    V2 = normalize(np.subtract(WristOut,HandOut))
-    ZVec = normalize(np.cross(V1,V2))
+    ZVec = normalize(np.subtract(HandIn,HandOut))
+    ZVec = normalize(np.cross(ZVec,YVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -774,10 +792,11 @@ def _cc_base_r_thumb1_rule(joint,markerset):
     ThumbTip = MarkerPos("RThumbTip",markerset)
     WristIn = MarkerPos("RWristIn",markerset)
     WristOut = MarkerPos("RWristOut",markerset)
-    ThumbMid = np.add(WristIn * 0.5,ThumbTip * 0.5)
+    ThumbMid = np.add(WristIn * 0.1,ThumbTip * 0.9)
     YVec = normalize(np.subtract(ThumbMid,my_joint))
 
     ZVec = normalize(np.subtract(WristIn,WristOut))
+    ZVec = normalize(np.cross(ZVec,YVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -795,6 +814,7 @@ def _cc_base_r_thumb2_rule(joint,markerset):
     YVec = normalize(np.subtract(ThumbTip,my_joint))
 
     ZVec = normalize(np.subtract(WristIn,WristOut))
+    ZVec = normalize(np.cross(ZVec,YVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -814,6 +834,7 @@ def _cc_base_l_pinky1_rule(joint,markerset):
     WristOut  = MarkerPos("LWristOut",markerset)
     WristIn  = MarkerPos("LWristIn",markerset)
     ZVec = normalize(np.subtract(WristIn,WristOut))
+    ZVec = normalize(np.cross(YVec,ZVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -833,6 +854,7 @@ def _cc_base_l_index1_rule(joint,markerset):
     WristOut  = MarkerPos("LWristOut",markerset)
     WristIn  = MarkerPos("LWristIn",markerset)
     ZVec = normalize(np.subtract(WristIn,WristOut))
+    ZVec = normalize(np.cross(YVec,ZVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -856,6 +878,7 @@ def _cc_base_l_ring1_rule(joint,markerset):
     WristOut  = MarkerPos("LWristOut",markerset)
     WristIn  = MarkerPos("LWristIn",markerset)
     ZVec = normalize(np.subtract(WristIn,WristOut))
+    ZVec = normalize(np.cross(YVec,ZVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -879,6 +902,7 @@ def _cc_base_l_mid1_rule(joint,markerset):
     WristOut  = MarkerPos("LWristOut",markerset)
     WristIn  = MarkerPos("LWristIn",markerset)
     ZVec = normalize(np.subtract(WristIn,WristOut))
+    ZVec = normalize(np.cross(YVec,ZVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -892,10 +916,11 @@ def _cc_base_l_thumb1_rule(joint,markerset):
     ThumbTip = MarkerPos("LThumbTip",markerset)
     WristIn = MarkerPos("LWristIn",markerset)
     WristOut = MarkerPos("LWristOut",markerset)
-    ThumbMid = np.add(WristIn * 0.5,ThumbTip * 0.5)
+    ThumbMid = np.add(WristIn * 0.1,ThumbTip * 0.9)
     YVec = normalize(np.subtract(my_joint,ThumbMid)) * -1.0
 
     ZVec = normalize(np.subtract(WristIn,WristOut))
+    ZVec = normalize(np.cross(YVec,ZVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -912,6 +937,7 @@ def _cc_base_l_thumb2_rule(joint,markerset):
     YVec = normalize(np.subtract(my_joint,ThumbTip)) * -1.0
 
     ZVec = normalize(np.subtract(WristIn,WristOut))
+    ZVec = normalize(np.cross(YVec,ZVec))
 
     RTotal = QRotationFromReference(YVec,ZVec)
     e = RTotal.as_euler("xyz")   
@@ -966,6 +992,65 @@ MixamoRules = {
 "CC_Base_L_Ring3":_ZERO_rule,
 "CC_Base_L_Pinky2":_ZERO_rule,
 "CC_Base_L_Pinky3":_ZERO_rule,
+"Hips":_cc_base_hip_rule,
+"Spine": _cc_base_spine01_rule,
+"RightShoulder": _cc_base_r_clavicle_rule,
+"RightArm": _cc_base_r_upperarm_rule,
+"RightForeArm": _cc_base_r_forearm_rule,
+"RightHand": _cc_base_r_hand_rule,
+"LeftShoulder": _cc_base_l_clavicle_rule,
+"LeftArm": _cc_base_l_upperarm_rule,
+"LeftForeArm": _cc_base_l_forearm_rule,
+"LeftHand": _cc_base_l_hand_rule,
+"Neck": _cc_base_necktwist01_rule,
+"Head": _cc_base_head_rule,
+"LeftUpLeg":_cc_base_l_thigh_rule,
+"LeftLeg":_cc_base_l_calf_rule,
+"LeftFoot":_cc_base_l_foot_rule,
+"RightUpLeg":_cc_base_r_thigh_rule,
+"RightLeg":_cc_base_r_calf_rule,
+"RightFoot":_cc_base_r_foot_rule,
+"RightHandThumb1":_cc_base_r_thumb1_rule,
+"RightHandThumb2":_cc_base_r_thumb2_rule,
+"RightHandIndex1":_cc_base_r_index1_rule,
+"RightHandMiddle1":_cc_base_r_mid1_rule,
+"RightHandRing1":_cc_base_r_ring1_rule,
+"RightHandPinky1":_cc_base_r_pinky1_rule,
+"RightHandThumb3":_ZERO_rule,
+"RightHandThumb4":_ZERO_rule,
+"RightHandIndex2":_ZERO_rule,
+"RightHandIndex3":_ZERO_rule,
+"RightHandIndex4":_ZERO_rule,
+"RightHandRing2":_ZERO_rule,
+"RightHandRing3":_ZERO_rule,
+"RightHandRing4":_ZERO_rule,
+"RightHandMiddle2":_ZERO_rule,
+"RightHandMiddle3":_ZERO_rule,
+"RightHandMiddle4":_ZERO_rule,
+"RightHandPinky2":_ZERO_rule,
+"RightHandPinky3":_ZERO_rule,
+"RightHandPinky4":_ZERO_rule,
+"LeftHandThumb1":_cc_base_l_thumb1_rule,
+"LeftHandThumb2":_cc_base_l_thumb2_rule,
+"LeftHandIndex1":_cc_base_l_index1_rule,
+"LeftHandMiddle1":_cc_base_l_mid1_rule,
+"LeftHandRing1":_cc_base_l_ring1_rule,
+"LeftHandPinky1":_cc_base_l_pinky1_rule,
+"LeftHandThumb3":_ZERO_rule,
+"LeftHandThumb4":_ZERO_rule,
+"LeftHandIndex2":_ZERO_rule,
+"LeftHandIndex3":_ZERO_rule,
+"LeftHandIndex4":_ZERO_rule,
+"LeftHandRing2":_ZERO_rule,
+"LeftHandRing3":_ZERO_rule,
+"LeftHandRing4":_ZERO_rule,
+"LeftHandMiddle2":_ZERO_rule,
+"LeftHandMiddle3":_ZERO_rule,
+"LeftHandMiddle4":_ZERO_rule,
+"LeftHandPinky2":_ZERO_rule,
+"LeftHandPinky3":_ZERO_rule,
+"LeftHandPinky4":_ZERO_rule,
+
 }
 
 AnimMarkers = [
@@ -1190,10 +1275,15 @@ def _PreCompute(markerset):
     FACING_VECTOR = OrthogonalizeV2(WORLD_UP,CenterVec)
     # print(f"Set Facing to {FACING_VECTOR}")
 
-    global RIGHT_FOOT
-    RIGHT_FOOT = JointRot("CC_Base_R_Foot", markerset)
     global LEFT_FOOT
-    LEFT_FOOT = JointRot("CC_Base_L_Foot", markerset)
+    global RIGHT_FOOT
+    if cmds.objExists(f"{markerset}:CC_Base_R_Foot"):
+        RIGHT_FOOT = JointRot("CC_Base_R_Foot", markerset)
+        LEFT_FOOT = JointRot("CC_Base_L_Foot", markerset)
+    elif cmds.objExists(f"{markerset}:RightFoot"):
+        RIGHT_FOOT = JointRot("RightFoot", markerset)
+        LEFT_FOOT = JointRot("LeftFoot", markerset)
+
 
 def _ApplyRules(joint,markerset):
     nodeName = str(joint).rpartition(":")[-1]

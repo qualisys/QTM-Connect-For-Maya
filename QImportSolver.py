@@ -3,6 +3,9 @@ import maya.cmds as cmds
 import math
 #import qqtmrt
 
+# Global Variables
+PREEXISTING_SKELETON = False
+
 #
 # Quaternion to Euler angle conversion
 # Inputs are strings
@@ -419,22 +422,23 @@ class QImportSolver:
                         #print Spaces(level+2), "PZ"
                         dofZ = True
             elif cs.tag == "Endpoint":
-                if "X" in cs.attrib:
-                    px = float(cs.attrib["X"]) * self._sceneScale / self._rootScale
-                    py = float(cs.attrib["Y"]) * self._sceneScale / self._rootScale
-                    pz = float(cs.attrib["Z"]) * self._sceneScale / self._rootScale
-                    #print Spaces(level+1), "Endpoint", "X", px, "Y", py, "Z", pz
-                    EPName = name + "_end"
-                    cmds.select(jMe)
-                    if cmds.objExists(EPName):
-                        jEP = name
+                if not PREEXISTING_SKELETON:
+                    if "X" in cs.attrib:
+                        px = float(cs.attrib["X"]) * self._sceneScale / self._rootScale
+                        py = float(cs.attrib["Y"]) * self._sceneScale / self._rootScale
+                        pz = float(cs.attrib["Z"]) * self._sceneScale / self._rootScale
+                        #print Spaces(level+1), "Endpoint", "X", px, "Y", py, "Z", pz
+                        EPName = name + "_end"
+                        cmds.select(jMe)
+                        if cmds.objExists(EPName):
+                            jEP = name
+                        else:
+                            jEP = cmds.joint(name=EPName)
+                            cmds.select(jEP)
+                            cmds.move(px,py,pz,ls=True)
                     else:
-                        jEP = cmds.joint(name=EPName)
-                        cmds.select(jEP)
-                        cmds.move(px,py,pz,ls=True)
-                else:
-                    #print Spaces(level+1), "Endpoint"
-                    cmds.select(ParentNode)
+                        #print Spaces(level+1), "Endpoint"
+                        cmds.select(ParentNode)
             elif cs.tag == "RigidBodies":
                 #print Spaces(level+1), "RigidBodies"
                 cmds.select(ParentNode)
@@ -550,13 +554,18 @@ def _SetModelPoseNamespaceHierarchy(joint,newNamespace):
             _SetModelPoseNamespaceHierarchy(c,newNamespace)
 
 def _PrepareExistingSkeleton(xmlroot):
+    global PREEXISTING_SKELETON
     sel = cmds.ls(selection=True)
     if len(sel) == 0:
+        PREEXISTING_SKELETON = False
         return
 
     if len(sel) > 1:
         cmds.confirmDialog(title="Only One", message="Please select only one joint",button=["OK"], defaultButton="OK")
+        PREEXISTING_SKELETON = False
         return False
+
+    PREEXISTING_SKELETON = True
     oldRoot = sel[0]
     attrib = xmlroot.attrib
     newNamespace = attrib["Name"]

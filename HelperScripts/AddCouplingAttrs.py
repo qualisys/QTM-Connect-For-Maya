@@ -9,10 +9,12 @@ import maya.cmds as cmds
 #attrs = ['ZR1','ZR2','YR1','YR2']
 #attrs = ['ZR1','YR1','YR2']
 #attrs = ['ZR1','YR1','XR1']
-#attrs = ['ZR1']
+#attrs = ['XR1','XR2','ZR1']
+attrs = ['XR1','XR2']
 #attrs = ['ZR1','ZR2','YR1','YR2']
-#attrs = ['XR1','XR2']
-attrs = ['YR1']
+#attrs = ['XR1','XR2','ZR1']
+#qattrs = ['ZR1','ZR2','XR1']
+#attrs = ['ZR1','ZR2']
 parentAsDefault = True
 couplings = {'XR1': ("XRot_CP1_Coeff", 0.7, "XRot_CP1_Segment", ""),
              'XR2': ("XRot_CP2_Coeff", 0.3, "XRot_CP2_Segment", ""),
