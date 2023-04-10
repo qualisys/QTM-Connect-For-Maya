@@ -381,7 +381,9 @@ def _hand_l_rule(joint,markerset):
     else:
         if cmds.objExists(f"{markerset}:LHandIn"):
             HandIn = MarkerPos("LHandIn",markerset)
-            HandMid = np.add(HandIn, HandOut) * 0.5
+            HandInRatio =  max(min(QFitFloatAttribute(joint,"HandInRatio", 0.5),1.0),0.0)
+            HandMid = np.add(HandIn * HandInRatio, HandOut * (1.0 - HandInRatio))
+            # HandMid = np.add(HandIn, HandOut) * 0.5
             HandMid[2] -= MARKER_SIZE
             XVec = normalize(np.subtract(HandMid,my_joint))
         else:
@@ -475,7 +477,9 @@ def _hand_r_rule(joint,markerset):
     else:
         if cmds.objExists(f"{markerset}:RHandIn"):
             HandIn = MarkerPos("RHandIn",markerset)
-            HandMid = np.add(HandIn, HandOut) * 0.5
+            HandInRatio =  max(min(QFitFloatAttribute(joint,"HandInRatio", 0.5),1.0),0.0)
+            HandMid = np.add(HandIn * HandInRatio, HandOut * (1.0 - HandInRatio))
+            # HandMid = np.add(HandIn, HandOut) * 0.5
             HandMid[2] -= MARKER_SIZE
             XVec = normalize(np.subtract(HandMid,my_joint)) * -1.0
         else:
