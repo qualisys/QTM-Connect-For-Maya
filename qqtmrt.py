@@ -147,15 +147,20 @@ class QQtmRt(QtCore.QObject):
         settings = xml_text
         options = lambda: None
         options.pretty = False
-        json_text = xml2json.xml2json(xml_text, options)
-        settings = json.loads(json_text)
-        settings = settings.pop('QTM_Parameters_Ver_' + self.requested_version)
-        print(f"get_settings: settings type is {type(settings)}  Settings is: {settings}")
+        try: 
+            json_text = xml2json.xml2json(xml_text, options)
+            settings = json.loads(json_text)
+            settings = settings.pop('QTM_Parameters_Ver_' + self.requested_version)
+            print(f"get_settings: settings type is {type(settings)}  Settings is: {settings}")
+        except:
+            print(f"ERROR - failed xml2json")
+            print(f"xml_text = {xml_text}")
+            return None
 
         return settings
 
     def get_parameters(self, *args):
-        if args is ():
+        if args is None or len(args) == 0:
             args = ['all']
 
         self._send_command('getparameters {}'.format(' '.join(args)))
@@ -184,7 +189,8 @@ class QQtmRt(QtCore.QObject):
         self._receiver.data_received(self._socket.readAll().data())
 
     def stream(self, *args):
-        if args is ():
+        # if args is ():
+        if args is None or len(args) == 0:
             args = ['all']
 
         self._send_command('streamframes allframes {}'.format(' '.join(args)))
