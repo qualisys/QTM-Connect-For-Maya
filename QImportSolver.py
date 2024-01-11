@@ -140,7 +140,8 @@ class QImportSolver:
                     loc = mname
                     bSkip = True
 
-                cmds.addAttr(ParentNode,ln=plainname, defaultValue=1.0)
+                if not cmds.attributeQuery(plainname, node=ParentNode,exists=True):                
+                    cmds.addAttr(ParentNode,ln=plainname, defaultValue=1.0)
 
                 for ccm in cm:
                     if ccm.tag == "Position":
@@ -160,7 +161,60 @@ class QImportSolver:
                         a = str(ParentNode)+'.'+plainname
                         cmds.setAttr(a, w)
                         #print Spaces(level+1), "Weight" , w
+    def _ImportRigidBodies(self, ParentNode, segment, rigidbodies, level):
+        tag = rigidbodies.tag
+        for cm in rigidbodies:
+            if cm.tag == "RigidBody":
+                plainname = cm.attrib["Name"]
+                rbname = self._NS+plainname
 
+                # if marker exists don't make a new one, just create attributes for it in the joint.
+                if not cmds.objExists(rbname):
+                    loc = cmds.spaceLocator(name=rbname)
+                    cmds.setAttr("%s.overrideEnabled" % rbname, 1)
+                    cmds.setAttr("%s.overrideColor" % rbname, 23)
+
+                    cmds.select(ParentNode)
+                    #cmds.select(ParentNode, add=True)
+                    cmds.parent(loc)
+                    cmds.select(loc)
+                    cmds.move(0,0,0)
+                    cmds.scale(4,4,4)
+                    cmds.rotate(0,0,0)
+                    bSkip = False
+                else:
+                    #print "Skip", mname
+                    loc = rbname
+                    bSkip = True
+                if not cmds.attributeQuery(plainname, node=ParentNode,exists=True):                
+                    cmds.addAttr(ParentNode,ln=plainname, defaultValue=1.0)
+
+                for ccm in cm:
+                    if ccm.tag == "Transform":
+                        for cccm in ccm:
+                            if cccm.tag == "Position":
+                                px = float(cccm.attrib["X"]) * self._sceneScale / self._rootScale
+                                py = float(cccm.attrib["Y"]) * self._sceneScale / self._rootScale
+                                pz = float(cccm.attrib["Z"]) * self._sceneScale / self._rootScale
+                                #print Spaces(level+1), "Position", px, py, pz
+                            elif cccm.tag == "Rotation":
+                                qx = cccm.attrib["X"]
+                                qy = cccm.attrib["Y"]
+                                qz = cccm.attrib["Z"]
+                                qw = cccm.attrib["W"]
+                                ER = QtoE(qx,qy,qz,qw)
+                        if not bSkip:
+                            # Actually make a new marker
+                            cmds.select(loc)
+                            cmds.move(px,py,pz, ls=True)
+                            cmds.rotate(ER[0],ER[1],ER[2])
+                            cmds.select(self._NS+"RigidBodies")
+                            cmds.parent(loc)
+                    elif ccm.tag == "Weight":
+                        w = float(ccm.text)
+                        a = str(ParentNode)+'.'+plainname
+                        cmds.setAttr(a, w)
+                        #print Spaces(level+1), "Weight" , w
 
     def _ImportSolver(self, solver):
         if solver.text == "Global Optimization" :
@@ -266,27 +320,28 @@ class QImportSolver:
                 #print Spaces(level+1), "DoFs"
                 n = str(jMe)
                 # Add all the DOF flags and bounds
-                cmds.addAttr(n,ln="XRotDoF",at="bool")
-                cmds.setAttr(n+ ".XRotDoF", False)
-                cmds.addAttr(n,ln="XRotDoF_LowerBound", defaultValue=-360)
-                cmds.addAttr(n,ln="XRotDoF_UpperBound", defaultValue=360)
+                if not cmds.attributeQuery("XRotDoF", node=n,exists=True):
+                    cmds.addAttr(n,ln="XRotDoF",at="bool")
+                    cmds.setAttr(n+ ".XRotDoF", False)
+                    cmds.addAttr(n,ln="XRotDoF_LowerBound", defaultValue=-360)
+                    cmds.addAttr(n,ln="XRotDoF_UpperBound", defaultValue=360)
 
-                cmds.addAttr(n,ln="YRotDoF",at="bool")
-                cmds.setAttr(n+".YRotDoF", False)
-                cmds.addAttr(n,ln="YRotDoF_LowerBound", defaultValue=-360)
-                cmds.addAttr(n,ln="YRotDoF_UpperBound", defaultValue=360)
+                    cmds.addAttr(n,ln="YRotDoF",at="bool")
+                    cmds.setAttr(n+".YRotDoF", False)
+                    cmds.addAttr(n,ln="YRotDoF_LowerBound", defaultValue=-360)
+                    cmds.addAttr(n,ln="YRotDoF_UpperBound", defaultValue=360)
 
-                cmds.addAttr(n,ln="ZRotDoF",at="bool")
-                cmds.setAttr(n+".ZRotDoF", False)
-                cmds.addAttr(n,ln="ZRotDoF_LowerBound", defaultValue=-360)
-                cmds.addAttr(n,ln="ZRotDoF_UpperBound", defaultValue=360)
+                    cmds.addAttr(n,ln="ZRotDoF",at="bool")
+                    cmds.setAttr(n+".ZRotDoF", False)
+                    cmds.addAttr(n,ln="ZRotDoF_LowerBound", defaultValue=-360)
+                    cmds.addAttr(n,ln="ZRotDoF_UpperBound", defaultValue=360)
 
-                cmds.addAttr(n,ln="XTransDoF",at="bool")
-                cmds.setAttr(n+ ".XTransDoF", False)
-                cmds.addAttr(n,ln="YTransDoF",at="bool")
-                cmds.setAttr(n+ ".YTransDoF", False)
-                cmds.addAttr(n,ln="ZTransDoF",at="bool")
-                cmds.setAttr(n+ ".ZTransDoF", False)
+                    cmds.addAttr(n,ln="XTransDoF",at="bool")
+                    cmds.setAttr(n+ ".XTransDoF", False)
+                    cmds.addAttr(n,ln="YTransDoF",at="bool")
+                    cmds.setAttr(n+ ".YTransDoF", False)
+                    cmds.addAttr(n,ln="ZTransDoF",at="bool")
+                    cmds.setAttr(n+ ".ZTransDoF", False)
 
                 for ccs in cs:
                     if ccs.tag == "RotationX":
@@ -318,16 +373,18 @@ class QImportSolver:
                                     c_segmentname = "XRot_CP"+str(i)+"_Segment"
                                     #print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
                                     #print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
-                                    cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
-                                    cmds.addAttr(n,ln=c_segmentname,dt="string")
-                                    cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
+                                    if not cmds.attributeQuery(c_coefname, node=n,exists=True):                
+                                        cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
+                                        cmds.addAttr(n,ln=c_segmentname,dt="string")
+                                        cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
                                     i = i + 1
 
                             elif cccs.tag == "Goal":
                                 goal_value = float(cccs.attrib["Value"])
                                 goal_weight = float(cccs.attrib["Weight"])
-                                cmds.addAttr(n,ln="XRot_Goal_Value", defaultValue=goal_value)
-                                cmds.addAttr(n,ln="XRot_Goal_Weight",defaultValue=goal_weight)
+                                if not cmds.attributeQuery("XRot_Goal_Value", node=n,exists=True):                
+                                    cmds.addAttr(n,ln="XRot_Goal_Value", defaultValue=goal_value)
+                                    cmds.addAttr(n,ln="XRot_Goal_Weight",defaultValue=goal_weight)
 
                         #print Spaces(level+2), "RX", bounded, "LowerBound", lb, "UpperBound", ub
                     elif ccs.tag == "RotationY":
@@ -358,16 +415,18 @@ class QImportSolver:
                                     c_segmentname = "YRot_CP"+str(i)+"_Segment"
                                     #print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
                                     #print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
-                                    cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
-                                    cmds.addAttr(n,ln=c_segmentname,dt="string")
-                                    cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
+                                    if not cmds.attributeQuery(c_coefname, node=n,exists=True):                
+                                        cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
+                                        cmds.addAttr(n,ln=c_segmentname,dt="string")
+                                        cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
                                     i = i + 1
 
                             elif cccs.tag == "Goal":
                                 goal_value = float(cccs.attrib["Value"])
                                 goal_weight = float(cccs.attrib["Weight"])
-                                cmds.addAttr(n,ln="YRot_Goal_Value", defaultValue=goal_value)
-                                cmds.addAttr(n,ln="YRot_Goal_Weight",defaultValue=goal_weight)
+                                if not cmds.attributeQuery("YRot_Goal_Value", node=n,exists=True):                
+                                    cmds.addAttr(n,ln="YRot_Goal_Value", defaultValue=goal_value)
+                                    cmds.addAttr(n,ln="YRot_Goal_Weight",defaultValue=goal_weight)
 
                         #print Spaces(level+2), "RY", bounded, "LowerBound", lb, "UpperBound", ub
                     elif ccs.tag == "RotationZ":
@@ -398,15 +457,17 @@ class QImportSolver:
                                     c_segmentname = "ZRot_CP"+str(i)+"_Segment"
                                     #print("    Coef="+str(c_coef)+"  Segment: "+str(c_segment))
                                     #print("    Coefname="+str(c_coefname)+"  Segmentname: "+str(c_segmentname))
-                                    cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
-                                    cmds.addAttr(n,ln=c_segmentname,dt="string")
-                                    cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
+                                    if not cmds.attributeQuery(c_coefname, node=n,exists=True):                
+                                        cmds.addAttr(n,ln=c_coefname, defaultValue=c_coef)
+                                        cmds.addAttr(n,ln=c_segmentname,dt="string")
+                                        cmds.setAttr(n+"."+c_segmentname,c_segment,type="string")
                                     i = i + 1
                             elif cccs.tag == "Goal":
                                 goal_value = float(cccs.attrib["Value"])
                                 goal_weight = float(cccs.attrib["Weight"])
-                                cmds.addAttr(n,ln="ZRot_Goal_Value", defaultValue=goal_value)
-                                cmds.addAttr(n,ln="ZRot_Goal_Weight",defaultValue=goal_weight)
+                                if not cmds.attributeQuery("ZRot_Goal_Value", node=n,exists=True):                
+                                    cmds.addAttr(n,ln="ZRot_Goal_Value", defaultValue=goal_value)
+                                    cmds.addAttr(n,ln="ZRot_Goal_Weight",defaultValue=goal_weight)
 
                         #print Spaces(level+2), "RZ", bounded, "LowerBound", lb, "UpperBound", ub
                     elif ccs.tag == "TranslationX":
@@ -440,8 +501,9 @@ class QImportSolver:
                         #print Spaces(level+1), "Endpoint"
                         cmds.select(ParentNode)
             elif cs.tag == "RigidBodies":
+                self._ImportRigidBodies(jMe, segment, cs, level + 1)
                 #print Spaces(level+1), "RigidBodies"
-                cmds.select(ParentNode)
+                # cmds.select(ParentNode)
 
     #
     # This is the start of the segments hierarchy
@@ -488,6 +550,7 @@ class QImportSolver:
 
             #gGroupName = cmds.group( em=True,name=name)
             gMarkers = cmds.group(em=True,name=self._NS+u"Markers")
+            gRigidbodies = cmds.group(em=True,name=self._NS+u"RigidBodies")
             for child in skeleton:
                 # print child.tag
                 if child.tag == "Solver":

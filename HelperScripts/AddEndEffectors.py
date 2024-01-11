@@ -21,6 +21,8 @@ def add_end_joint(dag):
     parent = str(dag)
     name = parent + "_end"
     x = cmds.getAttr("%s.translateX" % parent)
+    if "ball" in name:
+        x *= -1.0
     cmds.select(dag)
     j = cmds.joint(name = name)
     cmds.setAttr("%s.translateX" % name, x) 

@@ -25,10 +25,16 @@ from skeletonstreamer import SkeletonStreamer
 from rigidbodystreamer import RigidBodyStreamer
 import importlib
 
-from qtmREST import GetData, GetLabledMarkers, grabCurrentFrame
+import qtmREST
+importlib.reload(qtmREST)
+from qtmREST import grabCurrentFrame
 
 from QExportSolver import PushXMLSkeleton
 import QImportSolver
+
+import qscipy
+importlib.reload(qscipy)
+from qscipy import QRotation
 
 import xml.etree.ElementTree as ET
 
@@ -151,7 +157,12 @@ def UpdateMarkers(markerdata):
             px = markerdata[marker]["x"].values[0] / 10.0
             py = markerdata[marker]["y"].values[0] / 10.0
             pz = markerdata[marker]["z"].values[0] / 10.0
-
+            if px != px:
+                # Maya doesn't like nans
+                # print(f"Fixing nan")
+                px = 0.0
+                py = 0.0
+                pz = 0.0
             fullname = f"{namespace}:{shortname}"
             if not cmds.objExists(fullname):
                 print(f"Adding Marker {shortname} to {namespace}")
@@ -160,7 +171,64 @@ def UpdateMarkers(markerdata):
                 cmds.setAttr("%s.overrideColor" % fullname, 22)
                 cmds.select(fullname)
                 cmds.move(px,py,pz, ls=True)
-                cmds.scale(3,3,3)
+                cmds.scale(2,2,2)
+                cmds.select(groupnodename)
+                cmds.parent(fullname)
+            else:
+                cmds.select(fullname)
+                cmds.move(px,py,pz)
+
+def MtoE(m):
+    """
+    Convert a REST 3x3 matrix to Euler angles for Maya
+    """
+    R = QRotation()
+    R.M[0][0] = m[0]
+    R.M[0][1] = m[1]
+    R.M[0][2] = m[2]
+    R.M[1][0] = m[3]
+    R.M[1][1] = m[4]
+    R.M[1][2] = m[5]
+    R.M[2][0] = m[6]
+    R.M[2][1] = m[7]
+    R.M[2][2] = m[8]
+    return R.as_euler_xyz()
+
+def UpdateRigidbodies(rigidbodies):
+    print(f"UpdateRigidBodies")
+    for rigidbody in rigidbodies:
+        if '_' in rigidbody:
+            namespace,shortname = rigidbody.split("_",1)
+            groupnodename = f"{namespace}:Rigidbodies"
+            groupnodes = cmds.ls(groupnodename)
+            if not groupnodes:
+                groupnode = cmds.group(em=True,name=groupnodename)
+                print(f"New Namespace is {namespace}")
+            else:
+                groupnode = groupnodes[0]
+
+            # hardcode mm to cm for now
+            px = rigidbodies[rigidbody]["Position"][0] / 10.0
+            py = rigidbodies[rigidbody]["Position"][1] / 10.0
+            pz = rigidbodies[rigidbody]["Position"][2] / 10.0
+            if px != px:
+                # Maya doesn't like nans
+                # print(f"Fixing nan")
+                px = 0.0
+                py = 0.0
+                pz = 0.0
+            r = MtoE(rigidbodies[rigidbody]["Rotation"])
+
+            fullname = f"{namespace}:{shortname}"
+            if not cmds.objExists(fullname):
+                print(f"Adding Rigid Body {shortname} to {namespace}")
+                cmds.spaceLocator(name=fullname)
+                cmds.setAttr("%s.overrideEnabled" % fullname, 1)
+                cmds.setAttr("%s.overrideColor" % fullname, 23)
+                cmds.select(fullname)
+                cmds.move(px,py,pz, ls=True)
+                cmds.rotate(r[0],r[1],r[2])
+                cmds.scale(4,4,4)
                 cmds.select(groupnodename)
                 cmds.parent(fullname)
             else:
@@ -350,11 +418,13 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
                 item.setText(skeleton_name + ' [T-pose]')
                 self.widget.tPoseButton.setText('Resume pose')
     def get_markers(self):
+        """
+        Get the current frame of markers AND rigid bodies from QTM and create locators
+        for all of them that can be used to create a custom solver model.
+        """
         #self._output(f"You selected GetMarkers!")
-        #response, seconds = GetData()
-        #marker_data, fileInfo = GetLabledMarkers(GetCurrentFrame=True)
-        #marker_data, fileInfo = GetLabledMarkers()
-        marker_data, fileInfo = grabCurrentFrame(self._host)
+        marker_data, rigidbody_data = grabCurrentFrame(self._host)
+        no_response = False
         if marker_data is not False:
             #self._output(f"Got a response")
             #print (f"Response is {response}")
@@ -362,7 +432,16 @@ class QtmConnectWidget(MayaQWidgetDockableMixin, QtWidgets.QWidget):
             #print(f"Marker Data is {marker_data}")
             UpdateMarkers(marker_data)
         else:
-            self._output(f"Did not get a reponse")
+            no_response = True
+        print(f"Rigid body data {rigidbody_data}")
+        if rigidbody_data is not False:
+            UpdateRigidbodies(rigidbody_data)
+        else:
+            no_response = True
+
+        if no_response:
+            self._output(f"No marker data or rigid body data - did not get a reponse")
+
     def push_skeleton(self):
         print(f"In Push Skeleton")
         XML = PushXMLSkeleton()

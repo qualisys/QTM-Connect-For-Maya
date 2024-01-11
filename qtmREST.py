@@ -8,6 +8,7 @@ def GetData(Markers=True,hostIp = "127.0.0.1", Start = 0, End=0):
     query = {}
     if Markers:
         query['Markers'] = 'true'
+        query['RigidBodies'] = 'true'
     if Start:
         query['Start'] = str(Start)
     if End:
@@ -96,6 +97,7 @@ def grabCurrentFrame(ip="localhost"):
     currentFrame = data["CurrentFrame"]
     data, info = GetData(Markers=True,hostIp = ip, Start=currentFrame,End=currentFrame)
     markers = data["Markers"]
+    rigidbodies = data['RigidBodies']
     marker_data ={}
     for marker in markers:    
         df = pd.DataFrame(index=range(currentFrame,currentFrame+1),columns=['x','y','z','residual'], dtype='float')
@@ -107,8 +109,22 @@ def grabCurrentFrame(ip="localhost"):
                 part_start = part["Range"]["Start"]
                 part_end = part["Range"]["End"]
                 part_values = np.matrix(part["Values"])
+                # np.nan_to_num(part_values)
                 marker_data[marker["Name"]].loc[part_start:part_end]= part_values      
-    return marker_data, info
+
+    # print(f"Rigid Bodies {rigidbodies}")
+    rigidbody_data = {}
+    for rigidbody in rigidbodies:
+        rb_name = rigidbody['Name']
+        rb_position = rigidbody['Parts'][0]['Values'][0][0]
+        rb_rotation = rigidbody['Parts'][0]['Values'][0][1]
+        rigidbody_data[rb_name] = {'Position':rb_position, 'Rotation': rb_rotation}
+        print(f"Rigid Body {rb_name}")
+        # print(f"           P: {rb_position}")
+        print(f"           R: {rb_rotation}")
+
+
+    return marker_data, rigidbody_data
 
 if __name__ == '__main__':
     data = grabCurrentFrame(ip="10.211.55.3")

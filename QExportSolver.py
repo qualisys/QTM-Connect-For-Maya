@@ -3,7 +3,25 @@ import maya.cmds as cmds
 import math
 import numpy as np
 import tempfile
+import importlib
+import os, sys
 
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/')
+import qscipy
+importlib.reload(qscipy)
+from qscipy import QRotation
+
+def extract_rotation(xform):
+    """
+    Extract the qscipy rotation
+    from the full transform
+    """
+    R = QRotation()
+    for i in range(0,3):
+        for j in range(0,3):
+            # R.M[i][j] = xform[j][i]
+            R.M[i][j] = xform[i][j]
+    return R
 #
 #
 #
@@ -187,6 +205,9 @@ class QExportSolver:
         nodeName = str(node)
         markersNode =  f"{self._NS}Markers"
         markers = cmds.listRelatives(markersNode,c=True)
+        if markers is None:
+            print(f"No markers to export.")
+            return
         for m in markers:
             #remove namespaces and leave just the marker name
             markerName = str(m).split(":")[-1]
@@ -207,26 +228,6 @@ class QExportSolver:
                 pminv = np.linalg.inv(pm)
                 om = matmul(cm,pminv)
 
-                # dtcm = dt.Matrix(cn)
-                # dtpm = dt.Matrix(pn)
-                # dtom = dtcm * dtpm.inverse()
-
-                px = str(om[3][0] * self._sceneScale)
-                py = str(om[3][1] * self._sceneScale)
-                pz = str(om[3][2] * self._sceneScale)
-               
-                # if markerName == "WaistRFront":
-                #     print(f"NEW 1")
-                #     print(f"cm \n{cm}")
-                #     print(f"pm \n{pm}")
-                #     print(f"om \n{om}")
-                #     print(f"P is [{px},{py},{pz}] Scene Scale is {self._sceneScale}")
-                #     print(f"DT VERSION")
-                #     print(f"DT cm \n[{dtcm[0]},\n {dtcm[1]},\n {dtcm[2]},\n {dtcm[3]}")
-                #     print(f"DT pm \n[{dtpm[0]},\n {dtpm[1]},\n {dtpm[2]},\n {dtpm[3]}")
-                #     print(f"DT om \n[{dtom[0]},\n {dtom[1]},\n {dtom[2]},\n {dtom[3]}")
-
-                #print(f"{nodeName.split(':')[-1]}")
                 px = str(om[3][0] * self._sceneScale)
                 py = str(om[3][1] * self._sceneScale)
                 pz = str(om[3][2] * self._sceneScale)
@@ -235,14 +236,91 @@ class QExportSolver:
                 self._Write( Spaces(level+2)+"<Position X=\"" + px + "\" Y=\"" + py + "\" Z=\"" + pz +  "\"/>")
                 self._Write( Spaces(level+2)+"<Weight>" + str(weight) + "</Weight>")
                 self._Write( Spaces(level+1)+"</Marker>" )
-            
     
         if bHasMarkers:
             self._Write( Spaces(level)+"</Markers>")
             return True
         else:
             return False
+
+            
+    # Hardcode the use of "RigidBodies" for now.  This is used to find the list
+    # of rigid body names and scan
+    # the attributes of the joint for one whose name matches the rigid body.
+    #
+    # Note that this has problems if a joint or marker happens to have the same name
+    # as a rigid body because then the rigid body name contains
+    # the full path name which is not part of the attribute name
+    #
+    # Return True if rigid bodies were found.  False otherwise.
+    def _ExportRigidBodies(self, node, level):
+        bHasRigidBodies = False
+        nodeName = str(node)
+        rigidbodiesNode =  f"{self._NS}RigidBodies"
+        rigidbodies = cmds.listRelatives(rigidbodiesNode,c=True)
+        if rigidbodies is None:
+            print(f"No rigid bodies to export.")
+            return
+        for rb in rigidbodies:
+            #remove namespaces and leave just the marker name
+            rigidbodyName = str(rb).split(":")[-1]
+            a = nodeName+"."+ rigidbodyName
+            #print a
+            if cmds.attributeQuery(rigidbodyName,node=nodeName, exists=True):
+                weight = str(cmds.getAttr(a))
+                if not bHasRigidBodies :
+                    bHasRigidBodies = True
+                    self._Write( Spaces(level)+"<RigidBodies>")
+            
+                # Get rigid body transform relative to the segment, set scale to one
+                # first, then restore it
+                rbname = self._NS+rigidbodyName
+                sx = cmds.getAttr("%s.scaleX" % rbname)
+                cmds.setAttr("%s.scaleX" % rbname, 1.0)
+                cmds.setAttr("%s.scaleY" % rbname, 1.0)
+                cmds.setAttr("%s.scaleZ" % rbname, 1.0)
+                cn = cmds.xform( rbname, q=True, matrix=True, ws=True)
+                cmds.setAttr("%s.scaleX" % rbname, sx)
+                cmds.setAttr("%s.scaleY" % rbname, sx)
+                cmds.setAttr("%s.scaleZ" % rbname, sx)
+
+                pn = cmds.xform( nodeName, q=True, matrix=True, ws=True)
+                cm = np.array([cn[0:4],cn[4:8],cn[8:12],cn[12:16]])
+                pm = np.array([pn[0:4],pn[4:8],pn[8:12],pn[12:16]])
+                pminv = np.linalg.inv(pm)
+                # print(f"CM: \n{cm}")
+                # print(f"PM: \n{pm}")
+                # print(f"PMINV: \n{pminv}")
+
+                om = matmul(cm,pminv)
+                # print(f"OM: {om}")
+                R = extract_rotation(om)
+                Q = R.as_quat()
+                # print(f"Q: {Q}")
+                qx = str(Q[0])
+                qy = str(Q[1])
+                qz = str(Q[2])
+                qw = str(Q[3])
+
+                px = str(om[3][0] * self._sceneScale)
+                py = str(om[3][1] * self._sceneScale)
+                pz = str(om[3][2] * self._sceneScale)
+               
+                self._Write( Spaces(level+1)+"<RigidBody Name=\"" + rigidbodyName + "\">")
+                self._Write( Spaces(level+2)+"<Transform>")
+                self._Write( Spaces(level+3)+"<Position X=\"" + px + "\" Y=\"" + py + "\" Z=\"" + pz +  "\"/>")
+                self._Write( Spaces(level+3)+"<Rotation X=\"" + qx + "\" Y=\"" + qy + "\" Z=\"" + qz +  "\" W=\"" + qw + "\"/>")
+                self._Write( Spaces(level+2)+"</Transform>")
+                self._Write( Spaces(level+2)+"<Weight>" + str(weight) + "</Weight>")
+                self._Write( Spaces(level+1)+"</RigidBody>" )
+            
     
+        if bHasRigidBodies:
+            self._Write( Spaces(level)+"</RigidBodies>")
+            return True
+        else:
+            return False
+
     #
     # ExportTransform
     #
@@ -441,8 +519,8 @@ class QExportSolver:
             self._Write( Spaces(level+1)+"<Endpoint X=\"" + end_px + "\" Y=\""+ end_py + "\" Z=\"" + end_pz + "\"/>")
         
         self._ExportMarkers(jointNode,level+1)
-    
-        self._Write( Spaces(level+1)+"<RigidBodies/>")
+        self._ExportRigidBodies(jointNode,level+1)
+        # self._Write( Spaces(level+1)+"<RigidBodies/>")
     
         if not bLeaf:    
             # Export children, again assume that children exist
@@ -495,8 +573,8 @@ class QExportSolver:
     
         #Markers
         self._ExportMarkers(rootNode,level+1)
-    
-        self._Write( Spaces(level+1)+"<RigidBodies/>")
+        self._ExportRigidBodies(rootNode,level+1)
+        # self._Write( Spaces(level+1)+"<RigidBodies/>")
     
         if not bIsProp:
             # Export children, again assume that children exist
