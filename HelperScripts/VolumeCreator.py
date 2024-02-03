@@ -12,7 +12,9 @@ To Use:
   positive Y from this spot.
 
   The cameras must all have the name "Camera*" where the * is the rest of the name. Be sure that
-  the cameras don't have scales applied to them.  They can be under a group node.
+  the cameras don't have scales applied to them.  They can be under a group node. You must also select
+  all cameras before running the script, this way you can have cameras that can be excluded from 
+  the calculations.
 
   The first time the script is run it will create attributes in the Start locator for 
   controlling the dimensions of the volume created by the script.
@@ -235,34 +237,34 @@ def in_frustum(cameraName, objectName):
     M = OpenMaya.MTransformationMatrix(objDagPath.inclusiveMatrix())
     translation = M.translation(OpenMaya.MSpace.kObject)        
     objLoc = np.array([translation[0], translation[1], translation[2]])
+    v = normalize(camLoc-objLoc)
     # print(f"camLoc {camLoc}")
     # print(f"objLoc {objLoc}")
-    v = normalize(camLoc-objLoc)
     # print(f"directional vector {v}")
 
     return direction(v)
 
 
 
-
+# Some global variables, after the first run of this script 
+# they can be set in the Extra Attributes section of the 
+# "Start" locator
 size = 20
-cameraList = cmds.ls('Camera*',ca=True)
-cameras_to_see = 12
-# print(cameraList)
-#if(in_frustum('persp','mySphere'))
+cameraList = cmds.ls('Camera*',selection=True, ca=True)
+# print(f"Cameras to be evaluated:\n{cameraList}")
+cameras_to_see = 4
+x = 5
+y = 5
+z = 2
+VolumeLayers = []
 
-# x = 23
-# y = 45
-# z = 5
-x = 10
-y = 10
-z = 5
 def UpdateVariables():
     global x
     global y
     global z
     global cameras_to_see
     global size
+    global VolumeLayers
 
     startLocation = cmds.ls("Start")[0]
     bHasAttributes = cmds.attributeQuery("X_res",node=startLocation, exists=True)
@@ -270,33 +272,119 @@ def UpdateVariables():
         cmds.addAttr(startLocation, ln="X_res", defaultValue=x, at="short")
         cmds.addAttr(startLocation, ln="Y_res", defaultValue=y, at="short")
         cmds.addAttr(startLocation, ln="Z_res", defaultValue=z, at="short")
-        cmds.addAttr(startLocation, ln="Cameras", defaultValue=cameras_to_see, at="short")
+        cmds.addAttr(startLocation, ln="CamerasToSee", defaultValue=cameras_to_see, at="short")
         cmds.addAttr(startLocation, ln="Size", defaultValue=size, at="short")
     else:
         x = cmds.getAttr(f"{startLocation}.X_res")
         y = cmds.getAttr(f"{startLocation}.Y_res")
         z = cmds.getAttr(f"{startLocation}.Z_res")
-        cameras_to_see = cmds.getAttr(f"{startLocation}.Cameras")
+        cameras_to_see = cmds.getAttr(f"{startLocation}.CamerasToSee")
         size = cmds.getAttr(f"{startLocation}.Size")
     Volume = cmds.ls("gVolume")
+    notVolume = cmds.ls("gNotVolume")
     if not Volume or len(Volume) == 0:
         print(f"Making Volume group node.")
         Volume = cmds.group(em=True, name="gVolume")
+        notVolume = cmds.group(em=True, name="gNotVolume")
+        borderVolume = cmds.group(em=True, name="gBorderVolume")
+
+    for k in range(z):
+        gName = f"VolumeLevel{k}"
+        VolumeLayer = cmds.group(em=True, name=gName)
+        cmds.select(Volume)
+        cmds.parent(VolumeLayer)
+        VolumeLayers.append(VolumeLayer)
+
+    print(f"Made volume layers: {VolumeLayers}")
 
 def all_seen(seenByCameras):
     for D in seenByCameras:
         if seenByCameras[D] < cameras_to_see:
             return False
     return True
+def all_unseen(seenByCameras):
+    """
+    If less than 2 sides are seen
+    """
+    count = 0
+    for D in seenByCameras:
+        if seenByCameras[D] >= cameras_to_see:
+            count += 1
+    return (count < 3)
+
+def getSGfromShader(shader=None):
+    if shader:
+        if cmds.objExists(shader):
+            sgq = cmds.listConnections(shader, d=True, et=True, t='shadingEngine')
+            if sgq:
+                return sgq[0]
+    return None
+
+def assignObjectListToShader(objList=None, shader=None):
+    """
+    Assign the shader to the object list
+    arguments:
+        objList: list of objects or faces
+    """
+    # assign selection to the shader
+    shaderSG = getSGfromShader(shader)
+    if objList:
+        if shaderSG:
+            cmds.sets(objList, e=True, forceElement=shaderSG)
+        else:
+            print('The provided shader didn\'t returned a shaderSG')
+    else:
+        print('Please select one or more objects')
+
+def assignSelectionToShader(shader=None):
+    sel = cmds.ls(sl=True, l=True)
+    if sel:
+        assignObjectListToShader(sel, shader)
+
+# assignSelectionToShader('lambert2')
+def colorizeNotVolumeCube(cube, seenByCameras):
+    cmds.select([f"{cube}.f[1]"])
+    if seenByCameras["PY"] >= cameras_to_see:
+        assignSelectionToShader("mNotVolumeGreen")
+    elif seenByCameras["PY"] == 0:
+        assignSelectionToShader("mNotVolumeRed")
+    else:
+        assignSelectionToShader("mNotVolumeYellow")
+    cmds.select([f"{cube}.f[3]"])
+    if seenByCameras["NY"] >= cameras_to_see:
+        assignSelectionToShader("mNotVolumeGreen")
+    elif seenByCameras["NY"] == 0:
+        assignSelectionToShader("mNotVolumeRed")
+    else:
+        assignSelectionToShader("mNotVolumeYellow")
+    cmds.select([f"{cube}.f[4]"])
+    if seenByCameras["PX"] >= cameras_to_see:
+        assignSelectionToShader("mNotVolumeGreen")
+    elif seenByCameras["PX"] == 0:
+        assignSelectionToShader("mNotVolumeRed")
+    else:
+        assignSelectionToShader("mNotVolumeYellow")
+    cmds.select([f"{cube}.f[5]"])
+    if seenByCameras["NX"] >= cameras_to_see:
+        assignSelectionToShader("mNotVolumeGreen")
+    elif seenByCameras["NX"] == 0:
+        assignSelectionToShader("mNotVolumeRed")
+    else:
+        assignSelectionToShader("mNotVolumeYellow")
+    cmds.select([f"{cube}.f[0]", f"{cube}.f[2]"])
+    assignSelectionToShader("mNotVolumeClear")
+
 
 def CreateVolume():
     total=x*y*z
-    moreThanOne = False
     breakLoops = False
     startLocation = cmds.ls("Start")
     startLocation = startLocation[0]
     Volume = cmds.ls("gVolume")[0]
+    notVolume = cmds.ls("gNotVolume")[0]
+    borderVolume = cmds.ls("gBorderVolume")[0]
     cmds.progressWindow(isInterruptable=1, min=0, max=total, t= 'Creating volume')
+    print(f"VolumeLayers: {VolumeLayers}")
     for i in range(x):
         if breakLoops:
             break
@@ -325,24 +413,31 @@ def CreateVolume():
                     #print(cam)
                     #print(res)
                     D = in_frustum(cam,res[0])
+                    # print(f"D: {D}")
                     if D is not None:
                         seenByCameras[D] += 1
+                        # print(f"seenBy: {seenByCameras}")
                     if all_seen(seenByCameras):
                         is_seen = True
                         break
                     # if(seenByCameras >= cameras_to_see):
                         # break
                 if(not is_seen):
-                    cmds.hide(res)
-                else:
-                    if moreThanOne:
-                        res = cmds.polyBoolOp('Volume',res[0],ch=False, n='Volume')
-                        cmds.rename(res,'Volume')
-                        cmds.refresh()
+                    # cmds.hide(res)
+                    # cmds.delete(res)
+                    if all_unseen(seenByCameras):
+                        cmds.select(notVolume)
+                        cmds.parent(res[0])
                     else:
-                        moreThanOne = False
-                        cmds.rename(res[0],'Volume') 
+                        cmds.select(borderVolume)
+                        cmds.parent(res[0])
+                        colorizeNotVolumeCube(res[0], seenByCameras)
+                else:
+                    cmds.select(VolumeLayers[k])
+                    cmds.parent(res[0])
+
     cmds.progressWindow(endProgress=1)
+    cmds.hide(notVolume)
 
 UpdateVariables()
 CreateVolume()
