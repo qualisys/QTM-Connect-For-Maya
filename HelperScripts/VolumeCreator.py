@@ -7,14 +7,26 @@ For now no evaluation is done for whether or not cameras see from above or below
 location in space.
 
 To Use:
-  You must create a locator called "Start" that denotes the starting location of the volume.
-  This location will be one corner of the volume.  The volume will grow in positive X and
-  positive Y from this spot.
+  You must these elements in the scene for the script to use:
+  * A locator called "Start" that denotes the starting location of the volume. This 
+    location will be one corner of the volume.  The volume will grow in positive X and
+    positive Y from this spot.
+  * Materials with the following names:
+    - mNotVolumeClear - Assigned to border cube faces top and bottom
+    - mNotVolumeGreen - Assigned to border cube faces with enough camera visibility. It is
+      recommended that you make this material somewhat or all transparent so the yellow and
+      red faces of other cubes can be seen.
+    - mNotVolumeYellow - Assigned to border cube faces with some camera visibility but not
+      enough (the Cameras variable described below)
+    - mNotVolumeRed - Assigned to border cube faces with no camera visibility.
 
   The cameras must all have the name "Camera*" where the * is the rest of the name. Be sure that
   the cameras don't have scales applied to them.  They can be under a group node. You must also select
   all cameras before running the script, this way you can have cameras that can be excluded from 
   the calculations.
+
+  NOTE: When you run the script you must select all the cameras to be processed.  An easy way to
+  do this is to select the camera group node then use the menu Select to "Select Hierarchy".
 
   The first time the script is run it will create attributes in the Start locator for 
   controlling the dimensions of the volume created by the script.
@@ -24,9 +36,21 @@ To Use:
     Cameras - The number of cameras that must see each of the 4 sides of the cube (not top or bottom) to be counted
     Size - The dimension of each cube (in cm, so 100 is a meter)
 
-When you run the script it will create a "gVolume" group node for the cubes to grouped under (NOTE: at the moment
-Maya gives a wierd error when making the cubes a child of this node, the output of the error message causes the script
-to get VERY slow), so for now they aren't automatically grouped under the group node.
+When you run the script it will create a set of group nodes for organizing the cubes:
+ * gVolume will hold all the cubes in the volume that are fully visible on all sides of the
+   required number of cameras.  These will all have a default color.  There will also be a set of
+   group nodes under this node: one for each layer in the Z direction.  Cubes will be grouped by
+   layer under these for easier analysis of the different heights in the volume.
+ * gNotVolume will hold all the cubes that are not visible (two or more sides are fully not visible
+   to the cameras).  When the script is finished this node and all the cubes under it will have their
+   display turned off (like hitting the "H" or "cntl-H" shortcut key)
+ * gBorderVolume will hold all the cubes that are somewhat visible to cameras.  The sides will be given
+   a material according to how many cameras see the cube from that direction.  A cube is "on the border"
+   when at least three sides are seen by cameras (green or yellow)
+
+  NOTE: There is currently a problem with running this script with existing group nodes with the above names,
+  even if they're hidden under other nodes.  So it's best to run this tool in separate Maya files and 
+  combine them later if you want to have multiple volume results in the same file for comparison.
 
 All cubes of the volume will be created, but the ones that are not "counted" have their display turned off.
 """
