@@ -413,7 +413,8 @@ def _clavicle_r_rule(joint,markerset):
     p1,p2 = closest_line_seg_line_seg(ShoulderTop,ShoulderFloor,my_joint, ElbowOut)
 
     XVec = normalize(np.subtract(my_joint,p1))
-    YVec = ForwardVec
+    # YVec = ForwardVec
+    YVec = FACING_VECTOR
 
     RTotal = QRotationFromReference(XVec,YVec)
     e = RTotal.as_euler("xyz")
