@@ -257,7 +257,12 @@ class QExportSolver:
         bHasRigidBodies = False
         nodeName = str(node)
         rigidbodiesNode =  f"{self._NS}RigidBodies"
-        rigidbodies = cmds.listRelatives(rigidbodiesNode,c=True)
+        try:
+            rigidbodies = cmds.listRelatives(rigidbodiesNode,c=True)
+        except:
+            # print(f"No rigid bodies to export.")
+            return
+
         if rigidbodies is None:
             print(f"No rigid bodies to export.")
             return
